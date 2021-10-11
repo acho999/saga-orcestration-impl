@@ -1,7 +1,5 @@
 package com.angel.orderservice.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 import states.OrderState;
@@ -14,6 +12,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "Orders")
+@NoArgsConstructor
 public class Order {
 
     @Id
@@ -34,44 +33,41 @@ public class Order {
     @Column(name = "price", nullable = false)
     private Double price;
 
-    public static class Builder{
+    public static class Builder {
 
         private OrderState orderState;
         private Integer userId;
         private Integer productId;
         private Double price;
 
-        public Builder setPrice(Double price){
+        public Builder setPrice(Double price) {
             this.price = price;
             return this;
         }
 
-        public Builder setProductId(Integer prodId){
+        public Builder setProductId(Integer prodId) {
             this.productId = prodId;
             return this;
         }
 
-        public Builder setUserId(Integer userId){
+        public Builder setUserId(Integer userId) {
             this.userId = userId;
             return this;
         }
 
-        public Builder setOrderState(OrderState state){
+        public Builder setOrderState(OrderState state) {
             this.orderState = state;
             return this;
         }
 
-        public Order build(){
+        public Order build() {
             return new Order(this);
         }
 
 
     }
 
-    public Order() {
-    }
-
-    private Order(Builder builder){
+    private Order(Builder builder) {
         this.price = builder.price;
         this.orderState = builder.orderState;
         this.productId = builder.productId;
