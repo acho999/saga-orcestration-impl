@@ -1,4 +1,4 @@
-package paymentsservice.models;
+package productInventoryservice.models;
 
 import org.hibernate.annotations.GenericGenerator;
 

@@ -1,7 +1,7 @@
-package paymentsservice.services;
+package productInventoryservice.services;
 
-import paymentsservice.models.Product;
-import paymentsservice.repos.ProductsInventoryRepo;
+import productInventoryservice.models.Product;
+import productInventoryservice.repos.ProductsInventoryRepo;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collection;
 
 @Service
-public class PaymentsServiceImpl implements paymentsservice.services.ProductInventoryService {
+public class PaymentsServiceImpl implements ProductInventoryService {
 
     @Autowired
     private ProductsInventoryRepo repo;

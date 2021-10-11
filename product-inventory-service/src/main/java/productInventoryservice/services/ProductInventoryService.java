@@ -1,6 +1,6 @@
-package paymentsservice.services;
+package productInventoryservice.services;
 
-import paymentsservice.models.Product;
+import productInventoryservice.models.Product;
 
 import java.util.Collection;
 

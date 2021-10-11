@@ -1,4 +1,4 @@
-package paymentsservice.Configuration;
+package productInventoryservice.Configuration;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
