@@ -21,11 +21,7 @@
     <modules>
         <module>order-service</module>
         <module>models</module>
-        <module>payment-service</module>
-        <module>inventory-service</module>
         <module>order-orchestration</module>
-        <module>payment-service</module>
-        <module>inventory-service</module>
         <module>payments-service</module>
         <module>product-inventory-service</module>
     </modules>
