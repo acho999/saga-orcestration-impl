@@ -9,14 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>payment-service</artifactId>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.modelmapper</groupId>
-            <artifactId>modelmapper</artifactId>
-        </dependency>
-    </dependencies>
+    <artifactId>PaymentService</artifactId>
 
     <dependencies>
         <dependency>

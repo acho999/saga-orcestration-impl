@@ -2,11 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/inventory-service/InventoryService.iml" filepath="$PROJECT_DIR$/inventory-service/InventoryService.iml" />
-      <module fileurl="file://$PROJECT_DIR$/payment-service/PaymentService.iml" filepath="$PROJECT_DIR$/payment-service/PaymentService.iml" />
+      <module fileurl="file://$PROJECT_DIR$/inventory-service/inventory-service.iml" filepath="$PROJECT_DIR$/inventory-service/inventory-service.iml" />
       <module fileurl="file://$PROJECT_DIR$/models/models.iml" filepath="$PROJECT_DIR$/models/models.iml" />
       <module fileurl="file://$PROJECT_DIR$/order-orchestration/order-orchestration.iml" filepath="$PROJECT_DIR$/order-orchestration/order-orchestration.iml" />
       <module fileurl="file://$PROJECT_DIR$/order-service/order-service.iml" filepath="$PROJECT_DIR$/order-service/order-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/payment-service/payment-service.iml" filepath="$PROJECT_DIR$/payment-service/payment-service.iml" />
       <module fileurl="file://$PROJECT_DIR$/saga-orchestration-impl.iml" filepath="$PROJECT_DIR$/saga-orchestration-impl.iml" />
     </modules>
   </component>

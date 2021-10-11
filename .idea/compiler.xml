@@ -10,13 +10,17 @@
         <module name="order-orchestration" />
         <module name="models" />
         <module name="order-service" />
+        <module name="inventory-service" />
+        <module name="payment-service" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="inventory-service" target="11" />
       <module name="InventoryService" target="11" />
       <module name="models" target="11" />
       <module name="order-orchestration" target="11" />
       <module name="order-service" target="11" />
+      <module name="payment-service" target="11" />
       <module name="PaymentService" target="11" />
       <module name="saga-orchestration-impl" target="11" />
     </bytecodeTargetLevel>
@@ -25,9 +29,11 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="InventoryService" options="-parameters" />
       <module name="PaymentService" options="-parameters" />
+      <module name="inventory-service" options="-parameters" />
       <module name="models" options="-parameters" />
       <module name="order-orchestration" options="-parameters" />
       <module name="order-service" options="-parameters" />
+      <module name="payment-service" options="-parameters" />
     </option>
   </component>
 </project>
