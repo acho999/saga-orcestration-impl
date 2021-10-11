@@ -1,6 +1,10 @@
 package com.angel.orderservice.models;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
+import states.OrderState;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,6 +14,9 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "Orders")
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 public class Order {
 
     @Id
@@ -17,4 +24,16 @@ public class Order {
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private String Id;
+
+    @Column(name = "orderState", nullable = false)
+    private OrderState orderState;
+
+    @Column(name = "userId", nullable = false)
+    private Integer userId;
+
+    @Column(name = "productId", nullable = false)
+    private Integer productId;
+
+    @Column(name = "price", nullable = false)
+    private Double price;
 }
