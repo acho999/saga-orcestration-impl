@@ -1,4 +1,4 @@
-package productInventoryservice.Configuration;
+package paymentsservice.configuration;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +22,10 @@ import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 @Configuration
-@EnableJpaRepositories(basePackages = "ordeservice.repos")
+@EnableJpaRepositories(basePackages = "paymentsservice.repos")
 @EnableTransactionManagement
 @PropertySource(value = {"application.yaml" })
-public class ProductInventoryServiceConfig {
+public class PaymentsServiceConfig {
 
     @Autowired
     Environment env;
