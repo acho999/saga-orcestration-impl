@@ -10,8 +10,6 @@
         <module name="order-orchestration" />
         <module name="models" />
         <module name="order-service" />
-        <module name="PaymentService" />
-        <module name="InventoryService" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
