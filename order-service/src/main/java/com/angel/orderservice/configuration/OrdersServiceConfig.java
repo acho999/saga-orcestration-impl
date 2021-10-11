@@ -1,4 +1,4 @@
-package com.angel.orderservice.Configuration;
+package com.angel.orderservice.configuration;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
