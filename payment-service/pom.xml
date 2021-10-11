@@ -11,4 +11,11 @@
 
     <artifactId>PaymentService</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.modelmapper</groupId>
+            <artifactId>modelmapper</artifactId>
+        </dependency>
+    </dependencies>
+
 </project>
