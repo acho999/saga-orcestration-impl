@@ -33,44 +33,4 @@ public class Order {
     @Column(name = "price", nullable = false)
     private Double price;
 
-    public static class Builder {
-
-        private OrderState orderState;
-        private Integer userId;
-        private Integer productId;
-        private Double price;
-
-        public Builder setPrice(Double price) {
-            this.price = price;
-            return this;
-        }
-
-        public Builder setProductId(Integer prodId) {
-            this.productId = prodId;
-            return this;
-        }
-
-        public Builder setUserId(Integer userId) {
-            this.userId = userId;
-            return this;
-        }
-
-        public Builder setOrderState(OrderState state) {
-            this.orderState = state;
-            return this;
-        }
-
-        public Order build() {
-            return new Order(this);
-        }
-
-
-    }
-
-    private Order(Builder builder) {
-        this.price = builder.price;
-        this.orderState = builder.orderState;
-        this.productId = builder.productId;
-        this.userId = builder.userId;
-    }
 }
