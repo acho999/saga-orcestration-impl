@@ -6,8 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="10a03b18-1957-4bd6-b8d8-752a6fb714d8" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/src/main/java/DTO/OrchestrationRequestDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/models/src/main/java/DTO/OrchestrationRequestDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/src/main/java/DTO/OrchestrationResponseDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/models/src/main/java/DTO/OrchestrationResponseDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/order-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/order-service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/payments-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/payments-service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/product-inventory-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/product-inventory-service/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -62,17 +64,6 @@
     </key>
   </component>
   <component name="RunManager" selected="Spring Boot.OrderServiceApplication">
-    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
-      <option name="arquillianRunConfiguration">
-        <value>
-          <option name="containerStateName" value="" />
-        </value>
-      </option>
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="OrderServiceApplication (1)" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
       <module name="payments-service" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="paymentsservice.PaymentsServiceApplication" />
@@ -113,6 +104,7 @@
       <workItem from="1633944270354" duration="5344000" />
       <workItem from="1633950536055" duration="50000" />
       <workItem from="1634046399091" duration="2691000" />
+      <workItem from="1634183946780" duration="792000" />
     </task>
     <servers />
   </component>
