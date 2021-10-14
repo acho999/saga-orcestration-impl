@@ -5,13 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="10a03b18-1957-4bd6-b8d8-752a6fb714d8" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/models.iml" beforeDir="false" afterPath="$PROJECT_DIR$/models/models.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/order-orchestration/order-orchestration.iml" beforeDir="false" afterPath="$PROJECT_DIR$/order-orchestration/order-orchestration.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/saga-orchestration-impl.iml" beforeDir="false" afterPath="$PROJECT_DIR$/saga-orchestration-impl.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/models/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/order-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/order-service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -122,7 +119,7 @@
       <workItem from="1633950536055" duration="50000" />
       <workItem from="1634046399091" duration="2691000" />
       <workItem from="1634183946780" duration="792000" />
-      <workItem from="1634198155036" duration="373000" />
+      <workItem from="1634198155036" duration="1701000" />
     </task>
     <servers />
   </component>
