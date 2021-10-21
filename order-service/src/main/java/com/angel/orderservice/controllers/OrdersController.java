@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping(value = "/orders")
@@ -18,7 +17,7 @@ public class OrdersController {
     private OrdersService service;
 
     @RequestMapping(method = RequestMethod.GET, value = "/{orderId}")
-    public ResponseEntity<Mono<Order>> getOrder(@PathVariable String id) {
+    public ResponseEntity<Order> getOrder(@PathVariable String id) {
         return null;
     }
 
