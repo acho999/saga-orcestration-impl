@@ -6,10 +6,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.util.Collection;
+import java.util.List;
 
 @Service
 public class OrdersServiceImpl implements OrdersService {
@@ -22,13 +21,13 @@ public class OrdersServiceImpl implements OrdersService {
 
     @Override
     @Transactional
-    public Flux<Order> getAll() {
+    public List<Order> getAll() {
         return null;
     }
 
     @Override
     @Transactional
-    public Mono<Order> getOrder(String id){
+    public List<Order> getOrder(String id){
         return  null;
     }
 }
