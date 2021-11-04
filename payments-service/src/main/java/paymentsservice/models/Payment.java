@@ -25,5 +25,5 @@ public class Payment {
     private String id;
 
     @Column(name = "amount")
-    private int amount;
+    private double amount;
 }

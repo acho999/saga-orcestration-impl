@@ -29,12 +29,12 @@ public class Order {
     private OrderState orderState;
 
     @Column(name = "userId", nullable = false)
-    private Integer userId;
+    private int userId;
 
     @Column(name = "productId", nullable = false)
-    private Integer productId;
+    private int productId;
 
     @Column(name = "price", nullable = false)
-    private Double price;
+    private double price;
 
 }
