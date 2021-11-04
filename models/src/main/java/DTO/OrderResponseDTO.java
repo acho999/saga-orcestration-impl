@@ -1,7 +1,11 @@
 package DTO;
 
+import lombok.Getter;
+import lombok.Setter;
 import states.OrderState;
 
+@Getter
+@Setter
 public class OrderResponseDTO {
 
     private Integer userId;

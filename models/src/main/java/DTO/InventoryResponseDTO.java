@@ -1,7 +1,12 @@
 package DTO;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import states.InventoryState;
 
+@Getter
+@Setter
 public class InventoryResponseDTO {
 
     private Integer userId;
