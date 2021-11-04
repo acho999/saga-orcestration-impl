@@ -17,14 +17,6 @@
             <artifactId>models</artifactId>
             <version>${project.version}</version>
         </dependency>
-<<<<<<< HEAD
-        <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-core</artifactId>
-        </dependency>
-
-=======
->>>>>>> ba1bc7ce0c4f5f5a5b7ef84411cc3d75be2e67d8
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
