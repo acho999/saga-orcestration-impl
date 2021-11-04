@@ -11,6 +11,8 @@
 
     <artifactId>product-inventory-service</artifactId>
 
+    <packaging>jar</packaging>
+
     <dependencies>
         <dependency>
             <groupId>com.angel</groupId>
