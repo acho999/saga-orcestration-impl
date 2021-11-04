@@ -17,4 +17,7 @@ public class Payment {
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private String id;
+
+    @Column(name = "amount")
+    private int amount;
 }
