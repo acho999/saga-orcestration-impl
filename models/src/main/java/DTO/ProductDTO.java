@@ -13,19 +13,35 @@ public class ProductDTO {
 
     private String description;
 
+    private double price;
+
+    private int quantity;
+
     public static class Builder {
 
         private String id;
         private String name;
         private String description;
+        private double price;
+        private int quantity;
 
         public Builder setDescription(String description) {
             this.description = description;
             return this;
         }
 
+        public Builder setQuantity(int quantity) {
+            this.quantity = quantity;
+            return this;
+        }
+
         public Builder setName(String name) {
             this.name = name;
+            return this;
+        }
+
+        public Builder setPrice(double price) {
+            this.price = price;
             return this;
         }
 
@@ -45,6 +61,8 @@ public class ProductDTO {
         this.description = builder.description;
         this.id = builder.id;
         this.name = builder.name;
+        this.price = builder.price;
+        this.quantity = builder.quantity;
     }
 
 

@@ -8,19 +8,19 @@ import states.OrderState;
 @Setter
 public class OrderResponseDTO {
 
-    private Integer userId;
-    private Integer productId;
+    private int userId;
+    private int productId;
     private String orderId;
     private OrderState state;
-    private Integer quantity;
+    private int quantity;
 
     public static class Builder{
 
-        private Integer userId;
-        private Integer productId;
+        private int userId;
+        private int productId;
         private String orderId;
         private OrderState state;
-        private Integer quantity;
+        private int quantity;
 
         public Builder setUserId(Integer userId){
             this.userId = userId;

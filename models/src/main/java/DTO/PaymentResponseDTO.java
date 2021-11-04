@@ -8,16 +8,16 @@ import states.PaymentState;
 @Setter
 public class PaymentResponseDTO {
 
-    private Integer userId;
+    private int userId;
     private String orderId;
-    private Double amount;
+    private double amount;
     private PaymentState state;
 
     public static class Builder {
 
-        private Integer userId;
+        private int userId;
         private String orderId;
-        private Double amount;
+        private double amount;
         private PaymentState state;
 
         public Builder setOrderId(String orderId) {

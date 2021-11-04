@@ -9,15 +9,15 @@ import states.InventoryState;
 @Setter
 public class InventoryResponseDTO {
 
-    private Integer userId;
-    private Integer productId;
+    private int userId;
+    private int productId;
     private String orderId;
     private InventoryState state;
 
     public static class Builder {
 
-        private Integer userId;
-        private Integer productId;
+        private int userId;
+        private int productId;
         private String orderId;
         private InventoryState state;
 

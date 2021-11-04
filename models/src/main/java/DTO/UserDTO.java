@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class PaymentDTO {
+public class UserDTO {
 
     private String id;
     private int amount;
@@ -13,10 +13,10 @@ public class PaymentDTO {
     public static class Builder {
 
         private String id;
-        private int amount;
+        private int balance;
 
         public Builder setAmount(int amount) {
-            this.amount = amount;
+            this.balance = amount;
             return this;
         }
 
@@ -25,16 +25,16 @@ public class PaymentDTO {
             return this;
         }
 
-        public PaymentDTO build() {
-            return new PaymentDTO(this);
+        public UserDTO build() {
+            return new UserDTO(this);
         }
 
 
     }
 
-    private PaymentDTO(Builder builder){
+    private UserDTO(Builder builder){
         this.id = builder.id;
-        this.amount = builder.amount;
+        this.amount = builder.balance;
     }
 
 

@@ -16,7 +16,7 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @Getter
 @Setter
-public class Payment {
+public class User {
 
     @Id
     @Column(name = "Id", unique = true, nullable = false)
@@ -25,5 +25,5 @@ public class Payment {
     private String id;
 
     @Column(name = "amount")
-    private double amount;
+    private double balance;
 }

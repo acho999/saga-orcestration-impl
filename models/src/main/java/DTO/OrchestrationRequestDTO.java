@@ -7,17 +7,17 @@ import lombok.Setter;
 @Setter
 public class OrchestrationRequestDTO {
 
-    private Integer userId;
-    private Integer productId;
+    private int userId;
+    private int productId;
     private String orderId;
-    private Double amount;
+    private double amount;
 
     public static class Builder {
 
-        private Integer userId;
+        private int userId;
+        private int productId;
         private String orderId;
-        private Double amount;
-        private Integer productId;
+        private double amount;
 
         public Builder setOrderId(String orderId) {
             this.orderId = orderId;

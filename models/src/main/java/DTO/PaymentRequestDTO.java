@@ -7,15 +7,15 @@ import lombok.Setter;
 @Setter
 public class PaymentRequestDTO {
 
-    private Integer userId;
+    private int userId;
     private String orderId;
-    private Double amount;
+    private double amount;
 
     public static class Builder {
 
-        private Integer userId;
+        private int userId;
         private String orderId;
-        private Double amount;
+        private double amount;
 
         public Builder setOrderId(String orderId) {
             this.orderId = orderId;

@@ -8,18 +8,18 @@ import states.OrderState;
 @Setter
 public class OrchestrationResponseDTO {
 
-    private Integer userId;
-    private Integer productId;
+    private int userId;
+    private int productId;
     private String orderId;
-    private Double amount;
+    private double amount;
     private OrderState state;
 
     public static class Builder {
 
-        private Integer userId;
+        private int userId;
+        private int productId;
         private String orderId;
-        private Double amount;
-        private Integer productId;
+        private double amount;
         private OrderState state;
 
         public Builder setOrderId(String orderId) {

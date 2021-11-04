@@ -1,11 +1,11 @@
 package paymentsservice.services;
 
-import DTO.PaymentDTO;
+import DTO.UserDTO;
 
 import java.util.Collection;
 
 public interface PaymentsService {
 
-    Collection<PaymentDTO> getAll();
+    Collection<UserDTO> getAll();
 
 }

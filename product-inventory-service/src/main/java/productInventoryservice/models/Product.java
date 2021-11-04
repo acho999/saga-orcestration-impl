@@ -29,4 +29,10 @@ public class Product {
 
     @Column(name = "description")
     private String description;
+
+    @Column(name = "price")
+    private double price;
+
+    @Column(name = "quantity")
+    private int quantity;
 }

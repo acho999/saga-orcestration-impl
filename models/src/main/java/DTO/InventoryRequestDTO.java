@@ -8,14 +8,14 @@ import states.OrderState;
 @Setter
 public class InventoryRequestDTO {
 
-    private Integer userId;
-    private Integer productId;
+    private int userId;
+    private int productId;
     private String orderId;
 
     public static class Builder {
 
-        private Integer userId;
-        private Integer productId;
+        private int userId;
+        private int productId;
         private String orderId;
 
         public Builder setPrice(String orderId) {
