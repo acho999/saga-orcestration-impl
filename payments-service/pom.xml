@@ -11,6 +11,8 @@
 
     <artifactId>payments-service</artifactId>
 
+    <packaging>jar</packaging>
+
     <dependencies>
         <dependency>
             <groupId>com.angel</groupId>
