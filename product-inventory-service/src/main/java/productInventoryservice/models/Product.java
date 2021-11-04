@@ -17,4 +17,10 @@ public class Product {
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private String id;
+
+    @Column(name = "productName")
+    private String name;
+
+    @Column(name = "description")
+    private String description;
 }

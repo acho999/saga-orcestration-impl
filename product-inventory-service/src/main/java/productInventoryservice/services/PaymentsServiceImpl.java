@@ -1,5 +1,6 @@
 package productInventoryservice.services;
 
+import DTO.ProductDTO;
 import productInventoryservice.models.Product;
 import productInventoryservice.repos.ProductsInventoryRepo;
 import org.modelmapper.ModelMapper;
@@ -20,7 +21,7 @@ public class PaymentsServiceImpl implements ProductInventoryService {
 
     @Override
     @Transactional
-    public Collection<Product> getAll() {
+    public Collection<ProductDTO> getAll() {
 
         return null;
     }

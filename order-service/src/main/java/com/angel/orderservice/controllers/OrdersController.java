@@ -1,6 +1,6 @@
 package com.angel.orderservice.controllers;
 
-import com.angel.orderservice.models.Order;
+import DTO.OrderDTO;
 import com.angel.orderservice.services.OrdersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +17,8 @@ public class OrdersController {
     private OrdersService service;
 
     @RequestMapping(method = RequestMethod.GET, value = "/{orderId}")
-    public ResponseEntity<Order> getOrder(@PathVariable String id) {
+
+    public ResponseEntity<OrderDTO> getOrder(@PathVariable String id) {
         return null;
     }
 

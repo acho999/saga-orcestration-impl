@@ -22,7 +22,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 @Configuration
-@EnableJpaRepositories(basePackages = "com.angel.ordeservice.repos")
+@EnableJpaRepositories(basePackages = "com.angel.orderservice.repos")
 @EnableTransactionManagement
 @PropertySource(value = {"application.yaml" })
 public class OrdersServiceConfig {

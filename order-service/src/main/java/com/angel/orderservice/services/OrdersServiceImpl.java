@@ -1,6 +1,6 @@
 package com.angel.orderservice.services;
 
-import com.angel.orderservice.models.Order;
+import DTO.OrderDTO;
 import com.angel.orderservice.repos.OrdersRepo;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,13 +21,13 @@ public class OrdersServiceImpl implements OrdersService {
 
     @Override
     @Transactional
-    public List<Order> getAll() {
+    public Collection<OrderDTO> getAll() {
         return null;
     }
 
     @Override
     @Transactional
-    public List<Order> getOrder(String id){
+    public OrderDTO getOrder(String id){
         return  null;
     }
 }
