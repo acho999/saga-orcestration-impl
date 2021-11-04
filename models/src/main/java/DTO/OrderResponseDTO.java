@@ -8,36 +8,43 @@ import states.OrderState;
 @Setter
 public class OrderResponseDTO {
 
-    private int userId;
-    private int productId;
+    private String userId;
+    private String productId;
     private String orderId;
     private OrderState state;
     private int quantity;
+    private double price;
 
     public static class Builder{
 
-        private int userId;
-        private int productId;
+        private String userId;
+        private String productId;
         private String orderId;
         private OrderState state;
         private int quantity;
+        private double price;
 
-        public Builder setUserId(Integer userId){
+        public Builder setUserId(String userId){
             this.userId = userId;
             return this;
         }
 
-        public Builder setProductId(Integer productId){
+        public Builder setPrice(double price){
+            this.price = price;
+            return this;
+        }
+
+        public Builder setProductId(String productId){
             this.productId = productId;
             return this;
         }
 
         public Builder setOrderId(String orderId){
-            this.userId = userId;
+            this.orderId = orderId;
             return this;
         }
 
-        public Builder setUserId(OrderState state){
+        public Builder setOrderState(OrderState state){
             this.state = state;
             return this;
         }

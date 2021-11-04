@@ -1,13 +1,11 @@
 package com.angel.orderservice.services;
 
-import DTO.OrderDTO;
-import com.angel.orderservice.models.Order;
+import DTO.OrderRequestDTO;
 
 import java.util.Collection;
-import java.util.List;
 
 public interface OrdersService {
-    Collection<OrderDTO> getAll();
-    OrderDTO getOrder(String id);
-    boolean createOrder(OrderDTO order);
+    Collection<OrderRequestDTO> getAll();
+    OrderRequestDTO getOrder(String id);
+    boolean createOrder(OrderRequestDTO order);
 }

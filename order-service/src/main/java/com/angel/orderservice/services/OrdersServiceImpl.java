@@ -1,17 +1,16 @@
 package com.angel.orderservice.services;
 
-import DTO.OrderDTO;
+import DTO.OrderRequestDTO;
 import com.angel.orderservice.models.Order;
 import com.angel.orderservice.repos.OrdersRepo;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
-import org.modelmapper.spi.MatchingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import states.OrderState;
 
 import java.util.Collection;
-import java.util.List;
 
 @Service
 public class OrdersServiceImpl implements OrdersService {
@@ -28,22 +27,23 @@ public class OrdersServiceImpl implements OrdersService {
 
     @Override
     @Transactional
-    public Collection<OrderDTO> getAll() {
+    public Collection<OrderRequestDTO> getAll() {
 
         return null;
     }
 
     @Override
     @Transactional
-    public OrderDTO getOrder(String id){
+    public OrderRequestDTO getOrder(String id){
 
         return  null;
     }
 
     @Override
     @Transactional
-    public boolean createOrder(OrderDTO order) {
+    public boolean createOrder(OrderRequestDTO order) {
         Order newOrder = this.mapper.map(order,Order.class);
+        newOrder.setOrderState(OrderState.ORDER_PENDING);
         this.repo.saveAndFlush(newOrder);
         if (this.processOrder(newOrder)){
             return true;
