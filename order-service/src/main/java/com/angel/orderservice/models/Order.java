@@ -1,6 +1,8 @@
 package com.angel.orderservice.models;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import states.OrderState;
 
@@ -12,6 +14,8 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "Orders")
+@Getter
+@Setter
 @NoArgsConstructor
 public class Order {
 

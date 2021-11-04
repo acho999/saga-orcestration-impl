@@ -1,6 +1,6 @@
 package paymentsservice.services;
 
-import paymentsservice.models.Payment;
+import DTO.PaymentDTO;
 import paymentsservice.repos.PaymentsRepo;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ public class PaymentsServiceImpl implements PaymentsService {
 
     @Override
     @Transactional
-    public Collection<Payment> getAll() {
+    public Collection<PaymentDTO> getAll() {
 
         return null;
     }
