@@ -17,6 +17,7 @@ public class OrdersController {
     private OrdersService service;
 
     @RequestMapping(method = RequestMethod.GET, value = "/{orderId}")
+
     public ResponseEntity<OrderDTO> getOrder(@PathVariable String id) {
         return null;
     }
