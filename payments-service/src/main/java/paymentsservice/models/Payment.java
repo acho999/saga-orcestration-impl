@@ -1,5 +1,8 @@
 package paymentsservice.models;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.Column;
@@ -10,6 +13,9 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "payments")
+@NoArgsConstructor
+@Getter
+@Setter
 public class Payment {
 
     @Id
