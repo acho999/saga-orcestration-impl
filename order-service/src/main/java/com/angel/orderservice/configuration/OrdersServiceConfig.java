@@ -1,5 +1,6 @@
 package com.angel.orderservice.configuration;
 
+import com.angel.orderservice.kafka.KafkaProducerConfig;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -33,6 +34,11 @@ public class OrdersServiceConfig {
     @Bean
     public ModelMapper createMapper() {
         return new ModelMapper();
+    }
+
+    @Bean
+    public KafkaProducerConfig getKafkaProducer() {
+        return new KafkaProducerConfig();
     }
 
     @Bean

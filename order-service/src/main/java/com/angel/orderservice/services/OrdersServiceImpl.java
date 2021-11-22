@@ -1,6 +1,7 @@
 package com.angel.orderservice.services;
 
 import DTO.OrderRequestDTO;
+import com.angel.orderservice.kafka.KafkaProducerConfig;
 import com.angel.orderservice.models.Order;
 import com.angel.orderservice.repos.OrdersRepo;
 import org.modelmapper.ModelMapper;
@@ -17,6 +18,9 @@ public class OrdersServiceImpl implements OrdersService {
 
     @Autowired
     private OrdersRepo repo;
+
+    @Autowired
+    private KafkaProducerConfig producer;
 
     @Autowired
     private ModelMapper mapper;
@@ -45,17 +49,12 @@ public class OrdersServiceImpl implements OrdersService {
         Order newOrder = this.mapper.map(order,Order.class);
         newOrder.setOrderState(OrderState.ORDER_PENDING);
         this.repo.saveAndFlush(newOrder);
-        if (this.processOrder(newOrder)){
+        if (this.producer.processOrder(newOrder)){
             return true;
         }
         return false;
     }
 
-    private boolean processOrder(final Order order){
 
-
-
-        return true;
-    }
 }
 
