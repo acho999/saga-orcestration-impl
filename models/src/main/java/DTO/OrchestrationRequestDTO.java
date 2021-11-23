@@ -7,15 +7,15 @@ import lombok.Setter;
 @Setter
 public class OrchestrationRequestDTO {
 
-    private int userId;
-    private int productId;
+    private String userId;
+    private String productId;
     private String orderId;
     private double amount;
 
     public static class Builder {
 
-        private int userId;
-        private int productId;
+        private String userId;
+        private String productId;
         private String orderId;
         private double amount;
 
@@ -29,12 +29,12 @@ public class OrchestrationRequestDTO {
             return this;
         }
 
-        public Builder setUserId(Integer userId) {
+        public Builder setUserId(String userId) {
             this.userId = userId;
             return this;
         }
 
-        public Builder setProductId(Integer productId) {
+        public Builder setProductId(String productId) {
             this.productId = productId;
             return this;
         }
