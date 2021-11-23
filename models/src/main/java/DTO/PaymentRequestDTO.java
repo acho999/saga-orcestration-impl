@@ -7,13 +7,13 @@ import lombok.Setter;
 @Setter
 public class PaymentRequestDTO {
 
-    private int userId;
+    private String userId;
     private String orderId;
     private double amount;
 
     public static class Builder {
 
-        private int userId;
+        private String userId;
         private String orderId;
         private double amount;
 
@@ -27,7 +27,7 @@ public class PaymentRequestDTO {
             return this;
         }
 
-        public Builder setUserId(Integer userId) {
+        public Builder setUserId(String userId) {
             this.userId = userId;
             return this;
         }

@@ -8,14 +8,14 @@ import states.PaymentState;
 @Setter
 public class PaymentResponseDTO {
 
-    private int userId;
+    private String userId;
     private String orderId;
     private double amount;
     private PaymentState state;
 
     public static class Builder {
 
-        private int userId;
+        private String userId;
         private String orderId;
         private double amount;
         private PaymentState state;
@@ -30,7 +30,7 @@ public class PaymentResponseDTO {
             return this;
         }
 
-        public Builder setUserId(Integer userId) {
+        public Builder setUserId(String userId) {
             this.userId = userId;
             return this;
         }

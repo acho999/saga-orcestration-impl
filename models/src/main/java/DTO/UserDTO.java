@@ -7,21 +7,21 @@ import lombok.Setter;
 @Setter
 public class UserDTO {
 
-    private String id;
-    private int amount;
+    private String userId;
+    private double balance;
 
     public static class Builder {
 
-        private String id;
-        private int balance;
+        private String userId;
+        private double balance;
 
-        public Builder setAmount(int amount) {
-            this.balance = amount;
+        public Builder setBalance(double balance) {
+            this.balance = balance;
             return this;
         }
 
         public Builder setId(String id) {
-            this.id = id;
+            this.userId = id;
             return this;
         }
 
@@ -33,8 +33,8 @@ public class UserDTO {
     }
 
     private UserDTO(Builder builder){
-        this.id = builder.id;
-        this.amount = builder.balance;
+        this.userId = builder.userId;
+        this.balance = builder.balance;
     }
 
 

@@ -9,15 +9,15 @@ import states.InventoryState;
 @Setter
 public class InventoryResponseDTO {
 
-    private int userId;
-    private int productId;
+    private String userId;
+    private String productId;
     private String orderId;
     private InventoryState state;
 
     public static class Builder {
 
-        private int userId;
-        private int productId;
+        private String userId;
+        private String productId;
         private String orderId;
         private InventoryState state;
 
@@ -31,12 +31,12 @@ public class InventoryResponseDTO {
             return this;
         }
 
-        public Builder setProductId(Integer prodId) {
+        public Builder setProductId(String prodId) {
             this.productId = prodId;
             return this;
         }
 
-        public Builder setUserId(Integer userId) {
+        public Builder setUserId(String userId) {
             this.userId = userId;
             return this;
         }
