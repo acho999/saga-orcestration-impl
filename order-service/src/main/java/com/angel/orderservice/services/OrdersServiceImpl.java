@@ -1,7 +1,7 @@
 package com.angel.orderservice.services;
 
 import DTO.OrderRequestDTO;
-import com.angel.orderservice.kafka.KafkaProducerConfig;
+import com.angel.orderservice.kafka.IKafkaProducerConfig;
 import com.angel.orderservice.models.Order;
 import com.angel.orderservice.repos.OrdersRepo;
 import org.modelmapper.ModelMapper;
@@ -14,37 +14,38 @@ import states.OrderState;
 import java.util.Collection;
 
 @Service
+@Transactional
 public class OrdersServiceImpl implements OrdersService {
 
     @Autowired
     private OrdersRepo repo;
 
     @Autowired
-    private KafkaProducerConfig producer;
+    private IKafkaProducerConfig producer;
 
     @Autowired
     private ModelMapper mapper;
+
+    @Autowired
+    private Saga saga;
 
     public OrdersServiceImpl(){
         this.mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
     }
 
     @Override
-    @Transactional
     public Collection<OrderRequestDTO> getAll() {
 
         return null;
     }
 
     @Override
-    @Transactional
     public OrderRequestDTO getOrder(String id){
 
         return  null;
     }
 
     @Override
-    @Transactional
     public boolean createOrder(OrderRequestDTO order) {
         Order newOrder = this.mapper.map(order,Order.class);
         newOrder.setOrderState(OrderState.ORDER_PENDING);
