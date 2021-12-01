@@ -12,7 +12,6 @@ public class OrderRequestDTO {
     private OrderState orderState;
     private String userId;
     private String productId;
-    private double price;
     private int quantity;
 
     public static class Builder{
@@ -21,7 +20,6 @@ public class OrderRequestDTO {
         private String productId;
         private OrderState orderState;
         private String id;
-        private double price;
         private int quantity;
 
         public Builder setUserId(String userId){
@@ -49,11 +47,6 @@ public class OrderRequestDTO {
             return this;
         }
 
-        public Builder setPrice(double price){
-            this.price = price;
-            return this;
-        }
-
         public OrderRequestDTO build(){
             return new OrderRequestDTO(this);
         }
@@ -65,7 +58,6 @@ public class OrderRequestDTO {
         this.userId = builder.userId;
         this.productId = builder.productId;
         this.orderState = builder.orderState;
-        this.price = builder.price;
     }
 
 }

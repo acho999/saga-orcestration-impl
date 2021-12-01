@@ -1,4 +1,4 @@
-package com.angel.orderservice.services;
+package com.angel.orderservice.services.api;
 
 import events.Event;
 import commands.Command;

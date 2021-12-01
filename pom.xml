@@ -21,9 +21,9 @@
     <modules>
         <module>order-service</module>
         <module>models</module>
-        <module>order-orchestration</module>
         <module>payments-service</module>
         <module>product-inventory-service</module>
+        <module>kafka-utils</module>
     </modules>
 
     <properties>
@@ -41,6 +41,7 @@
         <lombok.version>1.18.22</lombok.version>
         <slf4j-api.version>1.7.25</slf4j-api.version>
         <slf4j-log4j12.version>1.7.25</slf4j-log4j12.version>
+        <kafka.client.version>2.0.1</kafka.client.version>
     </properties>
 
     <dependencyManagement>
@@ -84,6 +85,13 @@
                 <groupId>org.apache.kafka</groupId>
                 <artifactId>kafka-streams</artifactId>
                 <version>${kafka-strams.version}</version>
+            </dependency>
+            <!--to write the kafka producer-->
+            <!-- https://mvnrepository.com/artifact/org.apache.kafka/kafka-clients -->
+            <dependency>
+                <groupId>org.apache.kafka</groupId>
+                <artifactId>kafka-clients</artifactId>
+                <version>${kafka.client.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.projectlombok</groupId>

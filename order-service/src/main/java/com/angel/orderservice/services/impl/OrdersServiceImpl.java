@@ -1,9 +1,11 @@
-package com.angel.orderservice.services;
+package com.angel.orderservice.services.impl;
 
 import DTO.OrderRequestDTO;
-import com.angel.orderservice.kafka.IKafkaProducerConfig;
+import DTO.OrderResponseDTO;
 import com.angel.orderservice.models.Order;
 import com.angel.orderservice.repos.OrdersRepo;
+import com.angel.orderservice.services.api.OrdersService;
+import com.angel.orderservice.services.api.Saga;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +21,6 @@ public class OrdersServiceImpl implements OrdersService {
 
     @Autowired
     private OrdersRepo repo;
-
-    @Autowired
-    private IKafkaProducerConfig producer;
 
     @Autowired
     private ModelMapper mapper;
@@ -40,7 +39,7 @@ public class OrdersServiceImpl implements OrdersService {
     }
 
     @Override
-    public OrderRequestDTO getOrder(String id){
+    public OrderResponseDTO getOrder(String id){
 
         return  null;
     }
@@ -50,9 +49,6 @@ public class OrdersServiceImpl implements OrdersService {
         Order newOrder = this.mapper.map(order,Order.class);
         newOrder.setOrderState(OrderState.ORDER_PENDING);
         this.repo.saveAndFlush(newOrder);
-        if (this.producer.processOrder(newOrder)){
-            return true;
-        }
         return false;
     }
 

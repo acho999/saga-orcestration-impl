@@ -1,9 +1,8 @@
 package com.angel.orderservice.configuration;
-
-import com.angel.orderservice.kafka.IKafkaProducerConfig;
-import com.angel.orderservice.kafka.KafkaProducerConfigImpl;
-import com.angel.orderservice.services.Saga;
-import com.angel.orderservice.services.SagaImpl;
+import com.angel.kafkautils.producer.IKafkaProducerConfig;
+import com.angel.kafkautils.producer.KafkaProducerConfigImpl;
+import com.angel.orderservice.services.api.Saga;
+import com.angel.orderservice.services.impl.SagaImpl;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -45,7 +44,7 @@ public class OrdersServiceConfig {
     }
 
     @Bean
-    public IKafkaProducerConfig getKafkaProducer() {
+    public IKafkaProducerConfig createProducer() {
         return new KafkaProducerConfigImpl();
     }
 

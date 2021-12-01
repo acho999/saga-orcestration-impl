@@ -18,7 +18,7 @@ public class InventoryRequestDTO {
         private String productId;
         private String orderId;
 
-        public Builder setPrice(String orderId) {
+        public Builder setOrderId(String orderId) {
             this.orderId = orderId;
             return this;
         }

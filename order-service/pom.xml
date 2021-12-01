@@ -38,6 +38,11 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <groupId>com.angel</groupId>
+            <artifactId>kafka-utils</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
         </dependency>

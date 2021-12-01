@@ -21,7 +21,7 @@ public class InventoryResponseDTO {
         private String orderId;
         private InventoryState state;
 
-        public Builder setPrice(String orderId) {
+        public Builder setOrderId(String orderId) {
             this.orderId = orderId;
             return this;
         }
