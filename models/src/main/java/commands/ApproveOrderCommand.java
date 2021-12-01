@@ -1,8 +1,12 @@
 package commands;
 
 import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 import states.OrderState;
 
+@Getter
+@Setter
 public class ApproveOrderCommand extends Command{
 
     private OrderState state;
