@@ -22,12 +22,10 @@
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
         </dependency>
-
         <dependency>
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-core</artifactId>
         </dependency>
-
         <dependency>
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-impl</artifactId>
@@ -40,6 +38,11 @@
         <dependency>
             <groupId>com.angel</groupId>
             <artifactId>kafka-utils</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.angel</groupId>
+            <artifactId>saga</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

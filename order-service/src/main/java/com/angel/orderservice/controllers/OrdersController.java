@@ -2,8 +2,8 @@ package com.angel.orderservice.controllers;
 
 import DTO.OrderRequestDTO;
 import DTO.OrderResponseDTO;
-import DTO.OrderResponseDTO.Builder;
 import com.angel.orderservice.services.api.OrdersService;
+import com.angel.saga.api.Saga;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,6 +20,9 @@ public class OrdersController {
 
     @Autowired
     private OrdersService service;
+
+    @Autowired
+    private Saga saga;
 
     @RequestMapping(method = RequestMethod.POST, value = "/create",
         produces = MediaType.APPLICATION_JSON_VALUE,

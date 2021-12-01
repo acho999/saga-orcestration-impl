@@ -1,8 +1,8 @@
 package com.angel.orderservice.configuration;
 import com.angel.kafkautils.producer.IKafkaProducerConfig;
 import com.angel.kafkautils.producer.KafkaProducerConfigImpl;
-import com.angel.orderservice.services.api.Saga;
-import com.angel.orderservice.services.impl.SagaImpl;
+import com.angel.saga.api.Saga;
+import com.angel.saga.impl.SagaImpl;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
