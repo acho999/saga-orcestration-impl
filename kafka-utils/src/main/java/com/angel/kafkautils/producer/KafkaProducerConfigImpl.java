@@ -1,51 +1,88 @@
 package com.angel.kafkautils.producer;
 
+import com.angel.kafkautils.utils.Helpers;
+import com.angel.models.commands.ApproveOrderCommand;
+import com.angel.models.commands.ProcessPaymentCommand;
+import com.angel.models.commands.ProductReservationCanselCommand;
+import com.angel.models.commands.RejectOrderCommand;
+import com.angel.models.commands.ReserveProductCommand;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.angel.models.commands.Command;
+import com.angel.models.events.Event;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
-import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.common.serialization.StringSerializer;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import java.time.Instant;
-import java.util.Properties;
-import java.util.concurrent.ThreadLocalRandom;
+import static com.angel.kafkautils.constants.TopicConstants.APPROVE_ORDER;
+import static com.angel.kafkautils.constants.TopicConstants.CREATE_ORDER;
+import static com.angel.kafkautils.constants.TopicConstants.PROCESS_PAYMENT;
+import static com.angel.kafkautils.constants.TopicConstants.RESERVE_PRODUCT;
 
-public class KafkaProducerConfigImpl<T> implements IKafkaProducerConfig<T> {
+//consume commands and produce events
+public class KafkaProducerConfigImpl implements IKafkaProducerConfig {
+
+    @Autowired
+    private Helpers helpers;
+
+    @Override//1
+    public void orderCreateCommand(final Command command){
+
+        Producer<String, String> producer = new KafkaProducer<>(this.helpers.getProducerProperties());
+
+        ObjectNode commandJson = JsonNodeFactory.instance.objectNode();
+
+        Event createdEvent = this.helpers.eventFactory(command,CREATE_ORDER);
+
+        commandJson.put(createdEvent.getClass().getSimpleName(), createdEvent.toString());
+
+        producer.send(new ProducerRecord<>(CREATE_ORDER, command.getUserId(), commandJson.toString()));
+
+        producer.close();
+
+    }
+
+    @Override//3
+    public void reserveProductCommand() {
+
+        this.helpers.produceEvent(RESERVE_PRODUCT, PROCESS_PAYMENT, new ReserveProductCommand(null,
+                                                                                              null,
+                                                                                              null,
+                                                                                              0));
+
+    }
+
+    @Override//5
+    public void processPaymentCommand() {
+        this.helpers.produceEvent(RESERVE_PRODUCT, APPROVE_ORDER, new ProcessPaymentCommand(null,
+                                                                                              null,
+                                                                                              null,
+                                                                                              null));
+    }
+
+    @Override//7
+    public void approveOrderCommand() {
+        this.helpers.produceEvent(APPROVE_ORDER, APPROVE_ORDER, new ApproveOrderCommand(null,
+                                                                                        null,
+                                                                                        null));
+
+    }
+
+    @Override//9
+    public void cancelProductReservationCommand() {
+        this.helpers.produceEvent(APPROVE_ORDER, APPROVE_ORDER, new ProductReservationCanselCommand(null,
+                                                                                                    0,
+                                                                                                    null,
+                                                                                                    null,
+                                                                                                    null));
+    }
 
     @Override
-    public boolean processOrder(final T order){
-        // creates an empty json {}
-        ObjectNode transaction = JsonNodeFactory.instance.objectNode();
-
-        // Instant.now() is to get the current time using Java 8
-        Instant now = Instant.now();
-
-        // we write the data to the json document
-        transaction.put("time", now.toString());
-
-        //return new ProducerRecord<>("bank-transactions", name, transaction.toString());
-
-        return true;
+    public void rejectOrderCommand() {//11
+        this.helpers.produceEvent(APPROVE_ORDER, APPROVE_ORDER, new RejectOrderCommand(null,
+                                                                                       null,
+                                                                                       null));
     }
 
-    private Producer<String, String> createProducer(){
-        Properties properties = new Properties();
-
-        // kafka bootstrap server
-        properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "127.0.0.1:9092");
-        properties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
-        properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
-        // producer acks
-        properties.setProperty(ProducerConfig.ACKS_CONFIG, "all"); // strongest producing guarantee
-        properties.setProperty(ProducerConfig.RETRIES_CONFIG, "3");
-        properties.setProperty(ProducerConfig.LINGER_MS_CONFIG, "1");
-        // leverage idempotent producer from Kafka 0.11 !
-        properties.setProperty(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, "true"); // ensure we don't push duplicates
-
-        Producer<String, String> producer = new KafkaProducer<>(properties);
-
-        return producer;
-    }
 }

@@ -1,5 +1,12 @@
 package com.angel.kafkautils.producer;
 
-public interface IKafkaProducerConfig<T> {
-    boolean processOrder(final T order);
+import com.angel.models.commands.Command;
+
+public interface IKafkaProducerConfig {
+    void orderCreateCommand(final Command command);
+    void reserveProductCommand();
+    void processPaymentCommand();
+    void approveOrderCommand();
+    void cancelProductReservationCommand();
+    void rejectOrderCommand();
 }

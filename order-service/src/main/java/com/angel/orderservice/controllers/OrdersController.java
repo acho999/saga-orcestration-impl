@@ -1,7 +1,7 @@
 package com.angel.orderservice.controllers;
 
-import DTO.OrderRequestDTO;
-import DTO.OrderResponseDTO;
+import com.angel.models.DTO.OrderRequestDTO;
+import com.angel.models.DTO.OrderResponseDTO;
 import com.angel.orderservice.services.api.OrdersService;
 import com.angel.saga.api.Saga;
 import org.springframework.beans.factory.annotation.Autowired;

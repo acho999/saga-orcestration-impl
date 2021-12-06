@@ -37,12 +37,12 @@
         <hibernate.version>5.5.7.Final</hibernate.version>
         <mysql.version>8.0.26</mysql.version>
         <modelmapper.version>2.3.8</modelmapper.version>
-        <kafka-strams.version>3.0.0</kafka-strams.version>
+        <kafka-strams.version>2.0.1</kafka-strams.version>
         <jpa.version>2.5.5</jpa.version>
         <lombok.version>1.18.22</lombok.version>
         <slf4j-api.version>1.7.25</slf4j-api.version>
         <slf4j-log4j12.version>1.7.25</slf4j-log4j12.version>
-        <kafka.client.version>2.0.1</kafka.client.version>
+        <kafka.clients.version>2.0.1</kafka.clients.version>
     </properties>
 
     <dependencyManagement>
@@ -92,7 +92,7 @@
             <dependency>
                 <groupId>org.apache.kafka</groupId>
                 <artifactId>kafka-clients</artifactId>
-                <version>${kafka.client.version}</version>
+                <version>${kafka.clients.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.projectlombok</groupId>
@@ -147,7 +147,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
-            <plugin>
+           <!--  <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>3.1.0</version>
@@ -171,7 +171,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin>-->
         </plugins>
     </build>
 

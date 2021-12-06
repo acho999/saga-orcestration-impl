@@ -1,23 +1,22 @@
 package com.angel.saga.api;
 
-import events.Event;
-import commands.Command;
-import java.util.Optional;
+import com.angel.models.events.Event;
+import com.angel.models.commands.Command;
 
 public interface Saga {
 
-    Optional handleOrderApprovedEvent(Event event);
-    Optional handleOrderCreatedEvent(Event event);
-    Optional handlePaymentProcessedEvent(Event event);
-    Optional handleProductReservationCanceledEvent(Event event);
-    Optional handleProductReservedEvent(Event event);
-    Optional handleOrderRejectedEvent(Event event);
+    boolean handleOrderApprovedEvent();
+    boolean handleOrderCreatedEvent();
+    boolean handlePaymentProcessedEvent();
+    boolean handleProductReservationCanceledEvent();
+    boolean handleProductReservedEvent();
+    boolean handleOrderRejectedEvent();
 
-    Optional publishCreateOrderCommand(Command command);
-    Optional publishReserveProductCommand(Command command);
-    Optional publishProcessPaymentCommand(Command command);
-    Optional publishApproveOrderCommand(Command command);
-    Optional publishCancelProductReservationCommand(Command command);
-    Optional publishRejectOrderCommand(Command command);
+    boolean publishCreateOrderCommand(Command command);
+    boolean publishReserveProductCommand();
+    boolean publishProcessPaymentCommand();
+    boolean publishApproveOrderCommand();
+    boolean publishCancelProductReservationCommand();
+    boolean publishRejectOrderCommand();
 
 }

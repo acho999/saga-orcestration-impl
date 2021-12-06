@@ -1,79 +1,92 @@
 package com.angel.saga.impl;
 
+import com.angel.kafkautils.consumer.IKafkaConsumerConfig;
 import com.angel.kafkautils.producer.IKafkaProducerConfig;
 import com.angel.saga.api.Saga;
-import events.Event;
-import commands.Command;
+import com.angel.models.commands.Command;
 import org.springframework.beans.factory.annotation.Autowired;
-import java.util.Optional;
 
 public class SagaImpl implements Saga {
 
     @Autowired
     private IKafkaProducerConfig producer;
 
+    @Autowired
+    private IKafkaConsumerConfig consumer;
+
     @Override
-    public Optional handleOrderApprovedEvent(Event event) {
-        return Optional.empty();
+    public boolean handleOrderApprovedEvent() {
+        this.consumer.orderAprovedEvent();
+        return false;
     }
 
     @Override
-    public Optional handleOrderCreatedEvent(Event event) {
-        return Optional.empty();
+    public boolean handleOrderCreatedEvent() {
+        this.consumer.orderCreatedEvent();
+        return false;
     }
 
     @Override
-    public Optional handlePaymentProcessedEvent(Event event) {
-        return Optional.empty();
+    public boolean handlePaymentProcessedEvent() {
+        this.consumer.paymentProcessedEvent();
+        return false;
     }
 
     @Override
-    public Optional handleProductReservationCanceledEvent(Event event) {
-        return Optional.empty();
+    public boolean handleProductReservationCanceledEvent() {
+        this.consumer.productReservationCanceledEvent();
+        return false;
     }
 
     @Override
-    public Optional handleProductReservedEvent(Event event) {
-        return Optional.empty();
+    public boolean handleProductReservedEvent() {
+        this.consumer.productReservedEvent();
+        return false;
     }
 
     @Override
-    public Optional handleOrderRejectedEvent(Event event) {
-        return Optional.empty();
+    public boolean handleOrderRejectedEvent() {
+        this.consumer.orderRejectedEvent();
+        return false;
     }
 
+    //------------------------------------------------------------------------------------------------
 
 
-
-
-
-    @Override
-    public Optional publishCreateOrderCommand(Command command) {
-        return Optional.empty();
-    }
-
-    @Override
-    public Optional publishReserveProductCommand(Command command) {
-        return Optional.empty();
+    @Override//1
+    public boolean publishCreateOrderCommand(Command command) {
+        this.producer.orderCreateCommand(command);
+        return true;
     }
 
     @Override
-    public Optional publishProcessPaymentCommand(Command command) {
-        return Optional.empty();
+    public boolean publishReserveProductCommand() {
+        this.producer.reserveProductCommand();
+        return true;
     }
 
     @Override
-    public Optional publishApproveOrderCommand(Command command) {
-        return Optional.empty();
+    public boolean publishProcessPaymentCommand() {
+        this.producer.processPaymentCommand();
+        return true;
     }
 
     @Override
-    public Optional publishCancelProductReservationCommand(Command command) {
-        return Optional.empty();
+    public boolean publishApproveOrderCommand() {
+        this.producer.approveOrderCommand();
+        return true;
     }
 
     @Override
-    public Optional publishRejectOrderCommand(Command command) {
-        return Optional.empty();
+    public boolean publishCancelProductReservationCommand() {
+        this.producer.cancelProductReservationCommand();
+        return true;
     }
+
+    @Override
+    public boolean publishRejectOrderCommand() {
+        this.producer.rejectOrderCommand();
+        return true;
+    }
+
 }

@@ -1,5 +1,11 @@
 package paymentsservice.configuration;
 
+import com.angel.kafkautils.consumer.IKafkaConsumerConfig;
+import com.angel.kafkautils.consumer.KafkaConsumerConfigImpl;
+import com.angel.kafkautils.producer.IKafkaProducerConfig;
+import com.angel.kafkautils.producer.KafkaProducerConfigImpl;
+import com.angel.saga.api.Saga;
+import com.angel.saga.impl.SagaImpl;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -34,6 +40,25 @@ public class PaymentsServiceConfig {
     public ModelMapper createMapper() {
         return new ModelMapper();
     }
+
+    @Bean
+    public Saga createSaga() {
+
+        return new SagaImpl();
+    }
+
+    @Bean
+    public IKafkaProducerConfig createProducer() {
+
+        return new KafkaProducerConfigImpl();
+    }
+
+    @Bean
+    public IKafkaConsumerConfig createConsumer() {
+
+        return new KafkaConsumerConfigImpl();
+    }
+
 
     @Bean
     public DataSource dataSource() {

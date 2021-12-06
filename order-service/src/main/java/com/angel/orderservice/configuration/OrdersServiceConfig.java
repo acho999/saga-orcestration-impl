@@ -1,4 +1,6 @@
 package com.angel.orderservice.configuration;
+import com.angel.kafkautils.consumer.IKafkaConsumerConfig;
+import com.angel.kafkautils.consumer.KafkaConsumerConfigImpl;
 import com.angel.kafkautils.producer.IKafkaProducerConfig;
 import com.angel.kafkautils.producer.KafkaProducerConfigImpl;
 import com.angel.saga.api.Saga;
@@ -35,17 +37,26 @@ public class OrdersServiceConfig {
 
     @Bean
     public ModelMapper createMapper() {
+
         return new ModelMapper();
     }
 
     @Bean
     public Saga createSaga() {
+
         return new SagaImpl();
     }
 
     @Bean
     public IKafkaProducerConfig createProducer() {
+
         return new KafkaProducerConfigImpl();
+    }
+
+    @Bean
+    public IKafkaConsumerConfig createConsumer() {
+
+        return new KafkaConsumerConfigImpl();
     }
 
     @Bean
