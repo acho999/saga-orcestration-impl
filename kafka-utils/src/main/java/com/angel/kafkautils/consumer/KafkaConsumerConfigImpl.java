@@ -74,7 +74,7 @@ public class KafkaConsumerConfigImpl implements IKafkaConsumerConfig{
 
     @Override//12
     public Command paymentCanceledEvent() {
-        return this.helpers.produceCommand(PAYMENT_CANCELED, PAYMENT_CANCELED, new PaymentCanceledEvent(null,
+        return this.helpers.produceCommand(PAYMENT_CANCELED, ORDER_REJECTED, new PaymentCanceledEvent(null,
                                                                                                         null,
                                                                                                         null,
                                                                                                         null,

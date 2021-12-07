@@ -71,7 +71,9 @@ public class KafkaProducerConfigImpl implements IKafkaProducerConfig {
     public Event approveOrderCommand() {
         return this.helpers.produceEvent(APPROVE_ORDER, APPROVE_ORDER, new ApproveOrderCommand(null,
                                                                                         null,
-                                                                                        null));
+                                                                                        null,
+                                                                                        null,
+                                                                                        0));
 
     }
 

@@ -1,5 +1,6 @@
 package paymentsservice;
 
+import com.angel.models.commands.CancelPaymentCommand;
 import com.angel.models.commands.ProcessPaymentCommand;
 import com.angel.models.states.PaymentState;
 import com.angel.saga.api.SagaOrchestration;
@@ -33,8 +34,21 @@ public class PaymentsServiceApplication {
             sagaOrchestration.publishCancelProductReservationCommand();//9
             return;
         }
-        paymentsService.savePayment(command.getUserId(),new Payment(PaymentState.PAYMENT_APPROVED,
-                                                                    command.getAmount()));
+
+        CancelPaymentCommand cmd = (CancelPaymentCommand)sagaOrchestration.handlePaymentCanceledEvent();//12
+
+        if(cmd != null){
+
+            paymentsService.reversePayment(cmd.getUserId(),cmd.getPaymentId());
+
+        }
+
+
+        if(command != null){
+            paymentsService.savePayment(command.getUserId(),new Payment(PaymentState.PAYMENT_APPROVED,
+                                                                        command.getAmount()));
+        }
+
 
     }
 

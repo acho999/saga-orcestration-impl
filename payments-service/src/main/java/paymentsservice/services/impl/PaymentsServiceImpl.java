@@ -1,8 +1,7 @@
 package paymentsservice.services.impl;
 
-import com.angel.models.DTO.UserDTO;
+import com.angel.models.states.PaymentState;
 import org.modelmapper.convention.MatchingStrategies;
-import org.modelmapper.spi.MatchingStrategy;
 import paymentsservice.models.Payment;
 import paymentsservice.models.User;
 import paymentsservice.repos.PaymentsRepo;
@@ -13,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import paymentsservice.services.api.PaymentsService;
 import paymentsservice.services.api.UsersService;
 
-import java.util.Collection;
 
 @Service
 @Transactional
@@ -43,9 +41,18 @@ public class PaymentsServiceImpl implements PaymentsService {
             return false;
         }
 
-        this.usersService.changeBalance(userId, payment.getAmount());
+        this.usersService.changeBalance(userId, payment);
 
         this.repo.saveAndFlush(payment);
+
+        return true;
+    }
+
+    public boolean reversePayment(String userId, String paymentId){
+
+        Payment pmt = this.repo.getById(paymentId);
+
+        pmt.setState(PaymentState.PAYMENT_REJECTED);
 
         return true;
     }

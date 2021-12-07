@@ -17,9 +17,8 @@ public class OrderServiceApplication {
         sagaOrchestration.handleOrderCreatedEvent();//handle order created event and sends reserve product command 2
         sagaOrchestration.publishReserveProductCommand();// handle reserve product command and sends process payment event 3
         sagaOrchestration.publishProcessPaymentCommand();//5
-        sagaOrchestration.publishApproveOrderCommand();//sends approve order command 7
-        sagaOrchestration.handleOrderApprovedEvent();//handle appdoved order event 8 end of cycle without errors
-        sagaOrchestration.handleProductReservationCanceledEvent();//10
+        sagaOrchestration.publishApproveOrderCommand();//7 sends approve order command
+        sagaOrchestration.handleOrderApprovedEvent();//8 handle appdoved order event end of cycle without errors
         sagaOrchestration.handleOrderRejectedEvent();//12
     }
 
