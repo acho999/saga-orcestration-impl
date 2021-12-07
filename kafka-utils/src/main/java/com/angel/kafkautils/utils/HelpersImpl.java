@@ -1,6 +1,7 @@
 package com.angel.kafkautils.utils;
 
 import com.angel.models.commands.ApproveOrderCommand;
+import com.angel.models.commands.CancelPaymentCommand;
 import com.angel.models.commands.Command;
 import com.angel.models.commands.CreateOrderCommand;
 import com.angel.models.commands.ProcessPaymentCommand;
@@ -11,6 +12,7 @@ import com.angel.models.events.Event;
 import com.angel.models.events.OrderApprovedEvent;
 import com.angel.models.events.OrderCreatedEvent;
 import com.angel.models.events.OrderRejectedEvent;
+import com.angel.models.events.PaymentCanceledEvent;
 import com.angel.models.events.PaymentProcessedEvent;
 import com.angel.models.events.ProductReservationCalseledEvent;
 import com.angel.models.events.ProductReservedEvent;
@@ -42,6 +44,11 @@ import java.util.Properties;
 
 import static com.angel.kafkautils.constants.TopicConstants.APPROVE_ORDER;
 import static com.angel.kafkautils.constants.TopicConstants.CREATE_ORDER;
+import static com.angel.kafkautils.constants.TopicConstants.ORDER_REJECTED;
+import static com.angel.kafkautils.constants.TopicConstants.PAYMENT_CANCELED;
+import static com.angel.kafkautils.constants.TopicConstants.PROCESS_PAYMENT;
+import static com.angel.kafkautils.constants.TopicConstants.PRODUCT_RESERVATION_CANCELED;
+import static com.angel.kafkautils.constants.TopicConstants.RESERVE_PRODUCT;
 
 @Component
 public class HelpersImpl implements Helpers{
@@ -68,7 +75,7 @@ public class HelpersImpl implements Helpers{
 
     public Event eventFactory(Command command, String topic){
         switch (topic){
-            case "createOrder":
+            case CREATE_ORDER:
                 CreateOrderCommand createCmd = (CreateOrderCommand) command;
                 return OrderCreatedEvent.builder()
                     .orderId(createCmd.getOrderId())
@@ -76,7 +83,7 @@ public class HelpersImpl implements Helpers{
                     .quantity(createCmd.getQuantity())
                     .state(createCmd.getState())
                     .build();
-            case "processPayment":
+            case PROCESS_PAYMENT:
                 ProcessPaymentCommand paymentCmd = (ProcessPaymentCommand) command;
                 return PaymentProcessedEvent.builder()
                     .orderId(paymentCmd.getOrderId())
@@ -84,7 +91,7 @@ public class HelpersImpl implements Helpers{
                     .paymentState(paymentCmd.getPaymentState())
                     .userId(paymentCmd.getUserId())
                     .build();
-            case "reserveProduct":
+            case RESERVE_PRODUCT:
                 ReserveProductCommand reserveCmd = (ReserveProductCommand) command;
                 return ProductReservedEvent.builder()
                     .orderId(reserveCmd.getOrderId())
@@ -92,14 +99,16 @@ public class HelpersImpl implements Helpers{
                     .productId(reserveCmd.getProductId())
                     .quantity(reserveCmd.getQuantity())
                     .build();
-            case "approveOrder":
+            case APPROVE_ORDER:
                 ApproveOrderCommand approvetCmd = (ApproveOrderCommand) command;
                 return OrderApprovedEvent.builder()
                     .orderId(approvetCmd.getOrderId())
                     .state(approvetCmd.getState())
                     .userId(approvetCmd.getUserId())
+                    .productId(approvetCmd.getProductId())
+                    .productQuantity(approvetCmd.getProductQuantity())
                     .build();
-            case "productReservationCanceled":
+            case PRODUCT_RESERVATION_CANCELED:
                 ProductReservationCanselCommand canceltCmd = (ProductReservationCanselCommand) command;
                 return ProductReservationCalseledEvent.builder()
                     .orderId(canceltCmd.getOrderId())
@@ -108,7 +117,16 @@ public class HelpersImpl implements Helpers{
                     .productId(canceltCmd.getProductId())
                     .reason(canceltCmd.getReason())
                     .build();
-            case "orderRejected":
+            case PAYMENT_CANCELED:
+                CancelPaymentCommand cancelPayment = (CancelPaymentCommand) command;
+                return PaymentCanceledEvent.builder()
+                    .orderId(cancelPayment.getOrderId())
+                    .userId(cancelPayment.getUserId())
+                    .amount(cancelPayment.getAmount())
+                    .paymentState(cancelPayment.getPaymentState())
+                    .paymentId(cancelPayment.getPaymentId())
+                    .build();
+            case ORDER_REJECTED:
                 RejectOrderCommand rejectCmd = (RejectOrderCommand) command;
                 return OrderRejectedEvent.builder()
                     .orderId(rejectCmd.getOrderId())
@@ -122,7 +140,7 @@ public class HelpersImpl implements Helpers{
 
     public Command commandFactory(Event event, String topic){
         switch (topic){
-            case "createOrder":
+            case CREATE_ORDER:
                 OrderCreatedEvent createCmd = (OrderCreatedEvent) event;
                 return CreateOrderCommand.builder()
                     .orderId(createCmd.getOrderId())
@@ -130,7 +148,7 @@ public class HelpersImpl implements Helpers{
                     .quantity(createCmd.getQuantity())
                     .state(createCmd.getState())
                     .build();
-            case "processPayment":
+            case PROCESS_PAYMENT:
                 PaymentProcessedEvent paymentCmd = (PaymentProcessedEvent) event;
                 return ProcessPaymentCommand.builder()
                     .orderId(paymentCmd.getOrderId())
@@ -138,7 +156,7 @@ public class HelpersImpl implements Helpers{
                     .paymentState(paymentCmd.getPaymentState())
                     .userId(paymentCmd.getUserId())
                     .build();
-            case "reserveProduct":
+            case RESERVE_PRODUCT:
                 ProductReservedEvent reserveCmd = (ProductReservedEvent) event;
                 return ReserveProductCommand.builder()
                     .orderId(reserveCmd.getOrderId())
@@ -146,14 +164,16 @@ public class HelpersImpl implements Helpers{
                     .productId(reserveCmd.getProductId())
                     .quantity(reserveCmd.getQuantity())
                     .build();
-            case "approveOrder":
+            case APPROVE_ORDER:
                 OrderApprovedEvent approvetCmd = (OrderApprovedEvent) event;
                 return ApproveOrderCommand.builder()
                     .orderId(approvetCmd.getOrderId())
                     .state(approvetCmd.getState())
                     .userId(approvetCmd.getUserId())
+                    .productQuantity(approvetCmd.getProductQuantity())
+                    .productId(approvetCmd.getProductId())
                     .build();
-            case "productReservationCanceled":
+            case PRODUCT_RESERVATION_CANCELED:
                 ProductReservationCalseledEvent canceltCmd = (ProductReservationCalseledEvent) event;
                 return ProductReservationCanselCommand.builder()
                     .orderId(canceltCmd.getOrderId())
@@ -162,7 +182,16 @@ public class HelpersImpl implements Helpers{
                     .productId(canceltCmd.getProductId())
                     .reason(canceltCmd.getReason())
                     .build();
-            case "orderRejected":
+            case PAYMENT_CANCELED:
+                PaymentCanceledEvent cancelPayment = (PaymentCanceledEvent) event;
+                return CancelPaymentCommand.builder()
+                    .orderId(cancelPayment.getOrderId())
+                    .userId(cancelPayment.getUserId())
+                    .amount(cancelPayment.getAmount())
+                    .paymentState(cancelPayment.getPaymentState())
+                    .paymentId(cancelPayment.getPaymentId())
+                    .build();
+            case ORDER_REJECTED:
                 OrderRejectedEvent rejectCmd = (OrderRejectedEvent) event;
                 return RejectOrderCommand.builder()
                     .orderId(rejectCmd.getOrderId())

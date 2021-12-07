@@ -4,8 +4,8 @@ import com.angel.kafkautils.consumer.IKafkaConsumerConfig;
 import com.angel.kafkautils.consumer.KafkaConsumerConfigImpl;
 import com.angel.kafkautils.producer.IKafkaProducerConfig;
 import com.angel.kafkautils.producer.KafkaProducerConfigImpl;
-import com.angel.saga.api.Saga;
-import com.angel.saga.impl.SagaImpl;
+import com.angel.saga.api.SagaOrchestration;
+import com.angel.saga.impl.SagaOrchestrationImpl;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -42,9 +42,9 @@ public class PaymentsServiceConfig {
     }
 
     @Bean
-    public Saga createSaga() {
+    public SagaOrchestration createSaga() {
 
-        return new SagaImpl();
+        return new SagaOrchestrationImpl();
     }
 
     @Bean

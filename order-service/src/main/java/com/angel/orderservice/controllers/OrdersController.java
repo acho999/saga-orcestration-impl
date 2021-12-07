@@ -3,7 +3,7 @@ package com.angel.orderservice.controllers;
 import com.angel.models.DTO.OrderRequestDTO;
 import com.angel.models.DTO.OrderResponseDTO;
 import com.angel.orderservice.services.api.OrdersService;
-import com.angel.saga.api.Saga;
+import com.angel.saga.api.SagaOrchestration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -22,7 +22,7 @@ public class OrdersController {
     private OrdersService service;
 
     @Autowired
-    private Saga saga;
+    private SagaOrchestration sagaOrchestration;
 
     @RequestMapping(method = RequestMethod.POST, value = "/create",
         produces = MediaType.APPLICATION_JSON_VALUE,

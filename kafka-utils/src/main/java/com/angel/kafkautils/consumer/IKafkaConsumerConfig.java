@@ -2,6 +2,7 @@ package com.angel.kafkautils.consumer;
 
 
 import com.angel.models.commands.Command;
+import com.angel.models.events.Event;
 
 public interface IKafkaConsumerConfig {
 
@@ -11,6 +12,7 @@ public interface IKafkaConsumerConfig {
     Command paymentProcessedEvent();
     Command orderAprovedEvent();
     Command productReservationCanceledEvent();
+    Command paymentCanceledEvent();
     Command orderRejectedEvent();
 
 

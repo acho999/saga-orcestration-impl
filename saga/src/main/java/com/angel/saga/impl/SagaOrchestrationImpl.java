@@ -3,11 +3,11 @@ package com.angel.saga.impl;
 import com.angel.kafkautils.consumer.IKafkaConsumerConfig;
 import com.angel.kafkautils.producer.IKafkaProducerConfig;
 import com.angel.models.events.Event;
-import com.angel.saga.api.Saga;
+import com.angel.saga.api.SagaOrchestration;
 import com.angel.models.commands.Command;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class SagaImpl implements Saga {
+public class SagaOrchestrationImpl implements SagaOrchestration {
 
     @Autowired
     private IKafkaProducerConfig producer;
@@ -41,6 +41,11 @@ public class SagaImpl implements Saga {
     }
 
     @Override//12
+    public Command handlePaymentCanceledEvent() {
+        return this.consumer.paymentCanceledEvent();
+    }
+
+    @Override//14
     public Command handleOrderRejectedEvent() {
         return this.consumer.orderRejectedEvent();
     }
@@ -50,7 +55,7 @@ public class SagaImpl implements Saga {
 
     @Override//1
     public Event publishCreateOrderCommand(Command command) {
-        return this.producer.orderCreateCommand(command);
+        return this.producer.createOrderCommand(command);
     }
 
     @Override//3
@@ -74,6 +79,11 @@ public class SagaImpl implements Saga {
     }
 
     @Override//11
+    public Event publishCancelPaymentCommand() {
+        return this.producer.cancelPaymentCommand();
+    }
+
+    @Override//13
     public Event publishRejectOrderCommand() {
         return this.producer.rejectOrderCommand();
     }

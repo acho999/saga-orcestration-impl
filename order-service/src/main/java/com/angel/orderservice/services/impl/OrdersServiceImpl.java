@@ -5,8 +5,7 @@ import com.angel.models.DTO.OrderResponseDTO;
 import com.angel.orderservice.models.Order;
 import com.angel.orderservice.repos.OrdersRepo;
 import com.angel.orderservice.services.api.OrdersService;
-import com.angel.saga.api.Saga;
-import com.angel.models.commands.Command;
+import com.angel.saga.api.SagaOrchestration;
 import com.angel.models.commands.CreateOrderCommand;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -14,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.angel.models.states.OrderState;
-import java.util.Collection;
 
 @Service
 @Transactional
@@ -27,7 +25,7 @@ public class OrdersServiceImpl implements OrdersService {
     private ModelMapper mapper;
 
     @Autowired
-    private Saga saga;
+    private SagaOrchestration sagaOrchestration;
 
     public OrdersServiceImpl(){
         this.mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
@@ -42,7 +40,7 @@ public class OrdersServiceImpl implements OrdersService {
     @Override
     public boolean createOrder(OrderRequestDTO order) {
 
-        this.saga.publishCreateOrderCommand(CreateOrderCommand.builder()
+        this.sagaOrchestration.publishCreateOrderCommand(CreateOrderCommand.builder()
                                                 .orderId(order.getId())
                                                 .productId(order.getProductId())
                                                 .quantity(order.getQuantity())

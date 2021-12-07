@@ -1,6 +1,6 @@
 package com.angel.orderservice;
 
-import com.angel.saga.api.Saga;
+import com.angel.saga.api.SagaOrchestration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -9,18 +9,18 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class OrderServiceApplication {
 
     @Autowired
-    private static Saga saga;
+    private static SagaOrchestration sagaOrchestration;
 
     public static void main(String[] args) {
         SpringApplication.run(OrderServiceApplication.class, args);
 
-        saga.handleOrderCreatedEvent();//handle orderchreated event and sends reserve product command 2
-        saga.publishReserveProductCommand();// handle reserve product event and sends process payment command 3
-        saga.publishProcessPaymentCommand();//5
-        saga.publishApproveOrderCommand();//sends approve order command 7
-        saga.handleOrderApprovedEvent();//handle appdoved order event 8
-        saga.handleProductReservationCanceledEvent();//10
-        saga.handleOrderRejectedEvent();//12
+        sagaOrchestration.handleOrderCreatedEvent();//handle order created event and sends reserve product command 2
+        sagaOrchestration.publishReserveProductCommand();// handle reserve product command and sends process payment event 3
+        sagaOrchestration.publishProcessPaymentCommand();//5
+        sagaOrchestration.publishApproveOrderCommand();//sends approve order command 7
+        sagaOrchestration.handleOrderApprovedEvent();//handle appdoved order event 8 end of cycle without errors
+        sagaOrchestration.handleProductReservationCanceledEvent();//10
+        sagaOrchestration.handleOrderRejectedEvent();//12
     }
 
 }

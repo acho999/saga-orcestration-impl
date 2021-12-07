@@ -2,6 +2,7 @@ package com.angel.kafkautils.producer;
 
 import com.angel.kafkautils.utils.Helpers;
 import com.angel.models.commands.ApproveOrderCommand;
+import com.angel.models.commands.CancelPaymentCommand;
 import com.angel.models.commands.ProcessPaymentCommand;
 import com.angel.models.commands.ProductReservationCanselCommand;
 import com.angel.models.commands.RejectOrderCommand;
@@ -18,18 +19,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import static com.angel.kafkautils.constants.TopicConstants.APPROVE_ORDER;
 import static com.angel.kafkautils.constants.TopicConstants.CREATE_ORDER;
 import static com.angel.kafkautils.constants.TopicConstants.ORDER_REJECTED;
+import static com.angel.kafkautils.constants.TopicConstants.PAYMENT_CANCELED;
 import static com.angel.kafkautils.constants.TopicConstants.PROCESS_PAYMENT;
 import static com.angel.kafkautils.constants.TopicConstants.PRODUCT_RESERVATION_CANCELED;
 import static com.angel.kafkautils.constants.TopicConstants.RESERVE_PRODUCT;
 
-//consume commands and produce events
+//consume commands and produce next events
 public class KafkaProducerConfigImpl implements IKafkaProducerConfig {
 
     @Autowired
     private Helpers helpers;
 
     @Override//1
-    public Event orderCreateCommand(final Command command){
+    public Event createOrderCommand(final Command command){
 
         Producer<String, String> producer = new KafkaProducer<>(this.helpers.getProducerProperties());
 
@@ -49,7 +51,7 @@ public class KafkaProducerConfigImpl implements IKafkaProducerConfig {
     @Override//3
     public Event reserveProductCommand() {
 
-        return this.helpers.produceEvent(RESERVE_PRODUCT, PROCESS_PAYMENT, new ReserveProductCommand(null,
+        return this.helpers.produceEvent(RESERVE_PRODUCT, RESERVE_PRODUCT, new ReserveProductCommand(null,
                                                                                               null,
                                                                                               null,
                                                                                               0));
@@ -58,7 +60,7 @@ public class KafkaProducerConfigImpl implements IKafkaProducerConfig {
 
     @Override//5
     public Event processPaymentCommand() {
-        return this.helpers.produceEvent(RESERVE_PRODUCT, APPROVE_ORDER, new ProcessPaymentCommand(null,
+        return this.helpers.produceEvent(PROCESS_PAYMENT, PROCESS_PAYMENT, new ProcessPaymentCommand(null,
                                                                                               null,
                                                                                               null,
                                                                                               null,
@@ -75,15 +77,24 @@ public class KafkaProducerConfigImpl implements IKafkaProducerConfig {
 
     @Override//9
     public Event cancelProductReservationCommand() {
-        return this.helpers.produceEvent(ORDER_REJECTED, PRODUCT_RESERVATION_CANCELED, new ProductReservationCanselCommand(null,
+        return this.helpers.produceEvent(PRODUCT_RESERVATION_CANCELED, ORDER_REJECTED, new ProductReservationCanselCommand(null,
                                                                                                     0,
                                                                                                     null,
                                                                                                     null,
                                                                                                     null));
     }
 
+    @Override//11
+    public Event cancelPaymentCommand() {
+        return this.helpers.produceEvent(PAYMENT_CANCELED, ORDER_REJECTED, new CancelPaymentCommand(null,
+                                                                                                   null,
+                                                                                                   null,
+                                                                                                   null,
+                                                                                                   0));
+    }
+
     @Override
-    public Event rejectOrderCommand() {//11
+    public Event rejectOrderCommand() {//13
         return this.helpers.produceEvent(ORDER_REJECTED, ORDER_REJECTED, new RejectOrderCommand(null,
                                                                                        null,
                                                                                        null,

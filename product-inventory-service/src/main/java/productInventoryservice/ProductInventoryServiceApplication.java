@@ -2,9 +2,7 @@ package productInventoryservice;
 
 import com.angel.models.commands.RejectOrderCommand;
 import com.angel.models.commands.ReserveProductCommand;
-import com.angel.models.events.Event;
-import com.angel.models.events.ProductReservationCalseledEvent;
-import com.angel.saga.api.Saga;
+import com.angel.saga.api.SagaOrchestration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -14,7 +12,7 @@ import productInventoryservice.services.api.ProductInventoryService;
 public class ProductInventoryServiceApplication {
 
     @Autowired
-    private static  Saga saga ;
+    private static SagaOrchestration sagaOrchestration;
 
     @Autowired
     private static ProductInventoryService service ;
@@ -23,14 +21,15 @@ public class ProductInventoryServiceApplication {
         SpringApplication.run(ProductInventoryServiceApplication.class, args);
 
 
-        ReserveProductCommand event = (ReserveProductCommand)saga.handleProductReservedEvent();//4
+        ReserveProductCommand event = (ReserveProductCommand) sagaOrchestration.handleProductReservedEvent();//4
 
         if(!service.isAvailable(event.getProductId(), event.getQuantity())){
-            saga.publishCancelProductReservationCommand();//9
+            sagaOrchestration.publishCancelProductReservationCommand();//9
+            sagaOrchestration.publishCancelPaymentCommand();//11
             return;
         }
 
-        RejectOrderCommand command =(RejectOrderCommand)saga.handleProductReservationCanceledEvent();//10
+        RejectOrderCommand command =(RejectOrderCommand) sagaOrchestration.handleProductReservationCanceledEvent();//10
         if(command != null){
             service.resetQuantity(command.getProductId());
             return;
