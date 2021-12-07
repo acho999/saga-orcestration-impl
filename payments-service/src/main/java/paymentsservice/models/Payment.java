@@ -1,5 +1,6 @@
 package paymentsservice.models;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,10 +20,11 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "payments")
-@NoArgsConstructor
 @Getter
 @Setter
 public class Payment {
+
+
 
     @Id
     @Column(name = "Id", unique = true, nullable = false)
@@ -37,5 +39,15 @@ public class Payment {
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @JoinColumn(name = "userid", referencedColumnName = "id")
     private User userId;
+
+    @Column(name = "amount")
+    private double amount;
+
+    public Payment(){}
+
+    public Payment(PaymentState state, double amount){
+        this.state = state;
+        this.amount = amount;
+    }
 
 }

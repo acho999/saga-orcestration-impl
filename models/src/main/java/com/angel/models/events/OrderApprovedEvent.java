@@ -10,6 +10,8 @@ import com.angel.models.states.OrderState;
 public class OrderApprovedEvent extends Event{
 
     private OrderState state;
+    private String productId;
+    private int productQuantity;
 
     @Builder
     public OrderApprovedEvent(OrderState state, String orderId, String userId){

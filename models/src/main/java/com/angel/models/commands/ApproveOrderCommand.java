@@ -10,6 +10,8 @@ import com.angel.models.states.OrderState;
 public class ApproveOrderCommand extends Command{
 
     private OrderState state;
+    private String productId;
+    private int productQuantity;
 
     @Builder
     public ApproveOrderCommand(OrderState state, String orderId, String userId){

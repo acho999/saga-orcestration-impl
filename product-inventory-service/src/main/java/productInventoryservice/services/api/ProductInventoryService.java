@@ -6,6 +6,9 @@ import java.util.Collection;
 
 public interface ProductInventoryService {
 
-    Collection<ProductDTO> getAll();
+    ProductDTO getProduct(String productId);
+    boolean isAvailable(String productId, int quantity);
+    void resetQuantity(String productId);
+
 
 }

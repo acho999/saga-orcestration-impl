@@ -12,8 +12,8 @@ public interface Helpers {
     Properties getConsumerProperties();
     Event eventFactory(Command command, String topic);
     Properties getProducerProperties();
-    void produceCommand(String topic, String nextTopic, Event event);
-    void produceEvent(String currentTopic, String nextTopic, Command command);
+    Command produceCommand(String topic, String nextTopic, Event event);
+    Event produceEvent(String currentTopic, String nextTopic, Command command);
 
 
 }

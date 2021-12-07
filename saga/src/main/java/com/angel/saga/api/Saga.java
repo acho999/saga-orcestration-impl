@@ -5,18 +5,18 @@ import com.angel.models.commands.Command;
 
 public interface Saga {
 
-    boolean handleOrderApprovedEvent();
-    boolean handleOrderCreatedEvent();
-    boolean handlePaymentProcessedEvent();
-    boolean handleProductReservationCanceledEvent();
-    boolean handleProductReservedEvent();
-    boolean handleOrderRejectedEvent();
+    Command handleOrderApprovedEvent();
+    Command handleOrderCreatedEvent();
+    Command handlePaymentProcessedEvent();
+    Command handleProductReservationCanceledEvent();
+    Command handleProductReservedEvent();
+    Command handleOrderRejectedEvent();
 
-    boolean publishCreateOrderCommand(Command command);
-    boolean publishReserveProductCommand();
-    boolean publishProcessPaymentCommand();
-    boolean publishApproveOrderCommand();
-    boolean publishCancelProductReservationCommand();
-    boolean publishRejectOrderCommand();
+    Event publishCreateOrderCommand(Command command);
+    Event publishReserveProductCommand();
+    Event publishProcessPaymentCommand();
+    Event publishApproveOrderCommand();
+    Event publishCancelProductReservationCommand();
+    Event publishRejectOrderCommand();
 
 }

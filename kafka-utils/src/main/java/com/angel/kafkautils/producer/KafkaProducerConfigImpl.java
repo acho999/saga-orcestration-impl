@@ -17,7 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import static com.angel.kafkautils.constants.TopicConstants.APPROVE_ORDER;
 import static com.angel.kafkautils.constants.TopicConstants.CREATE_ORDER;
+import static com.angel.kafkautils.constants.TopicConstants.ORDER_REJECTED;
 import static com.angel.kafkautils.constants.TopicConstants.PROCESS_PAYMENT;
+import static com.angel.kafkautils.constants.TopicConstants.PRODUCT_RESERVATION_CANCELED;
 import static com.angel.kafkautils.constants.TopicConstants.RESERVE_PRODUCT;
 
 //consume commands and produce events
@@ -27,7 +29,7 @@ public class KafkaProducerConfigImpl implements IKafkaProducerConfig {
     private Helpers helpers;
 
     @Override//1
-    public void orderCreateCommand(final Command command){
+    public Event orderCreateCommand(final Command command){
 
         Producer<String, String> producer = new KafkaProducer<>(this.helpers.getProducerProperties());
 
@@ -41,12 +43,13 @@ public class KafkaProducerConfigImpl implements IKafkaProducerConfig {
 
         producer.close();
 
+        return createdEvent;
     }
 
     @Override//3
-    public void reserveProductCommand() {
+    public Event reserveProductCommand() {
 
-        this.helpers.produceEvent(RESERVE_PRODUCT, PROCESS_PAYMENT, new ReserveProductCommand(null,
+        return this.helpers.produceEvent(RESERVE_PRODUCT, PROCESS_PAYMENT, new ReserveProductCommand(null,
                                                                                               null,
                                                                                               null,
                                                                                               0));
@@ -54,24 +57,25 @@ public class KafkaProducerConfigImpl implements IKafkaProducerConfig {
     }
 
     @Override//5
-    public void processPaymentCommand() {
-        this.helpers.produceEvent(RESERVE_PRODUCT, APPROVE_ORDER, new ProcessPaymentCommand(null,
+    public Event processPaymentCommand() {
+        return this.helpers.produceEvent(RESERVE_PRODUCT, APPROVE_ORDER, new ProcessPaymentCommand(null,
                                                                                               null,
                                                                                               null,
-                                                                                              null));
+                                                                                              null,
+                                                                                                   0.0d));
     }
 
     @Override//7
-    public void approveOrderCommand() {
-        this.helpers.produceEvent(APPROVE_ORDER, APPROVE_ORDER, new ApproveOrderCommand(null,
+    public Event approveOrderCommand() {
+        return this.helpers.produceEvent(APPROVE_ORDER, APPROVE_ORDER, new ApproveOrderCommand(null,
                                                                                         null,
                                                                                         null));
 
     }
 
     @Override//9
-    public void cancelProductReservationCommand() {
-        this.helpers.produceEvent(APPROVE_ORDER, APPROVE_ORDER, new ProductReservationCanselCommand(null,
+    public Event cancelProductReservationCommand() {
+        return this.helpers.produceEvent(ORDER_REJECTED, PRODUCT_RESERVATION_CANCELED, new ProductReservationCanselCommand(null,
                                                                                                     0,
                                                                                                     null,
                                                                                                     null,
@@ -79,10 +83,11 @@ public class KafkaProducerConfigImpl implements IKafkaProducerConfig {
     }
 
     @Override
-    public void rejectOrderCommand() {//11
-        this.helpers.produceEvent(APPROVE_ORDER, APPROVE_ORDER, new RejectOrderCommand(null,
+    public Event rejectOrderCommand() {//11
+        return this.helpers.produceEvent(ORDER_REJECTED, ORDER_REJECTED, new RejectOrderCommand(null,
                                                                                        null,
-                                                                                       null));
+                                                                                       null,
+                                                                                                null));
     }
 
 }

@@ -34,12 +34,6 @@ public class OrdersServiceImpl implements OrdersService {
     }
 
     @Override
-    public Collection<OrderRequestDTO> getAll() {
-
-        return null;
-    }
-
-    @Override
     public OrderResponseDTO getOrder(String id){
 
         return  null;
@@ -63,13 +57,27 @@ public class OrdersServiceImpl implements OrdersService {
     }
 
     @Override//as parameter may be orderId
-    public boolean cancelOrder(OrderRequestDTO order) {
+    public boolean cancelOrder(OrderRequestDTO orderDTO) {
+
+        Order order = this.repo.getById(orderDTO.getId());
+
+        order.setOrderState(OrderState.ORDER_CANCELLED);
+
+        this.repo.saveAndFlush(order);
+
         return false;
     }
 
     @Override//as parameter may be orderId
-    public boolean approveOrder(OrderRequestDTO order) {
-        return false;
+    public boolean approveOrder(OrderRequestDTO orderDTO) {
+
+        Order order = this.repo.getById(orderDTO.getId());
+
+        order.setOrderState(OrderState.ORDER_CREATED);
+
+        this.repo.saveAndFlush(order);
+
+        return true;
     }
 
 

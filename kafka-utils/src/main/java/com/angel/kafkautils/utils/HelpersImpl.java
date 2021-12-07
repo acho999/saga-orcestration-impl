@@ -196,7 +196,7 @@ public class HelpersImpl implements Helpers{
 
     //read event from topic, create and send next command
     @Override
-    public void produceCommand(String currentTopic, String nextTopicCommand, Event event) {
+    public Command produceCommand(String currentTopic, String nextTopicCommand, Event event) {
 
         KStream<String, JsonNode> eventJson = this.builder.stream(currentTopic,
                                                                   Consumed.with(Serdes.String(), this.jsonSerde));
@@ -237,12 +237,14 @@ public class HelpersImpl implements Helpers{
                 new ProducerRecord<>(nextTopicCommand, command.getUserId(), commandJson.toString()));
 
             producer.close();
+
+            return createdCommand;
     }
 
 
     //read command from topic, create and send event
     @Override
-    public void produceEvent(String currentTopic, String nextTopicCommand, Command command) {
+    public Event produceEvent(String currentTopic, String nextTopicCommand, Command command) {
         KStream<String, JsonNode> eventJson = this.builder.stream(currentTopic,
                                                                   Consumed.with(Serdes.String(), this.jsonSerde));
         //here we read stream from BankTransactionProducer we consume what is produced from producer
@@ -282,6 +284,8 @@ public class HelpersImpl implements Helpers{
         producer.send(new ProducerRecord<>(nextTopicCommand, command.getUserId(), commandJson.toString()));
 
         producer.close();
+
+        return createdEvent;
     }
 
     public Properties getConsumerProperties(){

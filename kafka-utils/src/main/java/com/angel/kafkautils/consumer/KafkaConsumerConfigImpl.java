@@ -1,6 +1,7 @@
 package com.angel.kafkautils.consumer;
 
 import com.angel.kafkautils.utils.Helpers;
+import com.angel.models.commands.Command;
 import com.angel.models.events.OrderApprovedEvent;
 import com.angel.models.events.OrderCreatedEvent;
 import com.angel.models.events.OrderRejectedEvent;
@@ -17,9 +18,9 @@ public class KafkaConsumerConfigImpl implements IKafkaConsumerConfig{
     private Helpers helpers;
 
     @Override//2
-    public void orderCreatedEvent() {
+    public Command orderCreatedEvent() {
 
-        this.helpers.produceCommand(CREATE_ORDER, RESERVE_PRODUCT, new OrderCreatedEvent(null,
+        return this.helpers.produceCommand(CREATE_ORDER, RESERVE_PRODUCT, new OrderCreatedEvent(null,
                                                                            null,
                                                                            null,
                                                                            0,
@@ -28,9 +29,9 @@ public class KafkaConsumerConfigImpl implements IKafkaConsumerConfig{
     }
 
     @Override//4
-    public void productReservedEvent() {
+    public Command productReservedEvent() {
 
-        this.helpers.produceCommand(RESERVE_PRODUCT, PROCESS_PAYMENT, new ProductReservedEvent(null,
+        return this.helpers.produceCommand(RESERVE_PRODUCT, PROCESS_PAYMENT, new ProductReservedEvent(null,
                                                                                                null,
                                                                                                null ,
                                                                                                0));
@@ -38,28 +39,29 @@ public class KafkaConsumerConfigImpl implements IKafkaConsumerConfig{
     }
 
     @Override//6
-    public void paymentProcessedEvent() {
+    public Command paymentProcessedEvent() {
 
-        this.helpers.produceCommand(PROCESS_PAYMENT, APPROVE_ORDER, new PaymentProcessedEvent(null,
+        return this.helpers.produceCommand(PROCESS_PAYMENT, APPROVE_ORDER, new PaymentProcessedEvent(null,
                                                                                               null,
                                                                                               null,
-                                                                                              null));
+                                                                                              null,
+                                                                                                     0));
 
     }
 
     @Override//8???
-    public void orderAprovedEvent() {
+    public Command orderAprovedEvent() {
 
-        this.helpers.produceCommand(APPROVE_ORDER, APPROVE_ORDER, new OrderApprovedEvent(null,
+        return this.helpers.produceCommand(APPROVE_ORDER, APPROVE_ORDER, new OrderApprovedEvent(null,
                                                                                          null,
                                                                                          null));
 
     }
 
     @Override//10
-    public void productReservationCanceledEvent() {
+    public Command productReservationCanceledEvent() {
 
-        this.helpers.produceCommand(PRODUCT_RESERVATION_CANCELED, ORDER_REJECTED, new ProductReservationCalseledEvent(null,
+        return this.helpers.produceCommand(PRODUCT_RESERVATION_CANCELED, ORDER_REJECTED, new ProductReservationCalseledEvent(null,
                                                                                                                       0,
                                                                                                                       null,
                                                                                                                       null,
@@ -68,11 +70,12 @@ public class KafkaConsumerConfigImpl implements IKafkaConsumerConfig{
     }
 
     @Override//12
-    public void orderRejectedEvent() {
+    public Command orderRejectedEvent() {
 
-        this.helpers.produceCommand(PROCESS_PAYMENT, APPROVE_ORDER, new OrderRejectedEvent(null,
+        return this.helpers.produceCommand(ORDER_REJECTED, ORDER_REJECTED, new OrderRejectedEvent(null,
                                                                                            null,
-                                                                                           null));
+                                                                                           null,
+                                                                                                  null));
 
     }
 

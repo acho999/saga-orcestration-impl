@@ -1,10 +1,9 @@
 package paymentsservice.services.api;
-
-
-import paymentsservice.models.User;
+import com.angel.models.DTO.UserDTO;
 
 public interface UsersService {
 
-    User getUser(String userId);
+    UserDTO getUser(String userId);
 
+    void changeBalance(String userId, double amount);
 }

@@ -7,8 +7,6 @@ import java.util.Collection;
 
 public interface OrdersService {
 
-    Collection<OrderRequestDTO> getAll();
-
     OrderResponseDTO getOrder(String id);
 
     boolean createOrder(OrderRequestDTO order);

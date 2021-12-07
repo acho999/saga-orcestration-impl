@@ -2,6 +2,7 @@ package com.angel.saga.impl;
 
 import com.angel.kafkautils.consumer.IKafkaConsumerConfig;
 import com.angel.kafkautils.producer.IKafkaProducerConfig;
+import com.angel.models.events.Event;
 import com.angel.saga.api.Saga;
 import com.angel.models.commands.Command;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,79 +15,67 @@ public class SagaImpl implements Saga {
     @Autowired
     private IKafkaConsumerConfig consumer;
 
-    @Override
-    public boolean handleOrderApprovedEvent() {
-        this.consumer.orderAprovedEvent();
-        return false;
+    @Override//2
+    public Command handleOrderCreatedEvent() {
+        return this.consumer.orderCreatedEvent();
     }
 
-    @Override
-    public boolean handleOrderCreatedEvent() {
-        this.consumer.orderCreatedEvent();
-        return false;
+    @Override//4
+    public Command handleProductReservedEvent() {
+        return this.consumer.productReservedEvent();
     }
 
-    @Override
-    public boolean handlePaymentProcessedEvent() {
-        this.consumer.paymentProcessedEvent();
-        return false;
+    @Override//6
+    public Command handlePaymentProcessedEvent() {
+        return this.consumer.paymentProcessedEvent();
     }
 
-    @Override
-    public boolean handleProductReservationCanceledEvent() {
-        this.consumer.productReservationCanceledEvent();
-        return false;
+    @Override//8
+    public Command handleOrderApprovedEvent() {
+        return this.consumer.orderAprovedEvent();
     }
 
-    @Override
-    public boolean handleProductReservedEvent() {
-        this.consumer.productReservedEvent();
-        return false;
+    @Override//10
+    public Command handleProductReservationCanceledEvent() {
+        return this.consumer.productReservationCanceledEvent();
     }
 
-    @Override
-    public boolean handleOrderRejectedEvent() {
-        this.consumer.orderRejectedEvent();
-        return false;
+    @Override//12
+    public Command handleOrderRejectedEvent() {
+        return this.consumer.orderRejectedEvent();
     }
 
     //------------------------------------------------------------------------------------------------
 
 
     @Override//1
-    public boolean publishCreateOrderCommand(Command command) {
-        this.producer.orderCreateCommand(command);
-        return true;
+    public Event publishCreateOrderCommand(Command command) {
+        return this.producer.orderCreateCommand(command);
     }
 
-    @Override
-    public boolean publishReserveProductCommand() {
-        this.producer.reserveProductCommand();
-        return true;
+    @Override//3
+    public Event publishReserveProductCommand() {
+        return this.producer.reserveProductCommand();
     }
 
-    @Override
-    public boolean publishProcessPaymentCommand() {
-        this.producer.processPaymentCommand();
-        return true;
+    @Override//5
+    public Event publishProcessPaymentCommand() {
+        return this.producer.processPaymentCommand();
     }
 
-    @Override
-    public boolean publishApproveOrderCommand() {
-        this.producer.approveOrderCommand();
-        return true;
+    @Override//7
+    public Event publishApproveOrderCommand() {
+        return this.producer.approveOrderCommand();
     }
 
-    @Override
-    public boolean publishCancelProductReservationCommand() {
-        this.producer.cancelProductReservationCommand();
-        return true;
+    @Override//9
+    public Event publishCancelProductReservationCommand() {
+        return this.producer.cancelProductReservationCommand();
     }
 
-    @Override
-    public boolean publishRejectOrderCommand() {
-        this.producer.rejectOrderCommand();
-        return true;
+    @Override//11
+    public Event publishRejectOrderCommand() {
+        return this.producer.rejectOrderCommand();
     }
 
 }

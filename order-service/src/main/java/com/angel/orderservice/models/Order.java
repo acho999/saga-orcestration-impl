@@ -40,6 +40,4 @@ public class Order {
     @Column(name = "quantity", nullable = false)
     private int quantity;
 
-
-
 }
