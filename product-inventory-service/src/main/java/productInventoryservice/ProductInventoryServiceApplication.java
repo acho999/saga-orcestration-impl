@@ -15,30 +15,31 @@ public class ProductInventoryServiceApplication {
     private static SagaOrchestration sagaOrchestration;
 
     @Autowired
-    private static ProductInventoryService service ;
+    private static ProductInventoryService service;
 
     public static void main(String[] args) {
         SpringApplication.run(ProductInventoryServiceApplication.class, args);
+        runAll();
+    }
 
+    private static void runAll() {
+        ReserveProductCommand event =
+            (ReserveProductCommand) sagaOrchestration.handleProductReservedEvent();//4
 
-        ReserveProductCommand event = (ReserveProductCommand) sagaOrchestration.handleProductReservedEvent();//4
-
-        if(!service.isAvailable(event.getProductId(), event.getQuantity())){
+        if (!service.isAvailable(event.getProductId(), event.getQuantity())) {
             sagaOrchestration.publishCancelProductReservationCommand();//9
             sagaOrchestration.publishCancelPaymentCommand();//11
-            return;
         }
 
-        RejectOrderCommand command =(RejectOrderCommand) sagaOrchestration.handleProductReservationCanceledEvent();//10
-        if(command != null){
+        RejectOrderCommand command =
+            (RejectOrderCommand) sagaOrchestration.handleProductReservationCanceledEvent();//10
+        if (command != null) {
             service.resetQuantity(command.getProductId());
             return;
         }
-        if (event != null){
+        if (event != null) {
             service.isAvailable(event.getProductId(), event.getQuantity());
         }
-
-
     }
 
 }

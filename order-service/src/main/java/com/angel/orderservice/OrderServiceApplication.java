@@ -14,6 +14,10 @@ public class OrderServiceApplication {
     public static void main(String[] args) {
         SpringApplication.run(OrderServiceApplication.class, args);
 
+        runAll();
+    }
+
+    private static void runAll() {
         sagaOrchestration.handleOrderCreatedEvent();//handle order created event and sends reserve product command 2
         sagaOrchestration.publishReserveProductCommand();// handle reserve product command and sends process payment event 3
         sagaOrchestration.publishProcessPaymentCommand();//5

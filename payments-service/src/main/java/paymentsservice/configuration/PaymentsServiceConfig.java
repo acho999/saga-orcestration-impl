@@ -1,9 +1,9 @@
 package paymentsservice.configuration;
 
-import com.angel.kafkautils.consumer.IKafkaConsumerConfig;
-import com.angel.kafkautils.consumer.KafkaConsumerConfigImpl;
-import com.angel.kafkautils.producer.IKafkaProducerConfig;
-import com.angel.kafkautils.producer.KafkaProducerConfigImpl;
+import com.angel.kafkaconsumer.consumer.IKafkaConsumerConfig;
+import com.angel.kafkaconsumer.consumer.KafkaConsumerConfigImpl;
+import com.angel.kafkaproducer.producer.IKafkaProducerConfig;
+import com.angel.kafkaproducer.producer.KafkaProducerConfigImpl;
 import com.angel.saga.api.SagaOrchestration;
 import com.angel.saga.impl.SagaOrchestrationImpl;
 import org.modelmapper.ModelMapper;

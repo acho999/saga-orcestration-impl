@@ -37,7 +37,12 @@
         </dependency>
         <dependency>
             <groupId>com.angel</groupId>
-            <artifactId>kafka-utils</artifactId>
+            <artifactId>kafka-producer</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.angel</groupId>
+            <artifactId>kafka-consumer</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

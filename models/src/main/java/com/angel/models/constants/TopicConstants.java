@@ -1,0 +1,22 @@
+package com.angel.models.constants;
+
+public class TopicConstants {
+
+    public static final String CREATE_ORDER_COMMAND = "createOrderCommand";
+    public static final String RESERVE_PRODUCT_COMMAND = "reserveProductCommand";
+    public static final String PROCESS_PAYMENT_COMMAND = "processPaymentCommand";
+    public static final String APPROVE_ORDER_COMMAND = "approveOrderCommand";
+    public static final String CANCEL_PRODUCT_RESERVATION_COMMAND = "productReservationCancelCommand";
+    public static final String CANCEL_PAYMENT_COMMAND = "paymentCancelCommand";
+    public static final String REJECT_ORDER_COMMAND= "orderRejectCommand";
+
+
+    public static final String CREATE_ORDER_EVENT = "createOrderEvent";
+    public static final String RESERVE_PRODUCT_EVENT = "reserveProductEvent";
+    public static final String PROCESS_PAYMENT_EVENT = "processPaymentEvent";
+    public static final String APPROVE_ORDER_EVENT = "approveOrderEvent";
+    public static final String PRODUCT_RESERVATION_CANCELED_EVENT = "productReservationCanceledEvent";
+    public static final String PAYMENT_CANCELED_EVENT = "paymentCanceledEvent";
+    public static final String ORDER_REJECTED_EVENT = "orderRejectedEvent";
+
+}

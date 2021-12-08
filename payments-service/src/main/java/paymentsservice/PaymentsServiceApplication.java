@@ -17,36 +17,37 @@ public class PaymentsServiceApplication {
     private static SagaOrchestration sagaOrchestration;
 
     @Autowired
-    private static  PaymentsServiceImpl paymentsService;
+    private static PaymentsServiceImpl paymentsService;
 
     public static void main(String[] args) {
         SpringApplication.run(PaymentsServiceApplication.class, args);
         runAll();
     }
 
-    private static void runAll(){
+    private static void runAll() {
 
-        ProcessPaymentCommand command = (ProcessPaymentCommand) sagaOrchestration.handlePaymentProcessedEvent();//6
+        ProcessPaymentCommand command =
+            (ProcessPaymentCommand) sagaOrchestration.handlePaymentProcessedEvent();//6
 
-        if (!paymentsService.savePayment(command.getUserId(),new Payment(PaymentState.PAYMENT_APPROVED,
-                                                                         command.getAmount()))){
+        if (!paymentsService.savePayment(command.getUserId(),
+                                         new Payment(PaymentState.PAYMENT_APPROVED,
+                                                     command.getAmount()))) {
             sagaOrchestration.publishCancelPaymentCommand();//11
             sagaOrchestration.publishCancelProductReservationCommand();//9
+        }
+
+        CancelPaymentCommand cmd =
+            (CancelPaymentCommand) sagaOrchestration.handlePaymentCanceledEvent();//12
+
+        if (cmd != null) {
+            paymentsService.reversePayment(cmd.getUserId(), cmd.getPaymentId());
             return;
         }
 
-        CancelPaymentCommand cmd = (CancelPaymentCommand)sagaOrchestration.handlePaymentCanceledEvent();//12
-
-        if(cmd != null){
-
-            paymentsService.reversePayment(cmd.getUserId(),cmd.getPaymentId());
-
-        }
-
-
-        if(command != null){
-            paymentsService.savePayment(command.getUserId(),new Payment(PaymentState.PAYMENT_APPROVED,
-                                                                        command.getAmount()));
+        if (command != null) {
+            paymentsService.savePayment(command.getUserId(),
+                                        new Payment(PaymentState.PAYMENT_APPROVED,
+                                                    command.getAmount()));
         }
 
 

@@ -23,7 +23,8 @@
         <module>models</module>
         <module>payments-service</module>
         <module>product-inventory-service</module>
-        <module>kafka-utils</module>
+        <module>kafka-producer</module>
+        <module>kafka-consumer</module>
         <module>saga</module>
     </modules>
 
