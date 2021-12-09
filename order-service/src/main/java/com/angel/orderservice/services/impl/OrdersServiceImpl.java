@@ -2,6 +2,7 @@ package com.angel.orderservice.services.impl;
 
 import com.angel.models.DTO.OrderRequestDTO;
 import com.angel.models.DTO.OrderResponseDTO;
+import com.angel.models.commands.Command;
 import com.angel.orderservice.models.Order;
 import com.angel.orderservice.repos.OrdersRepo;
 import com.angel.orderservice.services.api.OrdersService;
@@ -55,9 +56,9 @@ public class OrdersServiceImpl implements OrdersService {
     }
 
     @Override//as parameter may be orderId
-    public boolean cancelOrder(OrderRequestDTO orderDTO) {
+    public boolean cancelOrder(Command command) {
 
-        Order order = this.repo.getById(orderDTO.getId());
+        Order order = this.repo.getById(command.getUserId());
 
         order.setOrderState(OrderState.ORDER_CANCELLED);
 
@@ -67,9 +68,9 @@ public class OrdersServiceImpl implements OrdersService {
     }
 
     @Override//as parameter may be orderId
-    public boolean approveOrder(OrderRequestDTO orderDTO) {
+    public boolean approveOrder(Command command) {
 
-        Order order = this.repo.getById(orderDTO.getId());
+        Order order = this.repo.getById(command.getUserId());
 
         order.setOrderState(OrderState.ORDER_CREATED);
 

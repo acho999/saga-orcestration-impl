@@ -6,6 +6,7 @@ import com.angel.models.events.Event;
 public interface IKafkaConsumerConfig {
 
     Command readEvent(String topic, String nextTopic, Event event);
+
     Event readCommand(String currentTopic, String nextTopic, Command command);
 
 }

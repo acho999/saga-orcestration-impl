@@ -11,10 +11,10 @@ public class TopicConstants {
     public static final String REJECT_ORDER_COMMAND= "orderRejectCommand";
 
 
-    public static final String CREATE_ORDER_EVENT = "createOrderEvent";
-    public static final String RESERVE_PRODUCT_EVENT = "reserveProductEvent";
-    public static final String PROCESS_PAYMENT_EVENT = "processPaymentEvent";
-    public static final String APPROVE_ORDER_EVENT = "approveOrderEvent";
+    public static final String ORDER_CREATED_EVENT = "createOrderEvent";
+    public static final String PRODUCT_RESERVED_EVENT = "reserveProductEvent";
+    public static final String PAYMENT_PROCESSED_EVENT = "processPaymentEvent";
+    public static final String ORDER_APPROVED_EVENT = "approveOrderEvent";
     public static final String PRODUCT_RESERVATION_CANCELED_EVENT = "productReservationCanceledEvent";
     public static final String PAYMENT_CANCELED_EVENT = "paymentCanceledEvent";
     public static final String ORDER_REJECTED_EVENT = "orderRejectedEvent";

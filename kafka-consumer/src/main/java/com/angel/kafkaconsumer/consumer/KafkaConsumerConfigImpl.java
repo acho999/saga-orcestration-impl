@@ -1,6 +1,5 @@
 package com.angel.kafkaconsumer.consumer;
 
-import com.angel.models.api.IEvent;
 import com.angel.models.commands.*;
 import com.angel.models.events.*;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -22,13 +21,11 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.Properties;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 
 import static com.angel.models.constants.TopicConstants.*;
 
 @Component
-public class KafkaConsumerConfigImpl implements IKafkaConsumerConfig, BiFunction<String, String, IEvent> {
+public class KafkaConsumerConfigImpl implements IKafkaConsumerConfig{
 
     private final Serializer<JsonNode> jsonSerializer;
     private final Deserializer<JsonNode> jsonDeserializer;
@@ -46,10 +43,13 @@ public class KafkaConsumerConfigImpl implements IKafkaConsumerConfig, BiFunction
         this.mapper = new ObjectMapper();
     }
 
-    public Event eventFactory(Command command, String topic){
+    public Event eventFactory(Command cmd, String topic){
+        if (cmd == null){
+            return null;
+        }
         switch (topic){
             case CREATE_ORDER_COMMAND:
-                CreateOrderCommand createCmd = (CreateOrderCommand) command;
+                CreateOrderCommand createCmd = (CreateOrderCommand) cmd;
                 return OrderCreatedEvent.builder()
                     .orderId(createCmd.getOrderId())
                     .productId(createCmd.getProductId())
@@ -57,7 +57,7 @@ public class KafkaConsumerConfigImpl implements IKafkaConsumerConfig, BiFunction
                     .state(createCmd.getState())
                     .build();
             case PROCESS_PAYMENT_COMMAND:
-                ProcessPaymentCommand paymentCmd = (ProcessPaymentCommand) command;
+                ProcessPaymentCommand paymentCmd = (ProcessPaymentCommand) cmd;
                 return PaymentProcessedEvent.builder()
                     .orderId(paymentCmd.getOrderId())
                     .paymentId(paymentCmd.getPaymentId())
@@ -65,7 +65,7 @@ public class KafkaConsumerConfigImpl implements IKafkaConsumerConfig, BiFunction
                     .userId(paymentCmd.getUserId())
                     .build();
             case RESERVE_PRODUCT_COMMAND:
-                ReserveProductCommand reserveCmd = (ReserveProductCommand) command;
+                ReserveProductCommand reserveCmd = (ReserveProductCommand) cmd;
                 return ProductReservedEvent.builder()
                     .orderId(reserveCmd.getOrderId())
                     .userId(reserveCmd.getUserId())
@@ -73,7 +73,7 @@ public class KafkaConsumerConfigImpl implements IKafkaConsumerConfig, BiFunction
                     .quantity(reserveCmd.getQuantity())
                     .build();
             case APPROVE_ORDER_COMMAND:
-                ApproveOrderCommand approvetCmd = (ApproveOrderCommand) command;
+                ApproveOrderCommand approvetCmd = (ApproveOrderCommand) cmd;
                 return OrderApprovedEvent.builder()
                     .orderId(approvetCmd.getOrderId())
                     .state(approvetCmd.getState())
@@ -82,7 +82,7 @@ public class KafkaConsumerConfigImpl implements IKafkaConsumerConfig, BiFunction
                     .productQuantity(approvetCmd.getProductQuantity())
                     .build();
             case CANCEL_PRODUCT_RESERVATION_COMMAND:
-                ProductReservationCanselCommand canceltCmd = (ProductReservationCanselCommand) command;
+                ProductReservationCanselCommand canceltCmd = (ProductReservationCanselCommand) cmd;
                 return ProductReservationCalseledEvent.builder()
                     .orderId(canceltCmd.getOrderId())
                     .quantity(canceltCmd.getQuantity())
@@ -91,7 +91,7 @@ public class KafkaConsumerConfigImpl implements IKafkaConsumerConfig, BiFunction
                     .reason(canceltCmd.getReason())
                     .build();
             case CANCEL_PAYMENT_COMMAND:
-                CancelPaymentCommand cancelPayment = (CancelPaymentCommand) command;
+                CancelPaymentCommand cancelPayment = (CancelPaymentCommand) cmd;
                 return PaymentCanceledEvent.builder()
                     .orderId(cancelPayment.getOrderId())
                     .userId(cancelPayment.getUserId())
@@ -100,7 +100,7 @@ public class KafkaConsumerConfigImpl implements IKafkaConsumerConfig, BiFunction
                     .paymentId(cancelPayment.getPaymentId())
                     .build();
             case REJECT_ORDER_COMMAND:
-                RejectOrderCommand rejectCmd = (RejectOrderCommand) command;
+                RejectOrderCommand rejectCmd = (RejectOrderCommand) cmd;
                 return OrderRejectedEvent.builder()
                     .orderId(rejectCmd.getOrderId())
                     .reason(rejectCmd.getReason())
@@ -111,34 +111,38 @@ public class KafkaConsumerConfigImpl implements IKafkaConsumerConfig, BiFunction
         }
     }
 
-    public Command commandFactory(Event event, String topic){
+    public Command commandFactory(Event evt, String topic){
+        if (evt == null){
+            return null;
+        }
+
         switch (topic){
-            case CREATE_ORDER_EVENT:
-                OrderCreatedEvent createCmd = (OrderCreatedEvent) event;
+            case ORDER_CREATED_EVENT:
+                OrderCreatedEvent createCmd = (OrderCreatedEvent) evt;
                 return CreateOrderCommand.builder()
                     .orderId(createCmd.getOrderId())
                     .productId(createCmd.getProductId())
                     .quantity(createCmd.getQuantity())
                     .state(createCmd.getState())
                     .build();
-            case PROCESS_PAYMENT_EVENT:
-                PaymentProcessedEvent paymentCmd = (PaymentProcessedEvent) event;
+            case PAYMENT_PROCESSED_EVENT:
+                PaymentProcessedEvent paymentCmd = (PaymentProcessedEvent) evt;
                 return ProcessPaymentCommand.builder()
                     .orderId(paymentCmd.getOrderId())
                     .paymentId(paymentCmd.getPaymentId())
                     .paymentState(paymentCmd.getPaymentState())
                     .userId(paymentCmd.getUserId())
                     .build();
-            case RESERVE_PRODUCT_EVENT:
-                ProductReservedEvent reserveCmd = (ProductReservedEvent) event;
+            case PRODUCT_RESERVED_EVENT:
+                ProductReservedEvent reserveCmd = (ProductReservedEvent) evt;
                 return ReserveProductCommand.builder()
                     .orderId(reserveCmd.getOrderId())
                     .userId(reserveCmd.getUserId())
                     .productId(reserveCmd.getProductId())
                     .quantity(reserveCmd.getQuantity())
                     .build();
-            case APPROVE_ORDER_EVENT:
-                OrderApprovedEvent approvetCmd = (OrderApprovedEvent) event;
+            case ORDER_APPROVED_EVENT:
+                OrderApprovedEvent approvetCmd = (OrderApprovedEvent) evt;
                 return ApproveOrderCommand.builder()
                     .orderId(approvetCmd.getOrderId())
                     .state(approvetCmd.getState())
@@ -147,7 +151,7 @@ public class KafkaConsumerConfigImpl implements IKafkaConsumerConfig, BiFunction
                     .productId(approvetCmd.getProductId())
                     .build();
             case PRODUCT_RESERVATION_CANCELED_EVENT:
-                ProductReservationCalseledEvent canceltCmd = (ProductReservationCalseledEvent) event;
+                ProductReservationCalseledEvent canceltCmd = (ProductReservationCalseledEvent) evt;
                 return ProductReservationCanselCommand.builder()
                     .orderId(canceltCmd.getOrderId())
                     .quantity(canceltCmd.getQuantity())
@@ -156,7 +160,7 @@ public class KafkaConsumerConfigImpl implements IKafkaConsumerConfig, BiFunction
                     .reason(canceltCmd.getReason())
                     .build();
             case PAYMENT_CANCELED_EVENT:
-                PaymentCanceledEvent cancelPayment = (PaymentCanceledEvent) event;
+                PaymentCanceledEvent cancelPayment = (PaymentCanceledEvent) evt;
                 return CancelPaymentCommand.builder()
                     .orderId(cancelPayment.getOrderId())
                     .userId(cancelPayment.getUserId())
@@ -165,7 +169,7 @@ public class KafkaConsumerConfigImpl implements IKafkaConsumerConfig, BiFunction
                     .paymentId(cancelPayment.getPaymentId())
                     .build();
             case ORDER_REJECTED_EVENT:
-                OrderRejectedEvent rejectCmd = (OrderRejectedEvent) event;
+                OrderRejectedEvent rejectCmd = (OrderRejectedEvent) evt;
                 return RejectOrderCommand.builder()
                     .orderId(rejectCmd.getOrderId())
                     .reason(rejectCmd.getReason())
@@ -198,7 +202,7 @@ public class KafkaConsumerConfigImpl implements IKafkaConsumerConfig, BiFunction
 
     //read event from topic, create and send next command
     @Override
-    public Command readEvent(String currentTopic, String nextTopicCommand, Event event) {
+    public Command readEvent(String currentTopic, String nextTopicCommand, Event evt) {
 
         KStream<String, JsonNode> eventJson = this.builder.stream(currentTopic,
                                                                   Consumed.with(Serdes.String(), this.jsonSerde));
@@ -206,7 +210,7 @@ public class KafkaConsumerConfigImpl implements IKafkaConsumerConfig, BiFunction
 
             eventJson.foreach((key, value) -> {
                 try {
-                    this.event = this.mapper.readValue(value.traverse(), event.getClass());
+                    this.event = this.mapper.readValue(value.traverse(), evt.getClass());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -218,14 +222,14 @@ public class KafkaConsumerConfigImpl implements IKafkaConsumerConfig, BiFunction
 
     //read command from topic, create and send event
     @Override
-    public Event readCommand(String currentTopic, String nextTopicCommand, Command command) {
+    public Event readCommand(String currentTopic, String nextTopicCommand, Command cmd) {
         KStream<String, JsonNode> eventJson = this.builder.stream(currentTopic,
                                                                   Consumed.with(Serdes.String(), this.jsonSerde));
         //here we read stream from BankTransactionProducer we consume what is produced from producer
 
         eventJson.foreach((key, value)->{
             try {
-                this.command = this.mapper.readValue(value.traverse(), command.getClass());
+                this.command = this.mapper.readValue(value.traverse(), cmd.getClass());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -234,7 +238,6 @@ public class KafkaConsumerConfigImpl implements IKafkaConsumerConfig, BiFunction
         Event createdEvent = eventFactory(this.command,nextTopicCommand);
         return createdEvent;
     }
-
 
     public Properties getConsumerProperties(){
         Properties config = new Properties();
@@ -256,13 +259,4 @@ public class KafkaConsumerConfigImpl implements IKafkaConsumerConfig, BiFunction
         return config;
     }
 
-    @Override
-    public IEvent apply(String s, String s2) {
-        return null;
-    }
-
-    @Override
-    public <V> BiFunction<String, String, V> andThen(Function<? super IEvent, ? extends V> after) {
-        return BiFunction.super.andThen(after);
-    }
 }
