@@ -28,10 +28,6 @@ public class OrdersServiceImpl implements OrdersService {
     @Autowired
     private SagaOrchestration sagaOrchestration;
 
-    public OrdersServiceImpl(){
-        this.mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-    }
-
     @Override
     public OrderResponseDTO getOrder(String id){
 
@@ -40,7 +36,7 @@ public class OrdersServiceImpl implements OrdersService {
 
     @Override
     public boolean createOrder(OrderRequestDTO order) {
-
+        this.mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         this.sagaOrchestration.publishCreateOrderCommand(CreateOrderCommand.builder()
                                                 .orderId(order.getId())
                                                 .productId(order.getProductId())

@@ -8,4 +8,6 @@ import java.util.Collection;
 public interface PaymentsService {
 
     boolean savePayment(String userId, Payment payment);
+
+    boolean reversePayment(String userId, String paymentId);
 }

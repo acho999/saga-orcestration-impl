@@ -64,7 +64,7 @@ public class ProductInventoryServiceConfig {
     public DataSource dataSource() {
 
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName(env.getProperty("spring.datasource.driverClassName"));
+        dataSource.setDriverClassName(env.getProperty("spring.datasource.driver-class-name"));
         dataSource.setUrl(env.getProperty("spring.datasource.url"));
         dataSource.setPassword(env.getProperty("spring.datasource.password"));
         dataSource.setUsername(env.getProperty("spring.datasource.username"));
@@ -91,7 +91,7 @@ public class ProductInventoryServiceConfig {
 
         factory.setJpaVendorAdapter(adapter);
 
-        factory.setPackagesToScan("orderservice.models");
+        factory.setPackagesToScan("productInventoryservice.models");
 
         factory.setDataSource(dataSource());
 

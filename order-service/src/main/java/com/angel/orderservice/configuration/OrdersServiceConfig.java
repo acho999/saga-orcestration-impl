@@ -37,25 +37,21 @@ public class OrdersServiceConfig {
 
     @Bean
     public ModelMapper createMapper() {
-
         return new ModelMapper();
     }
 
     @Bean
     public SagaOrchestration createSaga() {
-
         return new SagaOrchestrationImpl();
     }
 
     @Bean
     public IKafkaProducerConfig createProducer() {
-
         return new KafkaProducerConfigImpl();
     }
 
     @Bean
     public IKafkaConsumerConfig createConsumer() {
-
         return new KafkaConsumerConfigImpl();
     }
 
@@ -63,7 +59,7 @@ public class OrdersServiceConfig {
     public DataSource dataSource() {
 
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName(env.getProperty("spring.datasource.driverClassName"));
+        dataSource.setDriverClassName(env.getProperty("spring.datasource.driver-class-name"));
         dataSource.setUrl(env.getProperty("spring.datasource.url"));
         dataSource.setPassword(env.getProperty("spring.datasource.password"));
         dataSource.setUsername(env.getProperty("spring.datasource.username"));

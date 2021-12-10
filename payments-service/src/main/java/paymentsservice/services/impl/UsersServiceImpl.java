@@ -24,11 +24,9 @@ public class UsersServiceImpl implements UsersService {
     @Autowired
     private UsersRepo repo;
 
-    public UsersServiceImpl(){
-        this.mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-    }
 
     public UserDTO getUser(String userId){
+        this.mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
         UserDTO dto = mapper.map(this.repo.getById(userId), UserDTO.class);
 
@@ -36,6 +34,7 @@ public class UsersServiceImpl implements UsersService {
     }
 
     public void changeBalance(String userId, Payment payment){
+        this.mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
         User user = this.mapper.map(this.getUser(userId), User.class);
 

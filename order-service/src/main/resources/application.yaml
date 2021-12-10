@@ -19,7 +19,7 @@ spring:
 
 org:
   hibernate:
-    dialect: MySQLDialect
+    dialect: MySQL8Dialect
 
 logging:
   pattern:

@@ -116,7 +116,7 @@ public class KafkaProducerConfigImpl implements IKafkaProducerConfig {
 
     public Command commandFactory(Event event, String topic){
         switch (topic){
-            case CREATE_ORDER_EVENT:
+            case ORDER_CREATED_EVENT:
                 OrderCreatedEvent createCmd = (OrderCreatedEvent) event;
                 return CreateOrderCommand.builder()
                     .orderId(createCmd.getOrderId())
@@ -124,7 +124,7 @@ public class KafkaProducerConfigImpl implements IKafkaProducerConfig {
                     .quantity(createCmd.getQuantity())
                     .state(createCmd.getState())
                     .build();
-            case PROCESS_PAYMENT_EVENT:
+            case PAYMENT_PROCESSED_EVENT:
                 PaymentProcessedEvent paymentCmd = (PaymentProcessedEvent) event;
                 return ProcessPaymentCommand.builder()
                     .orderId(paymentCmd.getOrderId())
@@ -132,7 +132,7 @@ public class KafkaProducerConfigImpl implements IKafkaProducerConfig {
                     .paymentState(paymentCmd.getPaymentState())
                     .userId(paymentCmd.getUserId())
                     .build();
-            case RESERVE_PRODUCT_EVENT:
+            case PRODUCT_RESERVED_EVENT:
                 ProductReservedEvent reserveCmd = (ProductReservedEvent) event;
                 return ReserveProductCommand.builder()
                     .orderId(reserveCmd.getOrderId())
@@ -140,7 +140,7 @@ public class KafkaProducerConfigImpl implements IKafkaProducerConfig {
                     .productId(reserveCmd.getProductId())
                     .quantity(reserveCmd.getQuantity())
                     .build();
-            case APPROVE_ORDER_EVENT:
+            case ORDER_APPROVED_EVENT:
                 OrderApprovedEvent approvetCmd = (OrderApprovedEvent) event;
                 return ApproveOrderCommand.builder()
                     .orderId(approvetCmd.getOrderId())
@@ -199,6 +199,9 @@ public class KafkaProducerConfigImpl implements IKafkaProducerConfig {
     }
 
     public void sendCommand(String nextTopicCommand, Command createdCommand){
+        if (nextTopicCommand == null || createdCommand == null){
+            return;
+        }
         commandJson.put(createdCommand.getClass().getSimpleName(), createdCommand.toString());
 
         producer.send(
@@ -208,6 +211,9 @@ public class KafkaProducerConfigImpl implements IKafkaProducerConfig {
     }
 
     public void sendEvent(String nextTopicCommand, Event createdEvent){
+        if (nextTopicCommand == null || createdEvent == null){
+            return;
+        }
         commandJson.put(createdEvent.getClass().getSimpleName(), createdEvent.toString());
 
         producer.send(

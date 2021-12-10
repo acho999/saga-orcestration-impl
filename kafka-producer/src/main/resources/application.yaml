@@ -1,6 +1,6 @@
-log4j:
-  rootLogger: INFO, stdout
-  appender:
-    stdout: org.apache.log4j.ConsoleAppender
-      layout: org.apache.log4j.PatternLayout
-        ConversionPattern: %p %m (%c:%L) %n
+#log4j:
+#  rootLogger: INFO, stdout
+#  appender:
+#    stdout: org.apache.log4j.ConsoleAppender
+#      layout: org.apache.log4j.PatternLayout
+#        ConversionPattern: %p %m (%c:%L) %n

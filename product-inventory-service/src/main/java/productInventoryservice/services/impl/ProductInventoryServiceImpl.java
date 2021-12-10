@@ -24,12 +24,10 @@ public class ProductInventoryServiceImpl implements ProductInventoryService {
 
     private int oldQuantity;
 
-    public ProductInventoryServiceImpl(){
-        this.mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-    }
-
     @Override
     public ProductDTO getProduct(String productId) {
+
+        this.mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
         ProductDTO prod = this.mapper.map(this.repo.getById(productId), ProductDTO.class);
 

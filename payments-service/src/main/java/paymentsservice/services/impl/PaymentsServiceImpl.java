@@ -26,12 +26,10 @@ public class PaymentsServiceImpl implements PaymentsService {
     @Autowired
     private UsersService usersService;
 
-    public PaymentsServiceImpl(){
-        this.mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-    }
 
     @Override
     public boolean savePayment(String userId, Payment payment) {
+        this.mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
         User user = this.mapper.map(this.usersService.getUser(userId), User.class);
 
@@ -48,6 +46,7 @@ public class PaymentsServiceImpl implements PaymentsService {
         return true;
     }
 
+    @Override
     public boolean reversePayment(String userId, String paymentId){
 
         Payment pmt = this.repo.getById(paymentId);

@@ -1,6 +1,5 @@
 package com.angel.kafkaproducer;
 
-import com.angel.kafkaconsumer.consumer.KafkaConsumerConfigImpl;
 import com.angel.kafkaproducer.producer.KafkaProducerConfigImpl;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
