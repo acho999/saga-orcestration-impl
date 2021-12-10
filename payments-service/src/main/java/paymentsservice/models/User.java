@@ -18,7 +18,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "payments")
+@Table(name = "users")
 @NoArgsConstructor
 @Getter
 @Setter

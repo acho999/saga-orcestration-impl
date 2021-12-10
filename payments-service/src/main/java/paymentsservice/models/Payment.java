@@ -1,8 +1,6 @@
 package paymentsservice.models;
 
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import com.angel.models.states.PaymentState;
