@@ -5,6 +5,7 @@ import com.angel.kafkaproducer.producer.IKafkaProducerConfig;
 import com.angel.models.commands.*;
 import com.angel.models.events.Event;
 import com.angel.models.events.OrderApprovedEvent;
+import com.angel.models.events.OrderCreatedEvent;
 import com.angel.models.events.OrderRejectedEvent;
 import com.angel.models.events.PaymentCanceledEvent;
 import com.angel.models.events.PaymentProcessedEvent;
@@ -28,10 +29,11 @@ public class SagaOrchestrationImpl implements SagaOrchestration {
     public Command handleOrderCreatedEvent() {
 
         Command command = this.consumer.readEvent(ORDER_CREATED_EVENT,RESERVE_PRODUCT_COMMAND,
-                                                  new OrderRejectedEvent(
+                                                  new OrderCreatedEvent(
                                                       null,
                                                       null,
                                                       null,
+                                                      0,
                                                       null));
         this.producer.sendCommand(PROCESS_PAYMENT_COMMAND, command);
         return command;
@@ -45,7 +47,8 @@ public class SagaOrchestrationImpl implements SagaOrchestration {
                                                       null,
                                                       null,
                                                       null,
-                                                      0));
+                                                      0,
+                                                      0.0d));
         this.producer.sendCommand(PROCESS_PAYMENT_COMMAND, command);
         return command;
     }
@@ -59,6 +62,7 @@ public class SagaOrchestrationImpl implements SagaOrchestration {
                                                       null,
                                                       null,
                                                       null,
+                                                      0.0d,
                                                       0));
         this.producer.sendCommand(APPROVE_ORDER_COMMAND, command);
         return command;
@@ -118,6 +122,10 @@ public class SagaOrchestrationImpl implements SagaOrchestration {
         return command;
     }
 
+    public void testConsumer(){
+        this.consumer.consumeTest();
+    }
+
     //------------------------------------------------------------------------------------------------
 
     @Override//1
@@ -136,7 +144,8 @@ public class SagaOrchestrationImpl implements SagaOrchestration {
                                                     null,
                                                     null,
                                                     null,
-                                                    0));
+                                                    0,
+                                                    0.0d));
         this.producer.sendEvent(PRODUCT_RESERVED_EVENT, event);
         return event;
     }
@@ -151,6 +160,7 @@ public class SagaOrchestrationImpl implements SagaOrchestration {
                                                     null,
                                                     null,
                                                     null,
+                                                    0.0d,
                                                     0));
         this.producer.sendEvent(PAYMENT_PROCESSED_EVENT, event);
         return event;
@@ -208,6 +218,10 @@ public class SagaOrchestrationImpl implements SagaOrchestration {
                                                     null));
         this.producer.sendEvent(ORDER_REJECTED_EVENT, event);
         return event;
+    }
+
+    public void testProducer(){
+        this.producer.sendTest();
     }
 
 }

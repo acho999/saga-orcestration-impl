@@ -29,6 +29,7 @@ import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.springframework.stereotype.Component;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 import static com.angel.models.constants.TopicConstants.*;
 
@@ -41,12 +42,14 @@ public class KafkaProducerConfigImpl implements IKafkaProducerConfig {
     private Command command = null;
     private Producer<String, String> producer;
     private ObjectNode commandJson;
+    private Logger logger;
 
     public KafkaProducerConfigImpl(){
         this.builder = new StreamsBuilder();
         this.mapper = new ObjectMapper();
         this.producer = new KafkaProducer<>(getProducerProperties());
         this.commandJson = JsonNodeFactory.instance.objectNode();
+        this.logger = Logger.getLogger("KafkaProducerConfigImpl");
     }
 
     public Event eventFactory(Command command, String topic){
@@ -74,6 +77,7 @@ public class KafkaProducerConfigImpl implements IKafkaProducerConfig {
                     .userId(reserveCmd.getUserId())
                     .productId(reserveCmd.getProductId())
                     .quantity(reserveCmd.getQuantity())
+                    .price(reserveCmd.getPrice())
                     .build();
             case APPROVE_ORDER_COMMAND:
                 ApproveOrderCommand approvetCmd = (ApproveOrderCommand) command;
@@ -139,6 +143,7 @@ public class KafkaProducerConfigImpl implements IKafkaProducerConfig {
                     .userId(reserveCmd.getUserId())
                     .productId(reserveCmd.getProductId())
                     .quantity(reserveCmd.getQuantity())
+                    .price(reserveCmd.getPrice())
                     .build();
             case ORDER_APPROVED_EVENT:
                 OrderApprovedEvent approvetCmd = (OrderApprovedEvent) event;
@@ -203,6 +208,7 @@ public class KafkaProducerConfigImpl implements IKafkaProducerConfig {
             return;
         }
         commandJson.put(createdCommand.getClass().getSimpleName(), createdCommand.toString());
+        this.logger.info(commandJson.toString());
 
         producer.send(
             new ProducerRecord<>(nextTopicCommand, command.getUserId(), commandJson.toString()));
@@ -215,7 +221,7 @@ public class KafkaProducerConfigImpl implements IKafkaProducerConfig {
             return;
         }
         commandJson.put(createdEvent.getClass().getSimpleName(), createdEvent.toString());
-
+        this.logger.info(commandJson.toString());
         producer.send(
             new ProducerRecord<>(nextTopicCommand, command.getUserId(), commandJson.toString()));
 
@@ -242,4 +248,12 @@ public class KafkaProducerConfigImpl implements IKafkaProducerConfig {
         return config;
     }
 
+    public void sendTest(){
+        commandJson.put("key", "sendTestProducer");
+        this.logger.info(commandJson.toString());
+
+        producer.send(
+            new ProducerRecord<>("testTopic", "KEY", commandJson.toString()));
+        producer.close();
+    }
 }

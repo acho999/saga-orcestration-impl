@@ -30,7 +30,7 @@ public class StartClass {
 
         if (command != null && !this.paymentsService.savePayment(command.getUserId(),
                                          new Payment(PaymentState.PAYMENT_APPROVED,
-                                                     command.getAmount()))) {
+                                                     (command.getPrice() * command.getQuantity())))) {
             this.sagaOrchestration.publishCancelPaymentCommand();//11
             this.sagaOrchestration.publishCancelProductReservationCommand();//9
         }
@@ -43,7 +43,7 @@ public class StartClass {
         if (command != null) {
             this.paymentsService.savePayment(command.getUserId(),
                                         new Payment(PaymentState.PAYMENT_APPROVED,
-                                                    command.getAmount()));
+                                                    (command.getPrice() * command.getQuantity())));
         }
 
 

@@ -30,25 +30,35 @@ public class OrdersServiceImpl implements OrdersService {
 
     @Override
     public OrderResponseDTO getOrder(String id){
+        this.mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
-        return  null;
+        OrderResponseDTO dto = this.mapper.map(this.repo.getById(id),OrderResponseDTO.class);
+
+        return  dto;
     }
 
     @Override
-    public boolean createOrder(OrderRequestDTO order) {
+    public OrderRequestDTO createOrder(OrderRequestDTO order) {
         this.mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-        this.sagaOrchestration.publishCreateOrderCommand(CreateOrderCommand.builder()
-                                                .orderId(order.getId())
-                                                .productId(order.getProductId())
-                                                .quantity(order.getQuantity())
-                                                .userId(order.getUserId())
-                                                .state(OrderState.ORDER_PENDING)
-                                                .build());
 
         Order newOrder = this.mapper.map(order, Order.class);
-        newOrder.setOrderState(OrderState.ORDER_PENDING);
+        newOrder.setState(OrderState.ORDER_PENDING);
         this.repo.saveAndFlush(newOrder);
-        return true;
+
+        OrderRequestDTO dto = order;
+        order.setId(newOrder.getOrderId());
+
+        this.sagaOrchestration.testProducer();
+
+//        this.sagaOrchestration.publishCreateOrderCommand(CreateOrderCommand.builder()
+//                                                .orderId(newOrder.getId())
+//                                                .productId(order.getProductId())
+//                                                .quantity(order.getQuantity())
+//                                                .userId(order.getUserId())
+//                                                .state(OrderState.ORDER_PENDING)
+//                                                .build());
+
+        return dto;
     }
 
     @Override//as parameter may be orderId
@@ -56,7 +66,7 @@ public class OrdersServiceImpl implements OrdersService {
 
         Order order = this.repo.getById(command.getUserId());
 
-        order.setOrderState(OrderState.ORDER_CANCELLED);
+        order.setState(OrderState.ORDER_CANCELLED);
 
         this.repo.saveAndFlush(order);
 
@@ -68,7 +78,7 @@ public class OrdersServiceImpl implements OrdersService {
 
         Order order = this.repo.getById(command.getUserId());
 
-        order.setOrderState(OrderState.ORDER_CREATED);
+        order.setState(OrderState.ORDER_CREATED);
 
         this.repo.saveAndFlush(order);
 

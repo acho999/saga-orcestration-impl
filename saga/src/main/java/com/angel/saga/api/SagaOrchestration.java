@@ -12,6 +12,7 @@ public interface SagaOrchestration {
     Command handleProductReservedEvent();
     Command handlePaymentCanceledEvent();
     Command handleOrderRejectedEvent();
+    void testProducer();
 
     Event publishCreateOrderCommand(Command command);
     Event publishReserveProductCommand();
@@ -20,5 +21,6 @@ public interface SagaOrchestration {
     Event publishCancelProductReservationCommand();
     Event publishCancelPaymentCommand();
     Event publishRejectOrderCommand();
+    void testConsumer();
 
 }

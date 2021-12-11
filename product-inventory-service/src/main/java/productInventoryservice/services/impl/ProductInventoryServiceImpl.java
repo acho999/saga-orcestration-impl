@@ -24,6 +24,8 @@ public class ProductInventoryServiceImpl implements ProductInventoryService {
 
     private int oldQuantity;
 
+
+
     @Override
     public ProductDTO getProduct(String productId) {
 
@@ -60,5 +62,21 @@ public class ProductInventoryServiceImpl implements ProductInventoryService {
         Product prod = this.repo.getById(productId);
         prod.setQuantity(this.oldQuantity);
         this.repo.saveAndFlush(prod);
+    }
+
+    @Override
+    public ProductDTO createProduct(ProductDTO product) {
+        Product prod = new Product();
+        prod.setQuantity(product.getQuantity());
+        prod.setDescription(product.getDescription());
+        prod.setPrice(product.getPrice());
+        prod.setName(product.getName());
+        this.repo.saveAndFlush(prod);
+
+        ProductDTO dto = product;
+        dto.setId(prod.getId());
+        System.out.println(dto.getId());
+
+        return dto;
     }
 }

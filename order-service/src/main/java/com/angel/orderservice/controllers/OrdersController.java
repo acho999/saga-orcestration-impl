@@ -21,27 +21,24 @@ public class OrdersController {
     @Autowired
     private OrdersService service;
 
-    @Autowired
-    private SagaOrchestration sagaOrchestration;
-
     @RequestMapping(method = RequestMethod.POST, value = "/create",
         produces = MediaType.APPLICATION_JSON_VALUE,
         consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> createOrder(@RequestBody OrderRequestDTO request){
+    public ResponseEntity<OrderRequestDTO> createOrder(@RequestBody OrderRequestDTO request){
 
-        this.service.createOrder(request);
+        OrderRequestDTO dto = this.service.createOrder(request);
 
-        return new ResponseEntity<>(HttpStatus.CREATED).ok().build();
+        return new ResponseEntity<>(dto,null,HttpStatus.CREATED);
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/{orderId}",
+    @RequestMapping(method = RequestMethod.GET, value = "/getOrder/{orderId}",
         produces = MediaType.APPLICATION_JSON_VALUE,
         consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<OrderRequestDTO> getOrder(@PathVariable String id) {
+    public ResponseEntity<OrderResponseDTO> getOrder(@PathVariable String orderId) {
 
-        OrderResponseDTO response = this.service.getOrder(id);
+        OrderResponseDTO response = this.service.getOrder(orderId);
 
-        return new ResponseEntity<>(response, HttpStatus.OK).ok().build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 

@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 import static com.angel.models.constants.TopicConstants.*;
 
@@ -34,6 +35,7 @@ public class KafkaConsumerConfigImpl implements IKafkaConsumerConfig{
     private final ObjectMapper mapper;
     private Event event = null;
     private Command command = null;
+    private Logger logger;
 
     public KafkaConsumerConfigImpl(){
         this.jsonSerializer = new JsonSerializer();
@@ -41,6 +43,7 @@ public class KafkaConsumerConfigImpl implements IKafkaConsumerConfig{
         this.jsonSerde = Serdes.serdeFrom(jsonSerializer, jsonDeserializer);
         this.builder = new StreamsBuilder();
         this.mapper = new ObjectMapper();
+        this.logger = Logger.getLogger("KafkaConsumerConfigImpl");
     }
 
     public Event eventFactory(Command cmd, String topic){
@@ -63,6 +66,8 @@ public class KafkaConsumerConfigImpl implements IKafkaConsumerConfig{
                     .paymentId(paymentCmd.getPaymentId())
                     .paymentState(paymentCmd.getPaymentState())
                     .userId(paymentCmd.getUserId())
+                    .price(paymentCmd.getPrice())
+                    .quantity(paymentCmd.getQuantity())
                     .build();
             case RESERVE_PRODUCT_COMMAND:
                 ReserveProductCommand reserveCmd = (ReserveProductCommand) cmd;
@@ -71,6 +76,7 @@ public class KafkaConsumerConfigImpl implements IKafkaConsumerConfig{
                     .userId(reserveCmd.getUserId())
                     .productId(reserveCmd.getProductId())
                     .quantity(reserveCmd.getQuantity())
+                    .price(reserveCmd.getPrice())
                     .build();
             case APPROVE_ORDER_COMMAND:
                 ApproveOrderCommand approvetCmd = (ApproveOrderCommand) cmd;
@@ -132,6 +138,8 @@ public class KafkaConsumerConfigImpl implements IKafkaConsumerConfig{
                     .paymentId(paymentCmd.getPaymentId())
                     .paymentState(paymentCmd.getPaymentState())
                     .userId(paymentCmd.getUserId())
+                    .price(paymentCmd.getPrice())
+                    .quantity(paymentCmd.getQuantity())
                     .build();
             case PRODUCT_RESERVED_EVENT:
                 ProductReservedEvent reserveCmd = (ProductReservedEvent) evt;
@@ -140,6 +148,7 @@ public class KafkaConsumerConfigImpl implements IKafkaConsumerConfig{
                     .userId(reserveCmd.getUserId())
                     .productId(reserveCmd.getProductId())
                     .quantity(reserveCmd.getQuantity())
+                    .price(reserveCmd.getPrice())
                     .build();
             case ORDER_APPROVED_EVENT:
                 OrderApprovedEvent approvetCmd = (OrderApprovedEvent) evt;
@@ -207,7 +216,7 @@ public class KafkaConsumerConfigImpl implements IKafkaConsumerConfig{
         KStream<String, JsonNode> eventJson = this.builder.stream(currentTopic,
                                                                   Consumed.with(Serdes.String(), this.jsonSerde));
         //here we read stream from orderCreate method and topic and we consume what is produced from producer
-
+            this.logger.info(eventJson.toString());
             eventJson.foreach((key, value) -> {
                 try {
                     this.event = this.mapper.readValue(value.traverse(), evt.getClass());
@@ -226,7 +235,7 @@ public class KafkaConsumerConfigImpl implements IKafkaConsumerConfig{
         KStream<String, JsonNode> eventJson = this.builder.stream(currentTopic,
                                                                   Consumed.with(Serdes.String(), this.jsonSerde));
         //here we read stream from BankTransactionProducer we consume what is produced from producer
-
+        this.logger.info(eventJson.toString());
         eventJson.foreach((key, value)->{
             try {
                 this.command = this.mapper.readValue(value.traverse(), cmd.getClass());
@@ -237,6 +246,16 @@ public class KafkaConsumerConfigImpl implements IKafkaConsumerConfig{
 
         Event createdEvent = eventFactory(this.command,nextTopicCommand);
         return createdEvent;
+    }
+
+    public void consumeTest(){
+        KStream<String, JsonNode> eventJson = this.builder.stream("testTopic",
+                                                                  Consumed.with(Serdes.String(), this.jsonSerde));
+        eventJson.foreach((key, value)->{
+
+                this.logger.info(key.toString() + "  " + value.toString());
+
+        });
     }
 
     public Properties getConsumerProperties(){

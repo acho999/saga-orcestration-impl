@@ -13,6 +13,7 @@ public interface IKafkaProducerConfig {
     Properties getProducerProperties();
     void sendEvent(String nextTopic, Event event);
     void sendCommand(String nextTopic, Command command);
+    void sendTest();
 
 
 }

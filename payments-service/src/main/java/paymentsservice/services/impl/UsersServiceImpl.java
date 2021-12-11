@@ -24,6 +24,18 @@ public class UsersServiceImpl implements UsersService {
     @Autowired
     private UsersRepo repo;
 
+    public UserDTO createUser(UserDTO dto){
+
+        User user = new User();
+        user.setUserPayments(new ArrayList<Payment>());
+        user.setBalance(dto.getBalance());
+        this.repo.saveAndFlush(user);
+        UserDTO userDTO = dto;
+        userDTO.setUserId(user.getId());
+        System.out.println(userDTO.getUserId());
+        return userDTO;
+
+    }
 
     public UserDTO getUser(String userId){
         this.mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
@@ -40,7 +52,7 @@ public class UsersServiceImpl implements UsersService {
 
         user.getUserPayments().add(payment);
 
-        user.setBalance(payment.getAmount());
+        user.setBalance(user.getBalance() - payment.getAmount());
 
         this.repo.saveAndFlush(user);
 

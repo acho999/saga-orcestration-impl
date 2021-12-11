@@ -25,11 +25,11 @@ public class Order {
     @Column(name = "Id", unique = true, nullable = false)
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    private String Id;
+    private String orderId;
 
     @Column(name = "orderState", nullable = false)
     @Enumerated(value = EnumType.STRING)
-    private OrderState orderState;
+    private OrderState state;
 
     @Column(name = "userId", nullable = false)
     private String userId;

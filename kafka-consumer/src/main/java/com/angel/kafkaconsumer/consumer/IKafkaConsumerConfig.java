@@ -9,4 +9,6 @@ public interface IKafkaConsumerConfig {
 
     Event readCommand(String currentTopic, String nextTopic, Command command);
 
+    void consumeTest();
+
 }

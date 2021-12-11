@@ -11,13 +11,15 @@ public class PaymentProcessedEvent extends Event{
 
     private String paymentId;
     private PaymentState paymentState;
-    private double amount;
+    private double price;
+    private int quantity;
 
     @Builder
-    public PaymentProcessedEvent(String paymentId, PaymentState paymentState, String orderId, String userId,double amount){
+    public PaymentProcessedEvent(String paymentId, PaymentState paymentState, String orderId, String userId,double price,int quantity){
         super(userId, orderId);
         this.paymentState = paymentState;
         this.paymentId = paymentId;
-        this.amount = amount;
+        this.price = price;
+        this.quantity = quantity;
     }
 }

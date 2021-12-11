@@ -9,7 +9,7 @@ public interface OrdersService {
 
     OrderResponseDTO getOrder(String id);
 
-    boolean createOrder(OrderRequestDTO order);
+    OrderRequestDTO createOrder(OrderRequestDTO order);
 
     boolean cancelOrder(Command cmd);
 
