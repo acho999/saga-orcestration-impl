@@ -2,11 +2,13 @@ package com.angel.models.events;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class ProductReservedEvent extends Event{
 
     private String productId;

@@ -2,10 +2,12 @@ package com.angel.models.commands;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class ProductReservationCanselCommand extends Command{
 
     private String productId;

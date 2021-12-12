@@ -1,5 +1,6 @@
 package paymentsservice;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
@@ -10,10 +11,19 @@ import paymentsservice.start.StartClass;
 public class PaymentsServiceApplication {
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws JsonProcessingException {
         SpringApplication.run(PaymentsServiceApplication.class, args);
         ApplicationContext utils = ApplicationContextUtils.getApplicationContext();
         StartClass start = utils.getBean(StartClass.class);
         start.runAll();
+//        Thread thread = new Thread(()->{
+//            try {
+//                start.runAll();
+//            } catch (JsonProcessingException e) {
+//                e.printStackTrace();
+//            }
+//        });
+//
+//        thread.start();
     }
 }

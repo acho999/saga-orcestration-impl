@@ -38,7 +38,7 @@ public class Payment {
     @JoinColumn(name = "userid", referencedColumnName = "id")
     private User userId;
 
-    @Column(name = "amount")
+    @Column(name = "orderId")
     private String orderId;
 
     @Column(name = "amount")

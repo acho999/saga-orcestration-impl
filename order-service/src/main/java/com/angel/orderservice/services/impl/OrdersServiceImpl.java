@@ -6,14 +6,18 @@ import com.angel.models.commands.Command;
 import com.angel.orderservice.models.Order;
 import com.angel.orderservice.repos.OrdersRepo;
 import com.angel.orderservice.services.api.OrdersService;
+import com.angel.orderservice.startClass.StartClass;
 import com.angel.saga.api.SagaOrchestration;
 import com.angel.models.commands.CreateOrderCommand;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.angel.models.states.OrderState;
+
+import java.util.concurrent.Semaphore;
 
 @Service
 @Transactional
@@ -26,7 +30,14 @@ public class OrdersServiceImpl implements OrdersService {
     private ModelMapper mapper;
 
     @Autowired
+    private StartClass start;
+
+    private Thread thread = null;
+
+    @Autowired
     private SagaOrchestration sagaOrchestration;
+
+    private Semaphore mutex = new Semaphore(1);
 
     @Override
     public OrderResponseDTO getOrder(String id){
@@ -38,7 +49,8 @@ public class OrdersServiceImpl implements OrdersService {
     }
 
     @Override
-    public OrderRequestDTO createOrder(OrderRequestDTO order) {
+    public OrderRequestDTO createOrder(OrderRequestDTO order)
+        throws InterruptedException {
         this.mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
         Order newOrder = this.mapper.map(order, Order.class);
@@ -46,18 +58,38 @@ public class OrdersServiceImpl implements OrdersService {
         this.repo.saveAndFlush(newOrder);
 
         OrderRequestDTO dto = order;
-        order.setId(newOrder.getOrderId());
+        dto.setId(newOrder.getOrderId());
+        dto.setOrderState(newOrder.getState());
 
-        this.sagaOrchestration.testProducer();
+        CreateOrderCommand cmd = CreateOrderCommand.builder()
+            .orderId(newOrder.getOrderId())
+            .productId(order.getProductId())
+            .quantity(order.getQuantity())
+            .userId(order.getUserId())
+            .state(OrderState.ORDER_PENDING)
+            .build();
 
-//        this.sagaOrchestration.publishCreateOrderCommand(CreateOrderCommand.builder()
-//                                                .orderId(newOrder.getId())
-//                                                .productId(order.getProductId())
-//                                                .quantity(order.getQuantity())
-//                                                .userId(order.getUserId())
-//                                                .state(OrderState.ORDER_PENDING)
-//                                                .build());
+        this.mutex.acquire();
 
+           Runnable run = new Runnable() {
+               @Override
+               public void run() {
+
+                       try {
+                           start.runAll(cmd);
+                       } catch (JsonProcessingException e) {
+                           e.printStackTrace();
+                       }
+
+               }
+           };
+           if(thread == null){
+               thread = new Thread(run);
+               thread.start();
+           }
+        this.mutex.release();
+
+        //this.sagaOrchestration.testProducer();
         return dto;
     }
 

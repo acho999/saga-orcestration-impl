@@ -211,9 +211,9 @@ public class KafkaProducerConfigImpl implements IKafkaProducerConfig {
         this.logger.info(commandJson.toString());
 
         producer.send(
-            new ProducerRecord<>(nextTopicCommand, command.getUserId(), commandJson.toString()));
+            new ProducerRecord<>(nextTopicCommand, createdCommand.getUserId(), commandJson.toString()));
 
-        producer.close();
+        //producer.close();
     }
 
     public void sendEvent(String nextTopicCommand, Event createdEvent){
@@ -223,9 +223,9 @@ public class KafkaProducerConfigImpl implements IKafkaProducerConfig {
         commandJson.put(createdEvent.getClass().getSimpleName(), createdEvent.toString());
         this.logger.info(commandJson.toString());
         producer.send(
-            new ProducerRecord<>(nextTopicCommand, command.getUserId(), commandJson.toString()));
+            new ProducerRecord<>(nextTopicCommand, createdEvent.getUserId(), commandJson.toString()));
 
-        producer.close();
+        //producer.close();
     }
 
     public Properties getConsumerProperties(){
@@ -233,7 +233,7 @@ public class KafkaProducerConfigImpl implements IKafkaProducerConfig {
 
         config.put(StreamsConfig.APPLICATION_ID_CONFIG, "E-commerce-application");
         config.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "127.0.0.1:9091");
-        config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
         //here we do not config ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG and ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG
         //because above we use JSONSerde
 

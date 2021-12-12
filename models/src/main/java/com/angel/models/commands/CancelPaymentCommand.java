@@ -1,13 +1,14 @@
 package com.angel.models.commands;
 
-import com.angel.models.states.OrderState;
 import com.angel.models.states.PaymentState;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class CancelPaymentCommand extends Command{
 
     private String paymentId;

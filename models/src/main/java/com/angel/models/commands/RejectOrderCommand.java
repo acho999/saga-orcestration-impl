@@ -3,10 +3,12 @@ package com.angel.models.commands;
 import com.angel.models.states.OrderState;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class RejectOrderCommand extends Command{
 
     private String reason;
