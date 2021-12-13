@@ -14,6 +14,9 @@ public class ProductReservationCalseledEvent extends Event{
     private int quantity;
     private String reason;
 
+    public ProductReservationCalseledEvent(String a){}
+
+
     @Builder
     public ProductReservationCalseledEvent(String productId, int quantity, String reason, String userId, String orderId){
         super(userId, orderId);

@@ -15,6 +15,8 @@ public class OrderApprovedEvent extends Event{
     private String productId;
     private int productQuantity;
 
+    public OrderApprovedEvent(String a){}
+
     @Builder
     public OrderApprovedEvent(OrderState state, String orderId, String userId, String productId, int productQuantity){
         super(userId, orderId);

@@ -31,6 +31,10 @@
             <artifactId>jaxb-impl</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.angel</groupId>
             <artifactId>models</artifactId>
             <version>${project.version}</version>

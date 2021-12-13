@@ -15,6 +15,9 @@ public class CancelPaymentCommand extends Command{
     private PaymentState paymentState;
     private double amount;
 
+    public CancelPaymentCommand(String a){}
+
+
     @Builder
     public CancelPaymentCommand(String paymentId, PaymentState paymentState, String orderId, String userId,double amount){
         super(userId, orderId);

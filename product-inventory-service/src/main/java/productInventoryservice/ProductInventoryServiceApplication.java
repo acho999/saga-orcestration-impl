@@ -15,15 +15,6 @@ public class ProductInventoryServiceApplication {
         ApplicationContext context = ApplicationContextUtils.getApplicationContext();
         StartClass start = context.getBean(StartClass.class);
         start.runAll();
-//        Thread thread = new Thread(()->{
-//            try {
-//                start.runAll();
-//            } catch (JsonProcessingException e) {
-//                e.printStackTrace();
-//            }
-//        });
-//
-//        thread.start();
 
     }
 }

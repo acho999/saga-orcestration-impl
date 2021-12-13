@@ -15,6 +15,9 @@ public class CreateOrderCommand extends Command{
     private int quantity;
     private OrderState state;
 
+    public CreateOrderCommand(String a){}
+
+
     @Builder
     public CreateOrderCommand(String orderId, String userId, String productId, int quantity, OrderState state){
         super(userId,orderId);

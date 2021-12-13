@@ -14,6 +14,9 @@ public class ProductReservationCanselCommand extends Command{
     private int quantity;
     private String reason;
 
+    public ProductReservationCanselCommand(String a){}
+
+
     @Builder
     public ProductReservationCanselCommand(String productId, int quantity, String reason, String userId, String orderId){
         super(userId, orderId);

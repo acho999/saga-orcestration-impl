@@ -30,15 +30,10 @@ public class OrdersServiceImpl implements OrdersService {
     private ModelMapper mapper;
 
     @Autowired
-    private StartClass start;
-
-    private Thread thread = null;
-
-    @Autowired
     private SagaOrchestration sagaOrchestration;
 
-    private Semaphore mutex = new Semaphore(1);
-
+    @Autowired
+    private StartClass start;
     @Override
     public OrderResponseDTO getOrder(String id){
         this.mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
@@ -50,7 +45,7 @@ public class OrdersServiceImpl implements OrdersService {
 
     @Override
     public OrderRequestDTO createOrder(OrderRequestDTO order)
-        throws InterruptedException {
+        throws InterruptedException, JsonProcessingException {
         this.mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
         Order newOrder = this.mapper.map(order, Order.class);
@@ -69,26 +64,7 @@ public class OrdersServiceImpl implements OrdersService {
             .state(OrderState.ORDER_PENDING)
             .build();
 
-        this.mutex.acquire();
-
-           Runnable run = new Runnable() {
-               @Override
-               public void run() {
-
-                       try {
-                           start.runAll(cmd);
-                       } catch (JsonProcessingException e) {
-                           e.printStackTrace();
-                       }
-
-               }
-           };
-           if(thread == null){
-               thread = new Thread(run);
-               thread.start();
-           }
-        this.mutex.release();
-
+        this.start.runAll(cmd);
         //this.sagaOrchestration.testProducer();
         return dto;
     }

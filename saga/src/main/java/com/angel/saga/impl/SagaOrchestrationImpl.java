@@ -33,7 +33,7 @@ public class SagaOrchestrationImpl implements SagaOrchestration {
                                                       null,
                                                       0,
                                                       null), record);
-        this.producer.sendCommand(PROCESS_PAYMENT_COMMAND, command);
+        this.producer.sendCommand(RESERVE_PRODUCT_COMMAND, command);
         return command;
     }
 

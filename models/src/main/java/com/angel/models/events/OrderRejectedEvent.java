@@ -15,6 +15,8 @@ public class OrderRejectedEvent extends Event{
     private OrderState state = OrderState.ORDER_CANCELLED;
     private String productId;
 
+    public OrderRejectedEvent(String a){}
+
     @Builder
     public OrderRejectedEvent(String reason, String userId, String orderId,String productId){
         super(userId, orderId);

@@ -15,6 +15,9 @@ public class ApproveOrderCommand extends Command{
     private String productId;
     private int productQuantity;
 
+    public ApproveOrderCommand(String a){}
+
+
     @Builder
     public ApproveOrderCommand(OrderState state, String orderId, String userId, String productId, int productQuantity){
         super(userId, orderId);

@@ -1,10 +1,13 @@
 package com.angel.kafkaconsumer.consumer;
 
+import com.angel.models.api.IEvent;
 import com.angel.models.commands.*;
 import com.angel.models.events.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -23,6 +26,7 @@ import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.KStream;
+import org.springframework.boot.jackson.JsonObjectDeserializer;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -46,6 +50,7 @@ public class KafkaConsumerConfigImpl implements IKafkaConsumerConfig{
     private Command command = null;
     private Logger logger;
     KafkaConsumer<String,String> consumer;
+    private ObjectMapper objectMpper;
 
     public KafkaConsumerConfigImpl(){
         this.jsonSerializer = new JsonSerializer();
@@ -55,6 +60,7 @@ public class KafkaConsumerConfigImpl implements IKafkaConsumerConfig{
         this.mapper = new ObjectMapper();
         this.logger = Logger.getLogger("KafkaConsumerConfigImpl");
         this.consumer = new KafkaConsumer<>(this.getConsumerProperties());
+        this.objectMpper = new ObjectMapper();
         this.init();
     }
 
@@ -172,13 +178,13 @@ public class KafkaConsumerConfigImpl implements IKafkaConsumerConfig{
                     .quantity(paymentCmd.getQuantity())
                     .build();
             case RESERVE_PRODUCT_COMMAND:
-                ProductReservedEvent reserveCmd = (ProductReservedEvent) evt;
+                OrderCreatedEvent reserveCmd = (OrderCreatedEvent) evt;
                 return ReserveProductCommand.builder()
                     .orderId(reserveCmd.getOrderId())
                     .userId(reserveCmd.getUserId())
                     .productId(reserveCmd.getProductId())
                     .quantity(reserveCmd.getQuantity())
-                    .price(reserveCmd.getPrice())
+                    .price(0.0)
                     .build();
             case APPROVE_ORDER_COMMAND:
                 OrderApprovedEvent approvetCmd = (OrderApprovedEvent) evt;
@@ -244,9 +250,17 @@ public class KafkaConsumerConfigImpl implements IKafkaConsumerConfig{
     public Command readEvent(String currentTopic, String nextTopicCommand, Event evt, ConsumerRecord<String, String> record)
         throws JsonProcessingException {
 
-            this.event = this.mapper.readValue(record.value(), evt.getClass());
-            Command createdCommand = commandFactory(this.event, nextTopicCommand);
-            return createdCommand;
+        JsonNode actualObj = this.objectMpper.readTree(record.value());
+        this.event = this.mapper.readValue(convertObjToJson(actualObj, evt), evt.getClass());
+        Command createdCommand = commandFactory(this.event, nextTopicCommand);
+        return createdCommand;
+    }
+
+    private String convertObjToJson(JsonNode jsonObj, IEvent evt){
+        String classname = evt.getClass().getSimpleName();
+        JsonNode obj = jsonObj.get(classname);
+        String actual = obj.toString().replaceAll("\\\\","").replaceAll("^\"|\"$", "");
+        return actual;
     }
 
     //read command from topic, create and send event
@@ -257,9 +271,9 @@ public class KafkaConsumerConfigImpl implements IKafkaConsumerConfig{
         if(record == null){
             this.command = cmd;
         } else {
-            this.command = this.mapper.readValue(record.value(), cmd.getClass());
+            JsonNode actualObj = this.objectMpper.readTree(record.value());
+            this.command = this.mapper.readValue(convertObjToJson(actualObj, cmd), cmd.getClass());
         }
-
         //System.out.println(record.value());
 
         Event createdEvent = eventFactory(this.command,nextTopicCommand);
@@ -299,7 +313,7 @@ public class KafkaConsumerConfigImpl implements IKafkaConsumerConfig{
         config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
         config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        config.put(ConsumerConfig.GROUP_ID_CONFIG, "myApplication12");
+        config.put(ConsumerConfig.GROUP_ID_CONFIG, "myApplication33");
         config.put(StreamsConfig.CACHE_MAX_BYTES_BUFFERING_CONFIG, "0");
         config.put(StreamsConfig.PROCESSING_GUARANTEE_CONFIG, StreamsConfig.EXACTLY_ONCE);
 

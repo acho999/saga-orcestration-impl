@@ -16,6 +16,7 @@ import com.angel.models.events.PaymentCanceledEvent;
 import com.angel.models.events.PaymentProcessedEvent;
 import com.angel.models.events.ProductReservationCalseledEvent;
 import com.angel.models.events.ProductReservedEvent;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -43,6 +44,7 @@ public class KafkaProducerConfigImpl implements IKafkaProducerConfig {
     private Producer<String, String> producer;
     private ObjectNode commandJson;
     private Logger logger;
+    private ObjectMapper objectMapper;
 
     public KafkaProducerConfigImpl(){
         this.builder = new StreamsBuilder();
@@ -50,6 +52,7 @@ public class KafkaProducerConfigImpl implements IKafkaProducerConfig {
         this.producer = new KafkaProducer<>(getProducerProperties());
         this.commandJson = JsonNodeFactory.instance.objectNode();
         this.logger = Logger.getLogger("KafkaProducerConfigImpl");
+        this.objectMapper = new ObjectMapper();
     }
 
     public Event eventFactory(Command command, String topic){
@@ -203,27 +206,48 @@ public class KafkaProducerConfigImpl implements IKafkaProducerConfig {
         return properties;
     }
 
-    public void sendCommand(String nextTopicCommand, Command createdCommand){
+    public void sendCommand(String nextTopicCommand, Command createdCommand)
+        throws JsonProcessingException {
         if (nextTopicCommand == null || createdCommand == null){
             return;
         }
-        commandJson.put(createdCommand.getClass().getSimpleName(), createdCommand.toString());
-        this.logger.info(commandJson.toString());
+        String commandName = createdCommand.getClass().getSimpleName();
+
+        String crCommand = this.objectMapper.writeValueAsString(createdCommand);
+
+        commandJson.put(commandName, crCommand);
+
+        String json = commandJson.toString();
+
+        String createdC = createdCommand.getUserId();
+
+        System.out.println(commandJson.toString());
 
         producer.send(
-            new ProducerRecord<>(nextTopicCommand, createdCommand.getUserId(), commandJson.toString()));
+            new ProducerRecord<>(nextTopicCommand, createdC, json));
 
         //producer.close();
     }
 
-    public void sendEvent(String nextTopicCommand, Event createdEvent){
+    public void sendEvent(String nextTopicCommand, Event createdEvent)
+        throws JsonProcessingException {
         if (nextTopicCommand == null || createdEvent == null){
             return;
         }
-        commandJson.put(createdEvent.getClass().getSimpleName(), createdEvent.toString());
-        this.logger.info(commandJson.toString());
+        String className = createdEvent.getClass().getSimpleName();
+
+        String createdE = createdEvent.getUserId();
+
+        String crEvent = this.objectMapper.writeValueAsString(createdEvent);
+
+        commandJson.put(className, crEvent);
+
+        System.out.println(commandJson);
+
+        String json = commandJson.toString();
+
         producer.send(
-            new ProducerRecord<>(nextTopicCommand, createdEvent.getUserId(), commandJson.toString()));
+            new ProducerRecord<>(nextTopicCommand, createdE, json));
 
         //producer.close();
     }
@@ -250,10 +274,11 @@ public class KafkaProducerConfigImpl implements IKafkaProducerConfig {
 
     public void sendTest(){
         commandJson.put("key", "sendTestProducer");
-        this.logger.info(commandJson.toString());
+
+        System.out.println(commandJson.toString());
 
         producer.send(
-            new ProducerRecord<>("testTopic", "KEY", commandJson.toString()));
-        producer.close();
+            new ProducerRecord<>("createOrderEvent", "KEY", commandJson.toString()));
+        //producer.close();
     }
 }

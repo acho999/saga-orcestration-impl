@@ -16,6 +16,9 @@ public class PaymentProcessedEvent extends Event{
     private double price;
     private int quantity;
 
+    public PaymentProcessedEvent(String a){}
+
+
     @Builder
     public PaymentProcessedEvent(String paymentId, PaymentState paymentState, String orderId, String userId,double price,int quantity){
         super(userId, orderId);

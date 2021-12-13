@@ -15,6 +15,9 @@ public class RejectOrderCommand extends Command{
     private OrderState state = OrderState.ORDER_CANCELLED;
     private String productId;
 
+    public RejectOrderCommand(String a){}
+
+
     @Builder
     public RejectOrderCommand(String reason, String userId, String orderId,String productId){
         super(userId, orderId);

@@ -16,14 +16,5 @@ public class PaymentsServiceApplication {
         ApplicationContext utils = ApplicationContextUtils.getApplicationContext();
         StartClass start = utils.getBean(StartClass.class);
         start.runAll();
-//        Thread thread = new Thread(()->{
-//            try {
-//                start.runAll();
-//            } catch (JsonProcessingException e) {
-//                e.printStackTrace();
-//            }
-//        });
-//
-//        thread.start();
     }
 }
