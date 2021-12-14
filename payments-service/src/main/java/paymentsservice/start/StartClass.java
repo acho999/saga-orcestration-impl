@@ -67,6 +67,7 @@ public class StartClass {
                 switch(record.topic()){
 
                     case CANCEL_PAYMENT_COMMAND :
+                        System.out.println("cancel payment command");
                         //11
                         cmd = (PaymentCanceledEvent) this.sagaOrchestration.publishCancelPaymentCommand(record);
                         if (cmd != null) {
@@ -77,6 +78,7 @@ public class StartClass {
 
 
                     case PAYMENT_PROCESSED_EVENT :
+                        System.out.println("payment processed event");
                         //6
                         command = (ProcessPaymentCommand) this.sagaOrchestration.handlePaymentProcessedEvent(record);
                         if (command != null && !this.paymentsService.savePayment(command.getUserId(),

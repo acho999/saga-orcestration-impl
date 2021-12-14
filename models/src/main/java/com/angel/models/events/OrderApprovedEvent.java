@@ -13,16 +13,16 @@ public class OrderApprovedEvent extends Event{
 
     private OrderState state;
     private String productId;
-    private int productQuantity;
+    private int quantity;
 
     public OrderApprovedEvent(String a){}
 
     @Builder
-    public OrderApprovedEvent(OrderState state, String orderId, String userId, String productId, int productQuantity){
+    public OrderApprovedEvent(OrderState state, String orderId, String userId, String productId, int quantity){
         super(userId, orderId);
         this.state = state;
         this.productId = productId;
-        this.productQuantity = productQuantity;
+        this.quantity = quantity;
     }
 
 }

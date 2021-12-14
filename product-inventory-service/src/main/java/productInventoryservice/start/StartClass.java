@@ -63,6 +63,7 @@ public class StartClass {
                 switch(record.topic()){
 
                     case PRODUCT_RESERVED_EVENT :
+                        System.out.println("product reserved event");
                         ReserveProductCommand event =
                             (ReserveProductCommand) sagaOrchestration.handleProductReservedEvent(record);//4
 
@@ -78,6 +79,7 @@ public class StartClass {
                         break;
 
                     case PRODUCT_RESERVATION_CANCELED_EVENT :
+                        System.out.println("product reservation canceled event");
                         RejectOrderCommand command =
                         (RejectOrderCommand) sagaOrchestration.handleProductReservationCanceledEvent(record);//10
                         if (command != null) {

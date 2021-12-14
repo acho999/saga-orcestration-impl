@@ -4,10 +4,8 @@ import com.angel.models.api.IEvent;
 import com.angel.models.commands.*;
 import com.angel.models.events.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -21,17 +19,11 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.apache.kafka.connect.json.JsonDeserializer;
 import org.apache.kafka.connect.json.JsonSerializer;
-import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
-import org.apache.kafka.streams.kstream.Consumed;
-import org.apache.kafka.streams.kstream.KStream;
-import org.springframework.boot.jackson.JsonObjectDeserializer;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Properties;
 import java.util.logging.Logger;
@@ -85,7 +77,7 @@ public class KafkaConsumerConfigImpl implements IKafkaConsumerConfig{
         if (cmd == null){
             return null;
         }
-        switch (topic){
+        switch (topic){//1
             case ORDER_CREATED_EVENT:
                 CreateOrderCommand createCmd = (CreateOrderCommand) cmd;
                 return OrderCreatedEvent.builder()
@@ -121,7 +113,7 @@ public class KafkaConsumerConfigImpl implements IKafkaConsumerConfig{
                     .state(approvetCmd.getState())
                     .userId(approvetCmd.getUserId())
                     .productId(approvetCmd.getProductId())
-                    .productQuantity(approvetCmd.getProductQuantity())
+                    .quantity(approvetCmd.getQuantity())
                     .build();
             case PRODUCT_RESERVATION_CANCELED_EVENT:
                 ProductReservationCanselCommand canceltCmd = (ProductReservationCanselCommand) cmd;
@@ -159,23 +151,23 @@ public class KafkaConsumerConfigImpl implements IKafkaConsumerConfig{
         }
 
         switch (topic){
-            case CREATE_ORDER_COMMAND:
-                OrderCreatedEvent createCmd = (OrderCreatedEvent) evt;
-                return CreateOrderCommand.builder()
-                    .orderId(createCmd.getOrderId())
-                    .productId(createCmd.getProductId())
-                    .quantity(createCmd.getQuantity())
-                    .state(createCmd.getState())
-                    .build();
+//            case CREATE_ORDER_COMMAND:
+//                OrderCreatedEvent createCmd = (OrderCreatedEvent) evt;
+//                return CreateOrderCommand.builder()
+//                    .orderId(createCmd.getOrderId())
+//                    .productId(createCmd.getProductId())
+//                    .quantity(createCmd.getQuantity())
+//                    .state(createCmd.getState())
+//                    .build();
             case PROCESS_PAYMENT_COMMAND:
-                PaymentProcessedEvent paymentCmd = (PaymentProcessedEvent) evt;
+                ProductReservedEvent paymentCmd = (ProductReservedEvent) evt;
                 return ProcessPaymentCommand.builder()
                     .orderId(paymentCmd.getOrderId())
-                    .paymentId(paymentCmd.getPaymentId())
-                    .paymentState(paymentCmd.getPaymentState())
                     .userId(paymentCmd.getUserId())
                     .price(paymentCmd.getPrice())
                     .quantity(paymentCmd.getQuantity())
+                    .paymentId(null)
+                    .paymentState(null)
                     .build();
             case RESERVE_PRODUCT_COMMAND:
                 OrderCreatedEvent reserveCmd = (OrderCreatedEvent) evt;
@@ -184,15 +176,14 @@ public class KafkaConsumerConfigImpl implements IKafkaConsumerConfig{
                     .userId(reserveCmd.getUserId())
                     .productId(reserveCmd.getProductId())
                     .quantity(reserveCmd.getQuantity())
-                    .price(0.0)
+                    .price(reserveCmd.getPrice())
                     .build();
             case APPROVE_ORDER_COMMAND:
-                OrderApprovedEvent approvetCmd = (OrderApprovedEvent) evt;
+                PaymentProcessedEvent approvetCmd = (PaymentProcessedEvent) evt;
                 return ApproveOrderCommand.builder()
                     .orderId(approvetCmd.getOrderId())
-                    .state(approvetCmd.getState())
                     .userId(approvetCmd.getUserId())
-                    .productQuantity(approvetCmd.getProductQuantity())
+                    .quantity(approvetCmd.getQuantity())
                     .productId(approvetCmd.getProductId())
                     .build();
             case CANCEL_PRODUCT_RESERVATION_COMMAND:
@@ -313,8 +304,8 @@ public class KafkaConsumerConfigImpl implements IKafkaConsumerConfig{
         config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
         config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        config.put(ConsumerConfig.GROUP_ID_CONFIG, "myApplication33");
-        config.put(StreamsConfig.CACHE_MAX_BYTES_BUFFERING_CONFIG, "0");
+        config.put(ConsumerConfig.GROUP_ID_CONFIG, "newApp3");
+        config.put(StreamsConfig.CACHE_MAX_BYTES_BUFFERING_CONFIG, "0");//10 * 1024 * 1024L);
         config.put(StreamsConfig.PROCESSING_GUARANTEE_CONFIG, StreamsConfig.EXACTLY_ONCE);
 
         return config;

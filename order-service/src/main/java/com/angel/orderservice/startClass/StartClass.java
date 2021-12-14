@@ -1,7 +1,6 @@
 package com.angel.orderservice.startClass;
 
 import com.angel.models.commands.Command;
-import com.angel.models.commands.CreateOrderCommand;
 import com.angel.orderservice.services.api.OrdersService;
 import com.angel.saga.api.SagaOrchestration;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -13,6 +12,8 @@ import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
 
 import static com.angel.models.constants.TopicConstants.*;
@@ -22,13 +23,17 @@ public class StartClass {
 
     private Semaphore mutex;
 
+    private Semaphore consumerMutex;
+
     private SagaOrchestration sagaOrchestration;
 
     private OrdersService service;
 
-    private KafkaConsumer<String, String> consumer;
+    private volatile KafkaConsumer<String, String> consumer;
 
     private Thread thread = null;
+
+    private ExecutorService executors;
 
     @Autowired
     public StartClass(OrdersService service, SagaOrchestration sagaOrchestration) {
@@ -36,6 +41,8 @@ public class StartClass {
         this.sagaOrchestration = sagaOrchestration;
         this.consumer = new KafkaConsumer<>(this.sagaOrchestration.getConsumerProps());
         mutex = new Semaphore(1);
+        this.consumerMutex = new Semaphore(1);
+        executors = Executors.newFixedThreadPool(5);
         this.init();
     }
 
@@ -58,53 +65,61 @@ public class StartClass {
 
     public void runAll(Command command) throws JsonProcessingException, InterruptedException {
 
-        this.mutex.acquire();
-
         Runnable run = new Runnable() {
             @Override
             public void run() {
                 try {
+                    //int counter = 0;
                     while (true) {
+
                         System.out.println("begin");
+
+                        consumerMutex.acquire();
                         ConsumerRecords<String, String> records =
                             consumer.poll(Duration.ofMillis(100));
+                        consumerMutex.release();
+
                         for (ConsumerRecord<String, String> record : records) {
 
                             switch (record.topic()) {
 
-                                case "" :
-                                break;
-
                                 case ORDER_CREATED_EVENT:
+                                    System.out.println("order created event");
                                     //handle order created event and sends reserve product command 2
                                     sagaOrchestration.handleOrderCreatedEvent(record);
                                     break;
 
                                 case RESERVE_PRODUCT_COMMAND:
+                                    System.out.println("reserve product command");
                                     // handle reserve product command and sends process payment event 3
                                     sagaOrchestration.publishReserveProductCommand(record);
 
                                 case PROCESS_PAYMENT_COMMAND:
+                                    System.out.println("process payment command");
                                     //5
                                     sagaOrchestration.publishProcessPaymentCommand(record);
                                     break;
 
                                 case APPROVE_ORDER_COMMAND:
+                                    System.out.println("approve order command");
                                     //7 sends approve order command
                                     sagaOrchestration.publishApproveOrderCommand(record);
                                     break;
 
                                 case PRODUCT_RESERVATION_CANCELED_EVENT:
+                                    System.out.println("products reservation canceled event");
                                     //10
                                     sagaOrchestration.handleProductReservationCanceledEvent(record);
                                     break;
 
                                 case PAYMENT_CANCELED_EVENT:
+                                    System.out.println("payment canceled event");
                                     //12
                                     sagaOrchestration.handlePaymentCanceledEvent(record);
                                     break;
 
                                 case ORDER_APPROVED_EVENT:
+                                    System.out.println("order approved event");
                                     Command approvedOrder =
                                         sagaOrchestration.handleOrderApprovedEvent(
                                             record);//8 handle appdoved order event end of cycle without errors
@@ -114,10 +129,12 @@ public class StartClass {
                                     }
 
                                 case REJECT_ORDER_COMMAND:
+                                    System.out.println("reject order command");
                                     sagaOrchestration.publishRejectOrderCommand(record);//14
                                     break;
 
                                 case ORDER_REJECTED_EVENT:
+                                    System.out.println("order rejected event");
                                     Command rejectedOrder =
                                         sagaOrchestration.handleOrderRejectedEvent(record);//14
                                     if (rejectedOrder != null) {
@@ -127,22 +144,28 @@ public class StartClass {
                                 default: break;
                             }
                         }
-                        if (command.getClass().getSimpleName().equals("CreateOrderCommand") && records.count() == 0) {
-                            //1
-                            sagaOrchestration.publishCreateOrderCommand(command, null);
-                            //sagaOrchestration.testProducer();
-                        }
+
                         System.out.println("end");
                     }
-                } catch (JsonProcessingException e) {
+
+                } catch (JsonProcessingException | InterruptedException e) {
                     e.printStackTrace();
                 }
+                //consumer.///ack.!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             }
         };
-        if (thread == null) {
-            thread = new Thread(run);
-            thread.start();
-        }
-        this.mutex.release();
+
+        this.executors.execute(run);
+        Thread.sleep(1000);
+//        if (command.getClass().getSimpleName().equals("CreateOrderCommand")) {
+//            //1
+//            sagaOrchestration.publishCreateOrderCommand(command, null);
+//            //sagaOrchestration.testProducer();
+//        }
+
+//        if (thread == null) {
+//            thread = new Thread(run);
+//            thread.start();
+//        }
     }
 }

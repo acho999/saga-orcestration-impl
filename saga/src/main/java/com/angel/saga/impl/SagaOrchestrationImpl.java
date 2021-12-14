@@ -25,14 +25,15 @@ public class SagaOrchestrationImpl implements SagaOrchestration {
     @Override//2
     public Command handleOrderCreatedEvent(ConsumerRecord<String, String> record)
         throws JsonProcessingException {
-
+//1
         Command command = this.consumer.readEvent(ORDER_CREATED_EVENT,RESERVE_PRODUCT_COMMAND,
                                                   new OrderCreatedEvent(
                                                       null,
                                                       null,
                                                       null,
                                                       0,
-                                                      null), record);
+                                                      null,
+                                                      0.0d), record);
         this.producer.sendCommand(RESERVE_PRODUCT_COMMAND, command);
         return command;
     }
@@ -63,7 +64,8 @@ public class SagaOrchestrationImpl implements SagaOrchestration {
                                                       null,
                                                       null,
                                                       0.0d,
-                                                      0), record);
+                                                      0,
+                                                      null), record);
         this.producer.sendCommand(APPROVE_ORDER_COMMAND, command);
         return command;
     }
@@ -168,7 +170,8 @@ public class SagaOrchestrationImpl implements SagaOrchestration {
                                                     null,
                                                     null,
                                                     0.0d,
-                                                    0),record);
+                                                    0,
+                                                    null),record);
         this.producer.sendEvent(PAYMENT_PROCESSED_EVENT, event);
         return event;
     }
@@ -179,7 +182,6 @@ public class SagaOrchestrationImpl implements SagaOrchestration {
         Event event = this.consumer.readCommand(APPROVE_ORDER_COMMAND,
                                                 ORDER_APPROVED_EVENT,
                                                 new ApproveOrderCommand(
-                                                  null,
                                                   null,
                                                   null,
                                                   null,

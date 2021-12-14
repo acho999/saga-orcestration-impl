@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.angel.models.states.OrderState;
 
-import java.util.concurrent.Semaphore;
 
 @Service
 @Transactional
@@ -45,7 +44,7 @@ public class OrdersServiceImpl implements OrdersService {
 
     @Override
     public OrderRequestDTO createOrder(OrderRequestDTO order)
-        throws InterruptedException, JsonProcessingException {
+        throws  JsonProcessingException {
         this.mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
         Order newOrder = this.mapper.map(order, Order.class);
@@ -64,7 +63,9 @@ public class OrdersServiceImpl implements OrdersService {
             .state(OrderState.ORDER_PENDING)
             .build();
 
-        this.start.runAll(cmd);
+            //1
+            sagaOrchestration.publishCreateOrderCommand(cmd, null);
+        //this.start.runAll(cmd);
         //this.sagaOrchestration.testProducer();
         return dto;
     }
