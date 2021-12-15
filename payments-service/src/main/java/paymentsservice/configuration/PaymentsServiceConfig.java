@@ -1,11 +1,8 @@
 package paymentsservice.configuration;
 
-import com.angel.kafkaconsumer.consumer.IKafkaConsumerConfig;
-import com.angel.kafkaconsumer.consumer.KafkaConsumerConfigImpl;
-import com.angel.kafkaproducer.producer.IKafkaProducerConfig;
-import com.angel.kafkaproducer.producer.KafkaProducerConfigImpl;
-import com.angel.saga.api.SagaOrchestration;
-import com.angel.saga.impl.SagaOrchestrationImpl;
+import com.angel.saga.api.SendMessage;
+import com.angel.saga.impl.SendMessageImpl;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -37,28 +34,19 @@ public class PaymentsServiceConfig {
     Environment env;
 
     @Bean
+    public SendMessage sendMessage(){
+        return new SendMessageImpl();
+    }
+
+    @Bean
+    public ObjectMapper createObjectMapper(){
+        return new ObjectMapper();
+    }
+
+    @Bean
     public ModelMapper createMapper() {
         return new ModelMapper();
     }
-
-    @Bean
-    public SagaOrchestration createSaga() {
-
-        return new SagaOrchestrationImpl();
-    }
-
-    @Bean
-    public IKafkaProducerConfig createProducer() {
-
-        return new KafkaProducerConfigImpl();
-    }
-
-    @Bean
-    public IKafkaConsumerConfig createConsumer() {
-
-        return new KafkaConsumerConfigImpl();
-    }
-
 
     @Bean
     public DataSource dataSource() {

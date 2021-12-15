@@ -15,7 +15,10 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  kafka:
+    bootstrap-servers: "127.0.0.1:9092"
 
+groupId: "newApp11"
 org:
   hibernate:
     dialect: MySQLDialect

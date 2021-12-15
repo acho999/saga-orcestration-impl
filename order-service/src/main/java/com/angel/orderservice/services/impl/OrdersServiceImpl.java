@@ -6,16 +6,17 @@ import com.angel.models.commands.Command;
 import com.angel.orderservice.models.Order;
 import com.angel.orderservice.repos.OrdersRepo;
 import com.angel.orderservice.services.api.OrdersService;
-import com.angel.orderservice.startClass.StartClass;
-import com.angel.saga.api.SagaOrchestration;
 import com.angel.models.commands.CreateOrderCommand;
+import com.angel.saga.api.SendMessage;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.angel.models.states.OrderState;
+import static com.angel.models.constants.TopicConstants.*;
 
 
 @Service
@@ -26,13 +27,14 @@ public class OrdersServiceImpl implements OrdersService {
     private OrdersRepo repo;
 
     @Autowired
+    private ObjectMapper objectMapper;
+
+    @Autowired
     private ModelMapper mapper;
 
     @Autowired
-    private SagaOrchestration sagaOrchestration;
+    private SendMessage send;
 
-    @Autowired
-    private StartClass start;
     @Override
     public OrderResponseDTO getOrder(String id){
         this.mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
@@ -64,7 +66,7 @@ public class OrdersServiceImpl implements OrdersService {
             .build();
 
             //1
-            sagaOrchestration.publishCreateOrderCommand(cmd, null);
+            send.sendMessage(CREATE_ORDER_COMMAND, cmd, objectMapper);
         //this.start.runAll(cmd);
         //this.sagaOrchestration.testProducer();
         return dto;
