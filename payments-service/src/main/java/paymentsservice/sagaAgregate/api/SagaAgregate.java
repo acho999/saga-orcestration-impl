@@ -16,9 +16,4 @@ public interface SagaAgregate {
     Command handlePaymentCanceledEvent(String message)
         throws JsonProcessingException;
 
-    Event publishCancelPaymentCommand(String message)
-        throws JsonProcessingException;
-
-    Event publishCancelProductReservationCommand(String message)
-        throws JsonProcessingException;
 }

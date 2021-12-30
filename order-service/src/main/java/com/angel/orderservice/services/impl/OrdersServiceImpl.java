@@ -2,7 +2,6 @@ package com.angel.orderservice.services.impl;
 
 import com.angel.models.DTO.OrderRequestDTO;
 import com.angel.models.DTO.OrderResponseDTO;
-import com.angel.models.commands.Command;
 import com.angel.orderservice.models.Order;
 import com.angel.orderservice.repos.OrdersRepo;
 import com.angel.orderservice.services.api.OrdersService;
@@ -16,11 +15,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.angel.models.states.OrderState;
+
+import java.util.List;
+import java.util.Optional;
+
+
 import static com.angel.models.constants.TopicConstants.*;
 
 
 @Service
-@Transactional
 public class OrdersServiceImpl implements OrdersService {
 
     @Autowired
@@ -38,13 +41,14 @@ public class OrdersServiceImpl implements OrdersService {
     @Override
     public OrderResponseDTO getOrder(String id){
         this.mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-
-        OrderResponseDTO dto = this.mapper.map(this.repo.getById(id),OrderResponseDTO.class);
-
+        Order order = this.repo.findById(id).get();
+        OrderResponseDTO dto = this.mapper.map(order,OrderResponseDTO.class);
+        //this.approveOrder(id);
         return  dto;
     }
 
     @Override
+    @Transactional
     public OrderRequestDTO createOrder(OrderRequestDTO order)
         throws  JsonProcessingException {
         this.mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
@@ -59,38 +63,39 @@ public class OrdersServiceImpl implements OrdersService {
 
         CreateOrderCommand cmd = CreateOrderCommand.builder()
             .orderId(newOrder.getOrderId())
-            .productId(order.getProductId())
-            .quantity(order.getQuantity())
-            .userId(order.getUserId())
+            .productId(dto.getProductId())
+            .quantity(dto.getQuantity())
+            .userId(dto.getUserId())
             .state(OrderState.ORDER_PENDING)
+            .price(dto.getPrice())
             .build();
 
-            //1
-            send.sendMessage(CREATE_ORDER_COMMAND, cmd, objectMapper);
-        //this.start.runAll(cmd);
-        //this.sagaOrchestration.testProducer();
+        //1
+        send.sendMessage(CREATE_ORDER_COMMAND, cmd, objectMapper);
         return dto;
     }
 
     @Override//as parameter may be orderId
-    public boolean cancelOrder(Command command) {
+    @Transactional
+    public synchronized boolean cancelOrder(String orderId) {
 
-        Order order = this.repo.getById(command.getUserId());
+        Order order = this.repo.findById(orderId).get();
 
         order.setState(OrderState.ORDER_CANCELLED);
 
         this.repo.saveAndFlush(order);
 
-        return false;
+        return true;
     }
 
     @Override//as parameter may be orderId
-    public boolean approveOrder(Command command) {
+    @Transactional
+    public synchronized boolean approveOrder(String orderId) {
+        System.out.println(orderId);
+        System.out.println(this.repo.existsById(orderId));
 
-        Order order = this.repo.getById(command.getUserId());
-
+        Order order = this.repo.findById(orderId).get();
         order.setState(OrderState.ORDER_CREATED);
-
         this.repo.saveAndFlush(order);
 
         return true;

@@ -10,6 +10,7 @@ public interface ProductInventoryService {
     boolean isAvailable(String productId, int quantity);
     void resetQuantity(String productId);
     ProductDTO createProduct(ProductDTO product);
+    void extractQuantity(String productId, int quantity);
 
 
 }

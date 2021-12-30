@@ -4,3 +4,4 @@ log4j:
     stdout: org.apache.log4j.ConsoleAppender
       layout: org.apache.log4j.PatternLayout
         ConversionPattern: %p %m (%c:%L) %n
+kafka.groupId: "newApp11"

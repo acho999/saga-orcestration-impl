@@ -19,21 +19,19 @@ public class FactoryImpl implements Factory {
     private final ObjectMapper mapper;
     private Event event = null;
     private Command command = null;
-    private Logger logger;
-    private ObjectMapper objectMpper;
+    private final Logger logger;
 
-    public FactoryImpl(){
+    public FactoryImpl() {
         this.mapper = new ObjectMapper();
         this.logger = Logger.getLogger("KafkaConsumerConfigImpl");
-        this.objectMpper = new ObjectMapper();
     }
 
     @Override
-    public Event eventFactory(Command cmd, String topic){
-        if (cmd == null){
+    public synchronized Event eventFactory(Command cmd, String topic) {
+        if (cmd == null) {
             return null;
         }
-        switch (topic){//1
+        switch (topic) {//1
             case ORDER_CREATED_EVENT:
                 CreateOrderCommand createCmd = (CreateOrderCommand) cmd;
                 return OrderCreatedEvent.builder()
@@ -42,6 +40,7 @@ public class FactoryImpl implements Factory {
                     .quantity(createCmd.getQuantity())
                     .state(createCmd.getState())
                     .userId(createCmd.getUserId())
+                    .price(createCmd.getPrice())
                     .build();
             case PAYMENT_PROCESSED_EVENT:
                 ProcessPaymentCommand paymentCmd = (ProcessPaymentCommand) cmd;
@@ -52,6 +51,7 @@ public class FactoryImpl implements Factory {
                     .userId(paymentCmd.getUserId())
                     .price(paymentCmd.getPrice())
                     .quantity(paymentCmd.getQuantity())
+                    .productId(paymentCmd.getProductId())
                     .build();
             case PRODUCT_RESERVED_EVENT:
                 ReserveProductCommand reserveCmd = (ReserveProductCommand) cmd;
@@ -70,24 +70,28 @@ public class FactoryImpl implements Factory {
                     .userId(approvetCmd.getUserId())
                     .productId(approvetCmd.getProductId())
                     .quantity(approvetCmd.getQuantity())
+                    .price(approvetCmd.getPrice())
                     .build();
             case PRODUCT_RESERVATION_CANCELED_EVENT:
-                ProductReservationCanselCommand canceltCmd = (ProductReservationCanselCommand) cmd;
+                ProductReservationCancelCommand canceltCmd = (ProductReservationCancelCommand) cmd;
                 return ProductReservationCalseledEvent.builder()
                     .orderId(canceltCmd.getOrderId())
                     .quantity(canceltCmd.getQuantity())
                     .userId(canceltCmd.getUserId())
                     .productId(canceltCmd.getProductId())
                     .reason(canceltCmd.getReason())
+                    .price(canceltCmd.getPrice())
                     .build();
             case PAYMENT_CANCELED_EVENT:
                 CancelPaymentCommand cancelPayment = (CancelPaymentCommand) cmd;
                 return PaymentCanceledEvent.builder()
                     .orderId(cancelPayment.getOrderId())
                     .userId(cancelPayment.getUserId())
-                    .amount(cancelPayment.getAmount())
+                    .price(cancelPayment.getPrice())
                     .paymentState(cancelPayment.getPaymentState())
                     .paymentId(cancelPayment.getPaymentId())
+                    .productId(cancelPayment.getProductId())
+                    .quantity(cancelPayment.getQuantity())
                     .build();
             case ORDER_REJECTED_EVENT:
                 RejectOrderCommand rejectCmd = (RejectOrderCommand) cmd;
@@ -97,17 +101,18 @@ public class FactoryImpl implements Factory {
                     .userId(rejectCmd.getUserId())
                     .build();
 
-            default: return null;
+            default:
+                return null;
         }
     }
 
     @Override
-    public Command commandFactory(Event evt, String topic){
-        if (evt == null){
+    public synchronized Command commandFactory(Event evt, String topic) {
+        if (evt == null) {
             return null;
         }
 
-        switch (topic){
+        switch (topic) {
             case CREATE_ORDER_COMMAND:
                 OrderCreatedEvent createCmd = (OrderCreatedEvent) evt;
                 return CreateOrderCommand.builder()
@@ -115,6 +120,8 @@ public class FactoryImpl implements Factory {
                     .productId(createCmd.getProductId())
                     .quantity(createCmd.getQuantity())
                     .state(createCmd.getState())
+                    .price(createCmd.getPrice())
+                    .userId(createCmd.getUserId())
                     .build();
             case PROCESS_PAYMENT_COMMAND:
                 ProductReservedEvent paymentCmd = (ProductReservedEvent) evt;
@@ -125,6 +132,7 @@ public class FactoryImpl implements Factory {
                     .quantity(paymentCmd.getQuantity())
                     .paymentId(null)
                     .paymentState(null)
+                    .productId(paymentCmd.getProductId())
                     .build();
             case RESERVE_PRODUCT_COMMAND:
                 OrderCreatedEvent reserveCmd = (OrderCreatedEvent) evt;
@@ -142,70 +150,91 @@ public class FactoryImpl implements Factory {
                     .userId(approvetCmd.getUserId())
                     .quantity(approvetCmd.getQuantity())
                     .productId(approvetCmd.getProductId())
+                    .price(approvetCmd.getPrice())
                     .build();
             case CANCEL_PRODUCT_RESERVATION_COMMAND:
                 ProductReservationCalseledEvent canceltCmd = (ProductReservationCalseledEvent) evt;
-                return ProductReservationCanselCommand.builder()
+                return ProductReservationCancelCommand.builder()
                     .orderId(canceltCmd.getOrderId())
                     .quantity(canceltCmd.getQuantity())
                     .userId(canceltCmd.getUserId())
                     .productId(canceltCmd.getProductId())
                     .reason(canceltCmd.getReason())
+                    .price(canceltCmd.getPrice())
                     .build();
             case CANCEL_PAYMENT_COMMAND:
                 PaymentCanceledEvent cancelPayment = (PaymentCanceledEvent) evt;
                 return CancelPaymentCommand.builder()
                     .orderId(cancelPayment.getOrderId())
                     .userId(cancelPayment.getUserId())
-                    .amount(cancelPayment.getAmount())
+                    .price(cancelPayment.getPrice())
                     .paymentState(cancelPayment.getPaymentState())
                     .paymentId(cancelPayment.getPaymentId())
+                    .productId(cancelPayment.getProductId())
+                    .quantity(cancelPayment.getQuantity())
+                    .price(cancelPayment.getPrice())
                     .build();
-            case REJECT_ORDER_COMMAND:
-                OrderRejectedEvent rejectCmd = (OrderRejectedEvent) evt;
+            case REJECT_ORDER_COMMAND_PAYMENT:
+                PaymentCanceledEvent rejectCmd = (PaymentCanceledEvent) evt;
                 return RejectOrderCommand.builder()
                     .orderId(rejectCmd.getOrderId())
-                    .reason(rejectCmd.getReason())
+                    .reason("Not enpugh balance!")
                     .userId(rejectCmd.getUserId())
+                    .productId(rejectCmd.getProductId())
                     .build();
 
-            default: return null;
+            case REJECT_ORDER_COMMAND_PRODUCT:
+                ProductReservationCalseledEvent rejectEv = (ProductReservationCalseledEvent) evt;
+                return RejectOrderCommand.builder()
+                    .orderId(rejectEv.getOrderId())
+                    .reason("Not enpugh quantity!")
+                    .userId(rejectEv.getUserId())
+                    .productId(rejectEv.getProductId())
+                    .build();
+
+            default:
+                return null;
         }
 
     }
 
     @Override
-    public Command readEvent(String currentTopic, String nextTopicCommand, Event evt, String message)
+    public synchronized Command readEvent(String currentTopic, String nextTopicCommand, Event evt,
+                             String message)
         throws JsonProcessingException {
-
-        JsonNode actualObj = this.objectMpper.readTree(message);
-        this.event = this.mapper.readValue(convertObjToJson(actualObj, evt), evt.getClass());
+        JsonNode actualObj = this.mapper.readTree(message);
+        this.event = this.mapper.readValue(actualObj.toString(), evt.getClass());
         Command createdCommand = commandFactory(this.event, nextTopicCommand);
         return createdCommand;
     }
 
     //read command from topic, create and send event
     @Override
-    public Event readCommand(String currentTopic, String nextTopicCommand, Command cmd,  String message)
+    public synchronized Event readCommand(String currentTopic, String nextTopicCommand, Command cmd,
+                             String message)
         throws JsonProcessingException {
 
-        if(message == null){
-            this.command = cmd;
-        } else {
-            JsonNode actualObj = this.objectMpper.readTree(message);
-            this.command = this.mapper.readValue(convertObjToJson(actualObj, cmd), cmd.getClass());
-        }
-        //System.out.println(record.value());
+        JsonNode actualObj = this.mapper.readTree(message);
+        this.command = this.mapper.readValue(actualObj.toString(), cmd.getClass());
 
-        Event createdEvent = eventFactory(this.command,nextTopicCommand);
+        Event createdEvent = eventFactory(this.command, nextTopicCommand);
         return createdEvent;
     }
 
-    private String convertObjToJson(JsonNode jsonObj, IEvent evt){
+    private String convertObjToJson(String message, IEvent evt) throws JsonProcessingException {
+        JsonNode actualObj = this.mapper.readTree(message);
         String classname = evt.getClass().getSimpleName();
-        JsonNode obj = jsonObj.get(classname);
-        String actual = obj.toString().replaceAll("\\\\","").replaceAll("^\"|\"$", "");
+        JsonNode obj = actualObj.get(classname);
+        String actual = obj.toString().replaceAll("\\\\", "")
+                                        .replaceAll("^\"|\"$", "");
         return actual;
+    }
+
+    @Override
+    public JsonNode convertJsonToJsonNode(String message)
+        throws JsonProcessingException {
+        JsonNode actualObj = this.mapper.readTree(message);
+        return actualObj;
     }
 
 }

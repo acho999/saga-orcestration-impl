@@ -1,6 +1,7 @@
 package productInventoryservice.services.impl;
 
 import com.angel.models.DTO.ProductDTO;
+import org.apache.kafka.common.quota.ClientQuotaAlteration;
 import org.modelmapper.convention.MatchingStrategies;
 import productInventoryservice.models.Product;
 import productInventoryservice.repos.ProductsInventoryRepo;
@@ -9,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import productInventoryservice.services.api.ProductInventoryService;
+
+import java.util.Optional;
 
 
 @Service
@@ -31,35 +34,32 @@ public class ProductInventoryServiceImpl implements ProductInventoryService {
 
         this.mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
-        ProductDTO prod = this.mapper.map(this.repo.getById(productId), ProductDTO.class);
+        Optional<Product> product = this.repo.findById(productId);
+        ProductDTO prod = this.mapper.map(product.get(), ProductDTO.class);
 
         this.oldQuantity = prod.getQuantity();
 
         return prod;
     }
-
+//tested
     @Override
-    public boolean  isAvailable(String productId, int quantity){
+    public boolean  isAvailable(String productId, int desiredQuantity){
 
         ProductDTO product = this.getProduct(productId);
 
-        if (product.getQuantity() <= 0){
+        int quantity = product.getQuantity();
+
+        if (quantity <= 0 || desiredQuantity > quantity){
             //invoke product reserve cancelation command
             return false;
         }
-
-        Product prod = this.repo.getById(productId);
-        prod.setQuantity(prod.getQuantity() - quantity);
-
-        this.repo.saveAndFlush(prod);
-
         return true;
 
     }
-
+//tested
     @Override
     public void resetQuantity(String productId) {
-        Product prod = this.repo.getById(productId);
+        Product prod = this.repo.findById(productId).get();
         prod.setQuantity(this.oldQuantity);
         this.repo.saveAndFlush(prod);
     }
@@ -78,5 +78,17 @@ public class ProductInventoryServiceImpl implements ProductInventoryService {
         System.out.println(dto.getId());
 
         return dto;
+    }
+//tested
+    @Override
+    public void extractQuantity(String productId, int qty) {
+        Product prod = this.repo.findById(productId).get();
+        this.oldQuantity = prod.getQuantity();
+        int quantity = prod.getQuantity() - qty;
+        if (quantity <= 0){
+            return;
+        }
+        prod.setQuantity(quantity);
+        this.repo.saveAndFlush(prod);
     }
 }

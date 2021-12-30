@@ -10,15 +10,14 @@ spring:
     password:
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     show-sql: true
     properties:
       hibernate:
         format_sql: true
   kafka:
-    bootstrap-servers: "127.0.0.1:9092"
+    bootstrap-servers: "localhost:9092"
 
-groupId: "newApp11"
 org:
   hibernate:
     dialect: MySQLDialect

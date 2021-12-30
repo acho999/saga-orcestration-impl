@@ -1,4 +1,4 @@
-package com.angel.models.events;
+package com.angel.models.commands;
 
 import com.angel.models.states.PaymentState;
 import lombok.Builder;
@@ -9,17 +9,17 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ProductReservationCalseledEvent extends Event{
+public class ProductReservationCancelCommand extends Command{
 
     private String reason;
     private String paymentId;
     private PaymentState paymentState;
 
-    public ProductReservationCalseledEvent(String a){}
+    public ProductReservationCancelCommand(String a){}
 
 
     @Builder
-    public ProductReservationCalseledEvent(String productId, int quantity, String reason, String userId, String orderId, double price){
+    public ProductReservationCancelCommand(String productId, int quantity, String reason, String userId, String orderId, double price){
         super(userId, orderId, price, productId, quantity);
         this.reason = reason;
     }

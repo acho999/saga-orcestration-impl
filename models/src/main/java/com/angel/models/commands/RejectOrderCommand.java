@@ -13,16 +13,14 @@ public class RejectOrderCommand extends Command{
 
     private String reason;
     private OrderState state = OrderState.ORDER_CANCELLED;
-    private String productId;
 
     public RejectOrderCommand(String a){}
 
 
     @Builder
     public RejectOrderCommand(String reason, String userId, String orderId,String productId){
-        super(userId, orderId);
+        super(userId, orderId, 0.0d, productId, 0);
         this.reason = reason;
-        this.productId = productId;
     }
 
 }

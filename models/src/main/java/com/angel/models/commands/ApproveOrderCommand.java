@@ -12,18 +12,14 @@ import com.angel.models.states.OrderState;
 public class ApproveOrderCommand extends Command{
 
     private OrderState state;
-    private String productId;
-    private int quantity;
 
     public ApproveOrderCommand(String a){}
 
 
     @Builder
-    public ApproveOrderCommand(String orderId, String userId, String productId, int quantity){
-        super(userId, orderId);
+    public ApproveOrderCommand(String orderId, String userId, String productId, int quantity, double price){
+        super(userId, orderId, price, productId, quantity);
         this.state = OrderState.ORDER_COMPLETED;
-        this.productId = productId;
-        this.quantity = quantity;
     }
 
 }

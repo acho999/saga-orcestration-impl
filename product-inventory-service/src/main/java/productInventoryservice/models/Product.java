@@ -24,7 +24,7 @@ public class Product {
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private String id;
 
-    @Column(name = "productName")
+    @Column(name = "name")
     private String name;
 
     @Column(name = "description")

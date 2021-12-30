@@ -1,16 +1,23 @@
 package paymentsservice.configuration;
 
+import com.angel.saga.api.Factory;
 import com.angel.saga.api.SendMessage;
+import com.angel.saga.configuration.ConsumerConfiguration;
+import com.angel.saga.configuration.KafkaTopicConfig;
+import com.angel.saga.configuration.ProducerConfiguration;
+import com.angel.saga.impl.FactoryImpl;
 import com.angel.saga.impl.SendMessageImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.Database;
@@ -28,6 +35,8 @@ import javax.sql.DataSource;
 @EnableJpaRepositories(basePackages = "paymentsservice.repos")
 @EnableTransactionManagement
 @PropertySource(value = {"application.yaml" })
+@EnableKafka
+@Import({ConsumerConfiguration.class, KafkaTopicConfig.class, ProducerConfiguration.class})
 public class PaymentsServiceConfig {
 
     @Autowired
@@ -46,6 +55,11 @@ public class PaymentsServiceConfig {
     @Bean
     public ModelMapper createMapper() {
         return new ModelMapper();
+    }
+
+    @Bean
+    public Factory createFactoy(){
+        return  new FactoryImpl();
     }
 
     @Bean

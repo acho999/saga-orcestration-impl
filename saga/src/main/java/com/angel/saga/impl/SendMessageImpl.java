@@ -19,28 +19,28 @@ public class SendMessageImpl implements SendMessage {
     private KafkaTemplate<String, String> kafkaTemplate;
 
     @Override
-    public void sendMessage(String topicName, IEvent event, ObjectMapper mapper) throws JsonProcessingException {
+    public synchronized void sendMessage(String topicName, IEvent event, ObjectMapper mapper) throws JsonProcessingException {
 
         String msg = mapper.writeValueAsString(event);
 
         this.kafkaTemplate.send(topicName, msg);
 
-        ListenableFuture<SendResult<String, String>> future =
-            this.kafkaTemplate.send(topicName, msg);
-
-        future.addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
-
-            @Override
-            public void onSuccess(SendResult<String, String> result) {
-                System.out.println("Sent message=[" + msg +
-                                   "] with offset=[" + result.getRecordMetadata().offset() + "]");
-            }
-            @Override
-            public void onFailure(Throwable ex) {
-                System.out.println("Unable to send message=["
-                                   + msg + "] due to : " + ex.getMessage());
-            }
-        });
+//        ListenableFuture<SendResult<String, String>> future =
+//            this.kafkaTemplate.send(topicName, msg);
+//
+//        future.addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
+//
+//            @Override
+//            public void onSuccess(SendResult<String, String> result) {
+//                System.out.println("Sent message=[" + msg +
+//                                   "] with offset=[" + result.getRecordMetadata().offset() + "]");
+//            }
+//            @Override
+//            public void onFailure(Throwable ex) {
+//                System.out.println("Unable to send message=["
+//                                   + msg + "] due to : " + ex.getMessage());
+//            }
+//        });
     }
 
 }

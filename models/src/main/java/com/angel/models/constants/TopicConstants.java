@@ -8,7 +8,8 @@ public class TopicConstants {
     public static final String APPROVE_ORDER_COMMAND = "approveOrderCommand";
     public static final String CANCEL_PRODUCT_RESERVATION_COMMAND = "productReservationCancelCommand";
     public static final String CANCEL_PAYMENT_COMMAND = "paymentCancelCommand";
-    public static final String REJECT_ORDER_COMMAND= "orderRejectCommand";
+    public static final String REJECT_ORDER_COMMAND_PAYMENT= "orderRejectCommandPayment";
+    public static final String REJECT_ORDER_COMMAND_PRODUCT= "orderRejectCommandProduct";
 
 
     public static final String ORDER_CREATED_EVENT = "createOrderEvent";
@@ -18,5 +19,9 @@ public class TopicConstants {
     public static final String PRODUCT_RESERVATION_CANCELED_EVENT = "productReservationCanceledEvent";
     public static final String PAYMENT_CANCELED_EVENT = "paymentCanceledEvent";
     public static final String ORDER_REJECTED_EVENT = "orderRejectedEvent";
+
+    public static final String GROUP_ID = "my38";
+
+    public static final String SERVER = "localhost:9092";
 
 }

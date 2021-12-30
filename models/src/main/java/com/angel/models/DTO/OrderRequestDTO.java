@@ -13,6 +13,7 @@ public class OrderRequestDTO {
     private String userId;
     private String productId;
     private int quantity;
+    private double price;
 
 //    public static class Builder{
 //

@@ -3,12 +3,15 @@ package com.angel.models.DTO;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 public class UserDTO {
 
     private String userId;
     private double balance;
+    private List<?> payments;
 //
 //    public static class Builder {
 //

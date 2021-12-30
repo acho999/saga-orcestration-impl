@@ -225,7 +225,7 @@
 //        throws JsonProcessingException {
 //        Event event = this.consumer.readCommand(CANCEL_PRODUCT_RESERVATION_COMMAND,
 //                                                PRODUCT_RESERVATION_CANCELED_EVENT,
-//                                                new ProductReservationCanselCommand(
+//                                                new ProductReservationCancelCommand(
 //                                                    null,
 //                                                    0,
 //                                                    null,

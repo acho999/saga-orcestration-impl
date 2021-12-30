@@ -2,13 +2,14 @@ package com.angel.orderservice.saga.impl;
 
 import com.angel.models.commands.*;
 import com.angel.models.events.*;
+import com.angel.orderservice.services.impl.OrdersServiceImpl;
 import com.angel.saga.api.Factory;
 import com.angel.saga.api.SendMessage;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.angel.orderservice.saga.api.Saga;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
@@ -23,230 +24,139 @@ public class SagaImpl implements Saga {
     @Autowired
     private SendMessage sendService;
 
-    @Value(value = "${kafka.groupId}")
-    private String group;
+    @Autowired
+    private OrdersServiceImpl ordersService;
 
-    private static final String droupId = "newApp11";
+    private static final String droupId = GROUP_ID;
 
     @Autowired
     private Factory factory;
 
     @Override//2
-    @KafkaListener(topics = "topicName", groupId = droupId)
-    public Command handleOrderCreatedEvent(String message)
+    @KafkaListener(topics = ORDER_CREATED_EVENT, groupId = droupId)
+    public synchronized Command handleOrderCreatedEvent(String message)
         throws JsonProcessingException {
-//1
+        //1
+        System.out.println("handleOrderCreatedEvent");
         Command command = this.factory.readEvent(ORDER_CREATED_EVENT,RESERVE_PRODUCT_COMMAND,
-                                                  new OrderCreatedEvent(
-                                                      null,
-                                                      null,
-                                                      null,
-                                                      0,
-                                                      null,
-                                                      0.0d), message);
+                                                  new OrderCreatedEvent(), message);
         this.sendService.sendMessage(RESERVE_PRODUCT_COMMAND, command, this.mapper);
         return command;
     }
 
-    @Override//4
-    @KafkaListener(topics = "topicName", groupId = droupId)
-    public Command handleProductReservedEvent(String message)
-        throws JsonProcessingException {
-
-        Command command = this.factory.readEvent(PRODUCT_RESERVED_EVENT,PROCESS_PAYMENT_COMMAND,
-                                                  new ProductReservedEvent(
-                                                      null,
-                                                      null,
-                                                      null,
-                                                      0,
-                                                      0.0d),message);
-        this.sendService.sendMessage(PROCESS_PAYMENT_COMMAND, command, this.mapper);
-        return command;
-    }
-
-    @Override//6
-    @KafkaListener(topics = "topicName", groupId = droupId)
-    public Command handlePaymentProcessedEvent(String message)
-        throws JsonProcessingException {
-
-        Command command = this.factory.readEvent(PAYMENT_PROCESSED_EVENT,APPROVE_ORDER_COMMAND,
-                                                  new PaymentProcessedEvent(
-                                                      null,
-                                                      null,
-                                                      null,
-                                                      null,
-                                                      0.0d,
-                                                      0,
-                                                      null), message);
-        this.sendService.sendMessage(APPROVE_ORDER_COMMAND, command, this.mapper);
-        return command;
-    }
 
     @Override//8
-    @KafkaListener(topics = "topicName", groupId = droupId)
-    public Command handleOrderApprovedEvent(String message)
+    @KafkaListener(topics = ORDER_APPROVED_EVENT, groupId = droupId)
+    public synchronized Command handleOrderApprovedEvent(String message)
         throws JsonProcessingException {
-
-        Command command = this.factory.readEvent(ORDER_APPROVED_EVENT,APPROVE_ORDER_COMMAND,
-                                                  new OrderApprovedEvent(
-                                                      null,
-                                                      null,
-                                                      null,
-                                                      null,
-                                                      0),message);
-        //this.sendService.sendMessage();se(???, command);
-        return command;
-    }
-
-    @Override//10
-    @KafkaListener(topics = "topicName", groupId = droupId)
-    public Command handleProductReservationCanceledEvent(String message)
-        throws JsonProcessingException {
-        Command command = this.factory.readEvent(PRODUCT_RESERVATION_CANCELED_EVENT,REJECT_ORDER_COMMAND,
-                                                  new ProductReservationCalseledEvent(
-                                                      null,
-                                                      0,
-                                                      null,
-                                                      null,
-                                                      null),message);
-        this.sendService.sendMessage(REJECT_ORDER_COMMAND, command, this.mapper);
-        return command;
-    }
-
-    @Override//12
-    @KafkaListener(topics = "topicName", groupId = droupId)
-    public Command handlePaymentCanceledEvent(String message)
-        throws JsonProcessingException {
-
-        Command command = this.factory.readEvent(PAYMENT_CANCELED_EVENT,REJECT_ORDER_COMMAND,
-                                                  new PaymentCanceledEvent(
-                                                      null,
-                                                      null,
-                                                      null,
-                                                      null,
-                                                      0), message);
-        this.sendService.sendMessage(REJECT_ORDER_COMMAND, command, this.mapper);
-        return command;
+        System.out.println("handleOrderApprovedEvent" + message);
+        JsonNode id = this.factory.convertJsonToJsonNode(message).get("orderId");
+        System.out.println(id);
+        this.ordersService.approveOrder(id.asText());
+        return null;
     }
 
     @Override//14
-    @KafkaListener(topics = "topicName", groupId = droupId)
-    public Command handleOrderRejectedEvent(String message)
+    @KafkaListener(topics = ORDER_REJECTED_EVENT, groupId = droupId)
+    public synchronized Command handleOrderRejectedEvent(String message)
         throws JsonProcessingException {
-
-        Command command = this.factory.readEvent(ORDER_REJECTED_EVENT,ORDER_REJECTED_EVENT,
-                                                  new OrderRejectedEvent(
-                                                      null,
-                                                      null,
-                                                      null,
-                                                      null),message);
-        //this.sendService.sendMessage();(ORDER_REJECTED_EVENT, command);
-        return command;
+        System.out.println("handleOrderRejectedEvent");
+        JsonNode id = this.factory.convertJsonToJsonNode(message).get("orderId");
+        this.ordersService.cancelOrder(id.asText());
+        return null;
     }
     //------------------------------------------------------------------------------------------------
 
     @Override//1
-    @KafkaListener(topics = "topicName", groupId = droupId)
-    public Event publishCreateOrderCommand(Command command, String message)
+    @KafkaListener(topics = CREATE_ORDER_COMMAND, groupId = droupId)
+    public synchronized Event publishCreateOrderCommand(String message)
         throws JsonProcessingException {
-        Event event = this.factory.readCommand(CREATE_ORDER_COMMAND,ORDER_CREATED_EVENT,command, message);
+        System.out.println("publishCreateOrderCommand");
+        Event event = this.factory.readCommand(CREATE_ORDER_COMMAND,ORDER_CREATED_EVENT,new CreateOrderCommand(), message);
         this.sendService.sendMessage(ORDER_CREATED_EVENT, event, this.mapper);
         return event;
     }
 
     @Override//3
-    @KafkaListener(topics = "topicName", groupId = droupId)
-    public Event publishReserveProductCommand(String message)
+    @KafkaListener(topics = RESERVE_PRODUCT_COMMAND, groupId = droupId)
+    public synchronized Event publishReserveProductCommand(String message)
         throws JsonProcessingException {
-
+        System.out.println("publishReserveProductCommand");
         Event event = this.factory.readCommand(RESERVE_PRODUCT_COMMAND,
                                                 PRODUCT_RESERVED_EVENT,
-                                                new ReserveProductCommand(
-                                                    null,
-                                                    null,
-                                                    null,
-                                                    0,
-                                                    0.0d),message);
+                                                new ReserveProductCommand(),message);
         this.sendService.sendMessage(PRODUCT_RESERVED_EVENT, event, this.mapper);
         return event;
     }
 
     @Override//5
-    @KafkaListener(topics = "topicName", groupId = droupId)
-    public Event publishProcessPaymentCommand(String message)
+    @KafkaListener(topics = PROCESS_PAYMENT_COMMAND, groupId = droupId)
+    public synchronized Event publishProcessPaymentCommand(String message)
         throws JsonProcessingException {
-
+        System.out.println("publishProcessPaymentCommand");
         Event event = this.factory.readCommand(PROCESS_PAYMENT_COMMAND,
                                                 PAYMENT_PROCESSED_EVENT,
-                                                new ProcessPaymentCommand(
-                                                    null,
-                                                    null,
-                                                    null,
-                                                    null,
-                                                    0.0d,
-                                                    0,
-                                                    null),message);
+                                                new ProcessPaymentCommand(),message);
         this.sendService.sendMessage(PAYMENT_PROCESSED_EVENT, event, this.mapper);
         return event;
     }
 
     @Override//7
-    @KafkaListener(topics = "topicName", groupId = droupId)
-    public Event publishApproveOrderCommand(String message)
+    @KafkaListener(topics = APPROVE_ORDER_COMMAND, groupId = droupId)
+    public synchronized Event publishApproveOrderCommand(String message)
         throws JsonProcessingException {
+        System.out.println("publishApproveOrderCommand");
         Event event = this.factory.readCommand(APPROVE_ORDER_COMMAND,
                                                 ORDER_APPROVED_EVENT,
-                                                new ApproveOrderCommand(
-                                                  null,
-                                                  null,
-                                                  null,
-                                                  0),message);
+                                                new ApproveOrderCommand(),message);
         this.sendService.sendMessage(ORDER_APPROVED_EVENT, event, this.mapper);
         return event;
     }
 
-    @Override//9
-    @KafkaListener(topics = "topicName", groupId = droupId)
-    public Event publishCancelProductReservationCommand(String message)
-        throws JsonProcessingException {
-        Event event = this.factory.readCommand(CANCEL_PRODUCT_RESERVATION_COMMAND,
-                                                PRODUCT_RESERVATION_CANCELED_EVENT,
-                                                new ProductReservationCanselCommand(
-                                                    null,
-                                                    0,
-                                                    null,
-                                                    null,
-                                                    null),message);
-        this.sendService.sendMessage(PRODUCT_RESERVATION_CANCELED_EVENT, event, this.mapper);
-        return event;
-    }
-
     @Override//11
-    @KafkaListener(topics = "topicName", groupId = droupId)
-    public Event publishCancelPaymentCommand(String message)
+    @KafkaListener(topics = CANCEL_PAYMENT_COMMAND, groupId = droupId)
+    public synchronized Event publishCancelPaymentCommand(String message)
         throws JsonProcessingException {
+        System.out.println("publishCancelPaymentCommand");
         Event event = this.factory.readCommand(CANCEL_PAYMENT_COMMAND,
-                                                PAYMENT_CANCELED_EVENT,
-                                                new CancelPaymentCommand(
-                                                    null,
-                                                    null,
-                                                    null,
-                                                    null,0),message);
+                                               PAYMENT_CANCELED_EVENT,
+                                               new CancelPaymentCommand(),message);
         this.sendService.sendMessage(PAYMENT_CANCELED_EVENT, event, this.mapper);
         return event;
     }
 
-    @Override//13
-    @KafkaListener(topics = "topicName", groupId = droupId)
-    public Event publishRejectOrderCommand(String message)
+    @Override//9
+    @KafkaListener(topics = CANCEL_PRODUCT_RESERVATION_COMMAND, groupId = droupId)
+    public synchronized Event publishCancelProductReservationCommand(String message)
         throws JsonProcessingException {
-        Event event = this.factory.readCommand(REJECT_ORDER_COMMAND,
+        System.out.println("publishCancelProductReservationCommand");
+        Event event = this.factory.readCommand(CANCEL_PRODUCT_RESERVATION_COMMAND,
+                                               PRODUCT_RESERVATION_CANCELED_EVENT,
+                                               new ProductReservationCancelCommand(), message);
+        this.sendService.sendMessage(PRODUCT_RESERVATION_CANCELED_EVENT, event, this.mapper);
+        return event;
+    }
+
+    @Override//13
+    @KafkaListener(topics = REJECT_ORDER_COMMAND_PAYMENT, groupId = droupId)
+    public synchronized Event publishRejectOrderCommandPayment(String message)
+        throws JsonProcessingException {
+        System.out.println("publishRejectOrderCommand");
+        Event event = this.factory.readCommand(REJECT_ORDER_COMMAND_PAYMENT,
                                                 ORDER_REJECTED_EVENT,
-                                                new RejectOrderCommand(
-                                                    null,
-                                                    null,
-                                                    null,
-                                                    null),message);
+                                                new RejectOrderCommand(),message);
+        this.sendService.sendMessage(ORDER_REJECTED_EVENT, event, this.mapper);
+        return event;
+    }
+
+    @Override//15
+    @KafkaListener(topics = REJECT_ORDER_COMMAND_PRODUCT, groupId = droupId)
+    public synchronized Event publishRejectOrderCommandProduct(String message)
+        throws JsonProcessingException {
+        System.out.println("publishRejectOrderCommand");
+        Event event = this.factory.readCommand(REJECT_ORDER_COMMAND_PRODUCT,
+                                               ORDER_REJECTED_EVENT,
+                                               new RejectOrderCommand(),message);
         this.sendService.sendMessage(ORDER_REJECTED_EVENT, event, this.mapper);
         return event;
     }

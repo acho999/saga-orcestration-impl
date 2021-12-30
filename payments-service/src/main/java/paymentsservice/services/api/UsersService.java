@@ -9,4 +9,6 @@ public interface UsersService {
     void changeBalance(String userId, Payment payment);
 
     UserDTO createUser(UserDTO dto);
+
+    void reverseUserBalance(String userId, double amount);
 }

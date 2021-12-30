@@ -13,7 +13,7 @@ public interface OrdersService {
     OrderRequestDTO createOrder(OrderRequestDTO order)
         throws JsonProcessingException, InterruptedException;
 
-    boolean cancelOrder(Command cmd);
+    boolean cancelOrder(String orderId);
 
-    boolean approveOrder(Command cmd);
+    boolean approveOrder(String orderId);
 }

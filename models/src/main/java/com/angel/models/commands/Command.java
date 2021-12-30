@@ -15,5 +15,8 @@ public abstract class Command implements IEvent {
     private String userId;
     //association property orderId
     private String orderId;
+    private double price;
+    private String productId;
+    private int quantity;
 
 }

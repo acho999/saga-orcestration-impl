@@ -28,7 +28,7 @@ public class User {
     @Column(name = "Id", unique = true, nullable = false)
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    private String id;
+    private String userId;
 
     @Column(name = "balance")
     private double balance;

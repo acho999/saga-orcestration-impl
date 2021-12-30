@@ -11,8 +11,11 @@ public class PaymentResponseDTO {
     private String id;
     private String userId;
     private String orderId;
-    private double amount;
+    private int quantity;
+    private double price;
     private PaymentState state;
+    private String productId;
+    private double amount = this.price * this.quantity;
 
 //    public static class Builder {
 //

@@ -41,8 +41,17 @@ public class Payment {
     @Column(name = "orderId")
     private String orderId;
 
+    @Column(name = "productId")
+    private String productId;
+
     @Column(name = "amount")
     private double amount;
+
+    @Column(name = "price")
+    private double price;
+
+    @Column(name = "quantity")
+    private int quantity;
 
     public Payment(){}
 

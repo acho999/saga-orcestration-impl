@@ -42,6 +42,26 @@ public class OrdersController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @RequestMapping(method = RequestMethod.POST, value = "/cancel/{orderId}",
+        produces = MediaType.APPLICATION_JSON_VALUE,
+        consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity cancelOrder(@PathVariable String orderId) {
+
+        boolean isCanceled = this.service.cancelOrder(orderId);
+
+        return ResponseEntity.ok(isCanceled);
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/approve/{orderId}",
+        produces = MediaType.APPLICATION_JSON_VALUE,
+        consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity approveOrder(@PathVariable String orderId) {
+
+        boolean isApproved = this.service.approveOrder(orderId);
+
+        return ResponseEntity.ok(isApproved);
+    }
+
 
 
 }

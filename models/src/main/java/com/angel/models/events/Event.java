@@ -13,10 +13,11 @@ import lombok.Setter;
 @NoArgsConstructor
 public abstract class Event implements IEvent {
 
-    @JsonProperty
     private String userId;
     //association property orderId
-    @JsonProperty
     private String orderId;
+    private double price;
+    private String productId;
+    private int quantity;
 
 }
