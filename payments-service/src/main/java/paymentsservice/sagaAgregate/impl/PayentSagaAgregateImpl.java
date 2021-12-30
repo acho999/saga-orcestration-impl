@@ -42,11 +42,11 @@ public class PayentSagaAgregateImpl implements SagaAgregate {
     public synchronized Command handlePaymentProcessedEvent(String message)
         throws JsonProcessingException {
         System.out.println("handlePaymentProcessedEvent");
-        ApproveOrderCommand command =(ApproveOrderCommand) this.factory
-                                                        .readEvent(PAYMENT_PROCESSED_EVENT,
-                                                              APPROVE_ORDER_COMMAND,
-                                                         new PaymentProcessedEvent(),
-                                                              message);
+        ApproveOrderCommand command = (ApproveOrderCommand) this.factory
+            .readEvent(PAYMENT_PROCESSED_EVENT,
+                       APPROVE_ORDER_COMMAND,
+                       new PaymentProcessedEvent(),
+                       message);
         PaymentRequestDTO pmnt = new PaymentRequestDTO();
         pmnt.setUserId(command.getUserId());
         pmnt.setState(PaymentState.PAYMENT_APPROVED);
@@ -55,9 +55,9 @@ public class PayentSagaAgregateImpl implements SagaAgregate {
         pmnt.setProductId(command.getProductId());
         pmnt.setPrice(command.getPrice());
 
-        this.payment = this.paymentsService.savePayment(command.getUserId(),pmnt );
+        this.payment = this.paymentsService.savePayment(command.getUserId(), pmnt);
 
-        if (command != null && this.payment == null) {
+        if (command != null && this.payment.getState().equals(PaymentState.PAYMENT_REJECTED)) {
 
             CancelPaymentCommand cancelPayment = new CancelPaymentCommand();
             cancelPayment.setPaymentState(pmnt.getState());
@@ -66,6 +66,7 @@ public class PayentSagaAgregateImpl implements SagaAgregate {
             cancelPayment.setQuantity(pmnt.getQuantity());
             cancelPayment.setOrderId(pmnt.getOrderId());
             cancelPayment.setPrice(pmnt.getPrice());
+            cancelPayment.setPaymentId(this.payment.getId());
 
             ProductReservationCancelCommand cancelProdRes = new ProductReservationCancelCommand();
             cancelProdRes.setPaymentState(PaymentState.PAYMENT_REJECTED);
@@ -75,10 +76,11 @@ public class PayentSagaAgregateImpl implements SagaAgregate {
             cancelProdRes.setPrice(pmnt.getPrice());
             cancelProdRes.setOrderId(pmnt.getOrderId());
             cancelProdRes.setPaymentId(pmnt.getId());
-
+            cancelProdRes.setPaymentId(this.payment.getId());
 
             this.sendService.sendMessage(CANCEL_PAYMENT_COMMAND, cancelPayment, this.mapper);
-            this.sendService.sendMessage(CANCEL_PRODUCT_RESERVATION_COMMAND, cancelProdRes, this.mapper);
+            this.sendService.sendMessage(CANCEL_PRODUCT_RESERVATION_COMMAND, cancelProdRes,
+                                         this.mapper);
 //            this.publishCancelPaymentCommand(message);//11
 //            this.publishCancelProductReservationCommand(message);//9
 
@@ -92,14 +94,17 @@ public class PayentSagaAgregateImpl implements SagaAgregate {
     public synchronized Command handlePaymentCanceledEvent(String message)
         throws JsonProcessingException {
         System.out.println("handlePaymentCanceledEvent");
-        Command command = this.factory.readEvent(PAYMENT_CANCELED_EVENT,REJECT_ORDER_COMMAND_PAYMENT,
-                                                 new PaymentCanceledEvent(), message);
+
+        RejectOrderCommand command =
+            (RejectOrderCommand) this.factory.readEvent(PAYMENT_CANCELED_EVENT
+                , REJECT_ORDER_COMMAND_PAYMENT, new PaymentCanceledEvent(), message);
+
         this.sendService.sendMessage(REJECT_ORDER_COMMAND_PAYMENT, command, this.mapper);
-        String paymentId = null;
-        if (this.payment != null){
-            paymentId = this.payment.getId();
-        }
-        this.paymentsService.reversePayment(command.getUserId(), paymentId);
+//        String paymentId = null;
+//        if (this.payment != null){
+//            paymentId = this.payment.getId();
+//        }
+        this.paymentsService.reversePayment(command.getUserId(), command.getPaymentId());
         return command;
     }
 

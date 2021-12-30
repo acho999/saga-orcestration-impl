@@ -84,8 +84,8 @@ public class ProductInventoryServiceImpl implements ProductInventoryService {
     public void extractQuantity(String productId, int qty) {
         Product prod = this.repo.findById(productId).get();
         this.oldQuantity = prod.getQuantity();
-        int quantity = prod.getQuantity() - qty;
-        if (quantity <= 0){
+        int quantity = this.oldQuantity - qty;
+        if (quantity < 0){
             return;
         }
         prod.setQuantity(quantity);

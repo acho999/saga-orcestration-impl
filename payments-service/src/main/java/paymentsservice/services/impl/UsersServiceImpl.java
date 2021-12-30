@@ -60,6 +60,10 @@ public class UsersServiceImpl implements UsersService {
 
         this.currentBalance = usr.getBalance() - payment.getAmount();
 
+        if (currentBalance <= 0){
+            this.currentBalance = usr.getBalance();
+        }
+
         usr.setBalance(currentBalance);
 
         this.repo.saveAndFlush(usr);

@@ -20,7 +20,7 @@ public class TopicConstants {
     public static final String PAYMENT_CANCELED_EVENT = "paymentCanceledEvent";
     public static final String ORDER_REJECTED_EVENT = "orderRejectedEvent";
 
-    public static final String GROUP_ID = "my38";
+    public static final String GROUP_ID = "my45";
 
     public static final String SERVER = "localhost:9092";
 

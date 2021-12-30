@@ -35,14 +35,17 @@ public class PaymentsServiceImpl implements PaymentsService {
     @Override
     public Payment savePayment(String userId, PaymentRequestDTO pmnt) {
         this.mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+
         Payment payment = this.createPayment(pmnt);
         payment.setAmount(payment.getPrice() * payment.getQuantity());
-        User user = this.mapper.map(this.usersService.getUser(userId), User.class);
-        if ((user.getBalance() - payment.getAmount()) <= 0){
 
+        User user = this.mapper.map(this.usersService.getUser(userId), User.class);
+
+        if ((user.getBalance() - payment.getAmount()) <= 0){
+            payment.setState(PaymentState.PAYMENT_REJECTED);
             //to do invoke reject payment
-            return null;
         }
+        this.repo.saveAndFlush(payment);
         this.usersService.changeBalance(userId, payment);
         return payment;
     }
@@ -79,8 +82,6 @@ public class PaymentsServiceImpl implements PaymentsService {
         UserDTO usr = this.usersService.getUser(payment.getUserId());
 
         payment1.setUserId(this.mapper.map(usr, User.class));
-
-        this.repo.saveAndFlush(payment1);
 
         return payment1;
     }

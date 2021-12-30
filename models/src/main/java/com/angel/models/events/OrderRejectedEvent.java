@@ -13,13 +13,15 @@ public class OrderRejectedEvent extends Event{
 
     private String reason;
     private OrderState state = OrderState.ORDER_CANCELLED;
+    private String paymentId;
 
     public OrderRejectedEvent(String a){}
 
     @Builder
-    public OrderRejectedEvent(String reason, String userId, String orderId,String productId){
+    public OrderRejectedEvent(String reason, String userId, String orderId,String productId, String paymentId){
         super(userId, orderId, 0.0d, productId, 0);
         this.reason = reason;
+        this.paymentId = paymentId;
     }
 
 }

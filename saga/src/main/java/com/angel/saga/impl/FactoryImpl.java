@@ -181,6 +181,7 @@ public class FactoryImpl implements Factory {
                     .reason("Not enpugh balance!")
                     .userId(rejectCmd.getUserId())
                     .productId(rejectCmd.getProductId())
+                    .paymentId(rejectCmd.getPaymentId())
                     .build();
 
             case REJECT_ORDER_COMMAND_PRODUCT:
@@ -190,6 +191,7 @@ public class FactoryImpl implements Factory {
                     .reason("Not enpugh quantity!")
                     .userId(rejectEv.getUserId())
                     .productId(rejectEv.getProductId())
+                    .paymentId(rejectEv.getPaymentId())
                     .build();
 
             default:
