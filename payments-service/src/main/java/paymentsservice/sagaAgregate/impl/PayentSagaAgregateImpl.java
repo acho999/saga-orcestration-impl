@@ -39,7 +39,7 @@ public class PayentSagaAgregateImpl implements SagaAgregate {
 
     @Override//6
     @KafkaListener(topics = PAYMENT_PROCESSED_EVENT, groupId = droupId)
-    public synchronized Command handlePaymentProcessedEvent(String message)
+    public Command handlePaymentProcessedEvent(String message)
         throws JsonProcessingException {
         System.out.println("handlePaymentProcessedEvent");
         ApproveOrderCommand command = (ApproveOrderCommand) this.factory
@@ -91,7 +91,7 @@ public class PayentSagaAgregateImpl implements SagaAgregate {
 
     @Override//12
     @KafkaListener(topics = PAYMENT_CANCELED_EVENT, groupId = droupId)
-    public synchronized Command handlePaymentCanceledEvent(String message)
+    public Command handlePaymentCanceledEvent(String message)
         throws JsonProcessingException {
         System.out.println("handlePaymentCanceledEvent");
 

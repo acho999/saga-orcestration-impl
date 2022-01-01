@@ -77,7 +77,7 @@ public class OrdersServiceImpl implements OrdersService {
 
     @Override//as parameter may be orderId
     @Transactional
-    public synchronized boolean cancelOrder(String orderId) {
+    public boolean cancelOrder(String orderId) {
 
         Order order = this.repo.findById(orderId).get();
 
@@ -90,7 +90,7 @@ public class OrdersServiceImpl implements OrdersService {
 
     @Override//as parameter may be orderId
     @Transactional
-    public synchronized boolean approveOrder(String orderId) {
+    public boolean approveOrder(String orderId) {
         System.out.println(orderId);
         System.out.println(this.repo.existsById(orderId));
 

@@ -34,7 +34,7 @@ public class SagaImpl implements Saga {
 
     @Override//2
     @KafkaListener(topics = ORDER_CREATED_EVENT, groupId = droupId)
-    public synchronized Command handleOrderCreatedEvent(String message)
+    public Command handleOrderCreatedEvent(String message)
         throws JsonProcessingException {
         //1
         System.out.println("handleOrderCreatedEvent");
@@ -47,7 +47,7 @@ public class SagaImpl implements Saga {
 
     @Override//8
     @KafkaListener(topics = ORDER_APPROVED_EVENT, groupId = droupId)
-    public synchronized Command handleOrderApprovedEvent(String message)
+    public Command handleOrderApprovedEvent(String message)
         throws JsonProcessingException {
         System.out.println("handleOrderApprovedEvent" + message);
         JsonNode id = this.factory.convertJsonToJsonNode(message).get("orderId");
@@ -58,7 +58,7 @@ public class SagaImpl implements Saga {
 
     @Override//14
     @KafkaListener(topics = ORDER_REJECTED_EVENT, groupId = droupId)
-    public synchronized Command handleOrderRejectedEvent(String message)
+    public Command handleOrderRejectedEvent(String message)
         throws JsonProcessingException {
         System.out.println("handleOrderRejectedEvent");
         JsonNode id = this.factory.convertJsonToJsonNode(message).get("orderId");
@@ -69,7 +69,7 @@ public class SagaImpl implements Saga {
 
     @Override//1
     @KafkaListener(topics = CREATE_ORDER_COMMAND, groupId = droupId)
-    public synchronized Event publishCreateOrderCommand(String message)
+    public Event publishCreateOrderCommand(String message)
         throws JsonProcessingException {
         System.out.println("publishCreateOrderCommand");
         Event event = this.factory.readCommand(CREATE_ORDER_COMMAND,ORDER_CREATED_EVENT,new CreateOrderCommand(), message);
@@ -79,7 +79,7 @@ public class SagaImpl implements Saga {
 
     @Override//3
     @KafkaListener(topics = RESERVE_PRODUCT_COMMAND, groupId = droupId)
-    public synchronized Event publishReserveProductCommand(String message)
+    public Event publishReserveProductCommand(String message)
         throws JsonProcessingException {
         System.out.println("publishReserveProductCommand");
         Event event = this.factory.readCommand(RESERVE_PRODUCT_COMMAND,
@@ -91,7 +91,7 @@ public class SagaImpl implements Saga {
 
     @Override//5
     @KafkaListener(topics = PROCESS_PAYMENT_COMMAND, groupId = droupId)
-    public synchronized Event publishProcessPaymentCommand(String message)
+    public Event publishProcessPaymentCommand(String message)
         throws JsonProcessingException {
         System.out.println("publishProcessPaymentCommand");
         Event event = this.factory.readCommand(PROCESS_PAYMENT_COMMAND,
@@ -103,7 +103,7 @@ public class SagaImpl implements Saga {
 
     @Override//7
     @KafkaListener(topics = APPROVE_ORDER_COMMAND, groupId = droupId)
-    public synchronized Event publishApproveOrderCommand(String message)
+    public Event publishApproveOrderCommand(String message)
         throws JsonProcessingException {
         System.out.println("publishApproveOrderCommand");
         Event event = this.factory.readCommand(APPROVE_ORDER_COMMAND,
@@ -115,7 +115,7 @@ public class SagaImpl implements Saga {
 
     @Override//11
     @KafkaListener(topics = CANCEL_PAYMENT_COMMAND, groupId = droupId)
-    public synchronized Event publishCancelPaymentCommand(String message)
+    public Event publishCancelPaymentCommand(String message)
         throws JsonProcessingException {
         System.out.println("publishCancelPaymentCommand");
         Event event = this.factory.readCommand(CANCEL_PAYMENT_COMMAND,
@@ -127,7 +127,7 @@ public class SagaImpl implements Saga {
 
     @Override//9
     @KafkaListener(topics = CANCEL_PRODUCT_RESERVATION_COMMAND, groupId = droupId)
-    public synchronized Event publishCancelProductReservationCommand(String message)
+    public Event publishCancelProductReservationCommand(String message)
         throws JsonProcessingException {
         System.out.println("publishCancelProductReservationCommand");
         Event event = this.factory.readCommand(CANCEL_PRODUCT_RESERVATION_COMMAND,
@@ -139,7 +139,7 @@ public class SagaImpl implements Saga {
 
     @Override//13
     @KafkaListener(topics = REJECT_ORDER_COMMAND_PAYMENT, groupId = droupId)
-    public synchronized Event publishRejectOrderCommandPayment(String message)
+    public Event publishRejectOrderCommandPayment(String message)
         throws JsonProcessingException {
         System.out.println("publishRejectOrderCommand");
         Event event = this.factory.readCommand(REJECT_ORDER_COMMAND_PAYMENT,
@@ -151,7 +151,7 @@ public class SagaImpl implements Saga {
 
     @Override//15
     @KafkaListener(topics = REJECT_ORDER_COMMAND_PRODUCT, groupId = droupId)
-    public synchronized Event publishRejectOrderCommandProduct(String message)
+    public Event publishRejectOrderCommandProduct(String message)
         throws JsonProcessingException {
         System.out.println("publishRejectOrderCommand");
         Event event = this.factory.readCommand(REJECT_ORDER_COMMAND_PRODUCT,
