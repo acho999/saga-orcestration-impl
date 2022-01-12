@@ -41,7 +41,7 @@ public class PaymentsServiceImpl implements PaymentsService {
 
         User user = this.mapper.map(this.usersService.getUser(userId), User.class);
 
-        if ((user.getBalance() - payment.getAmount()) <= 0){
+        if ((user.getBalance() - payment.getAmount()) < 0){
             payment.setState(PaymentState.PAYMENT_REJECTED);
             //to do invoke reject payment
         }

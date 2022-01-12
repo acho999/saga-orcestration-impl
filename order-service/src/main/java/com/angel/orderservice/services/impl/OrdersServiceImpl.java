@@ -81,6 +81,10 @@ public class OrdersServiceImpl implements OrdersService {
 
         Order order = this.repo.findById(orderId).get();
 
+        if(order.getState().equals(OrderState.ORDER_CANCELLED)){
+            return true;
+        }
+
         order.setState(OrderState.ORDER_CANCELLED);
 
         this.repo.saveAndFlush(order);

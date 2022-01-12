@@ -37,9 +37,10 @@ public class ProductSagaAgregateImpl implements SagaAgregate {
     public Command handleProductReservationCanceledEvent(String message)
         throws JsonProcessingException {
         System.out.println("handleProductReservationCanceledEvent");
-        RejectOrderCommand command = (RejectOrderCommand)this.factory.readEvent(PRODUCT_RESERVATION_CANCELED_EVENT,
-                                                                                REJECT_ORDER_COMMAND_PRODUCT,
-                                                 new ProductReservationCalseledEvent(),message);
+        RejectOrderCommand command = (RejectOrderCommand) this.factory.readEvent(
+            PRODUCT_RESERVATION_CANCELED_EVENT,
+            REJECT_ORDER_COMMAND_PRODUCT,
+            new ProductReservationCalseledEvent(), message);
 
         service.resetQuantity(command.getProductId());
         this.sendService.sendMessage(REJECT_ORDER_COMMAND_PRODUCT, command, this.mapper);
@@ -51,19 +52,11 @@ public class ProductSagaAgregateImpl implements SagaAgregate {
     public Command handleProductReservedEvent(String message)
         throws JsonProcessingException {
         System.out.println("handleProductReservedEvent");
-        ProcessPaymentCommand command = (ProcessPaymentCommand)this.factory
-                                        .readEvent(PRODUCT_RESERVED_EVENT,PROCESS_PAYMENT_COMMAND,
-                                                   new ProductReservedEvent(),message);
-
+        ProcessPaymentCommand command = (ProcessPaymentCommand) this.factory
+            .readEvent(PRODUCT_RESERVED_EVENT, PROCESS_PAYMENT_COMMAND,
+                       new ProductReservedEvent(), message);
 
         if (!service.isAvailable(command.getProductId(), command.getQuantity())) {
-            CancelPaymentCommand cancelPayment = new CancelPaymentCommand();
-            cancelPayment.setPaymentState(PaymentState.PAYMENT_REJECTED);
-            cancelPayment.setUserId(command.getUserId());
-            cancelPayment.setProductId(command.getProductId());
-            cancelPayment.setQuantity(command.getQuantity());
-            cancelPayment.setOrderId(command.getOrderId());
-            cancelPayment.setPrice(command.getPrice());
 
             ProductReservationCancelCommand cancelProdRes = new ProductReservationCancelCommand();
             cancelProdRes.setPaymentState(PaymentState.PAYMENT_REJECTED);
@@ -74,11 +67,8 @@ public class ProductSagaAgregateImpl implements SagaAgregate {
             cancelProdRes.setOrderId(command.getOrderId());
             cancelProdRes.setPaymentId("");
 
-
-            this.sendService.sendMessage(CANCEL_PRODUCT_RESERVATION_COMMAND, cancelProdRes, this.mapper);
-           // this.sendService.sendMessage(CANCEL_PAYMENT_COMMAND, cancelPayment, this.mapper);
-//            this.publishCancelProductReservationCommand(message);//9
-//            this.publishCancelPaymentCommand(message);//11
+            this.sendService.sendMessage(CANCEL_PRODUCT_RESERVATION_COMMAND, cancelProdRes,
+                                         this.mapper);
             return null;
         }
 

@@ -11,33 +11,23 @@ public interface Saga {
         throws JsonProcessingException;
     Command handleOrderCreatedEvent(String message)
         throws JsonProcessingException;
-//    Command handlePaymentProcessedEvent(String message)
-//        throws JsonProcessingException;
-//    Command handleProductReservationCanceledEvent(String message)
-//        throws JsonProcessingException;
-//    Command handleProductReservedEvent(String message)
-//        throws JsonProcessingException;
-//    Command handlePaymentCanceledEvent(String message)
-//        throws JsonProcessingException;
     Command handleOrderRejectedEvent(String message)
         throws JsonProcessingException;
-
-    Event publishCreateOrderCommand(String message)
+    Event handleCreateOrderCommand(String message)
         throws JsonProcessingException;
-    Event publishReserveProductCommand(String message)
+    Event handleReserveProductCommand(String message)
         throws JsonProcessingException;
-    Event publishProcessPaymentCommand(String message)
+    Event handleProcessPaymentCommand(String message)
         throws JsonProcessingException;
-    Event publishApproveOrderCommand(String message)
+    Event handleApproveOrderCommand(String message)
         throws JsonProcessingException;
-    Event publishCancelProductReservationCommand(String message)
+    Event handleCancelProductReservationCommand(String message)
         throws JsonProcessingException;
-    Event publishCancelPaymentCommand(String message)
+    Event handleCancelPaymentCommand(String message)
         throws JsonProcessingException;
-    Event publishRejectOrderCommandPayment(String message)
+    Event handleRejectOrderCommandPayment(String message)
         throws JsonProcessingException;
-
-    Event publishRejectOrderCommandProduct(String message)
+    Event handleRejectOrderCommandProduct(String message)
         throws JsonProcessingException;
 
 }

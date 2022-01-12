@@ -30,23 +30,25 @@ public class PayentSagaAgregateImpl implements SagaAgregate {
     @Autowired
     private PaymentsService paymentsService;
 
+    @Autowired
+    private Factory factory;
+
     private Payment payment;
 
     private static final String droupId = GROUP_ID;
-
-    @Autowired
-    private Factory factory;
 
     @Override//6
     @KafkaListener(topics = PAYMENT_PROCESSED_EVENT, groupId = droupId)
     public Command handlePaymentProcessedEvent(String message)
         throws JsonProcessingException {
         System.out.println("handlePaymentProcessedEvent");
+
         ApproveOrderCommand command = (ApproveOrderCommand) this.factory
             .readEvent(PAYMENT_PROCESSED_EVENT,
                        APPROVE_ORDER_COMMAND,
                        new PaymentProcessedEvent(),
                        message);
+
         PaymentRequestDTO pmnt = new PaymentRequestDTO();
         pmnt.setUserId(command.getUserId());
         pmnt.setState(PaymentState.PAYMENT_APPROVED);
@@ -81,8 +83,6 @@ public class PayentSagaAgregateImpl implements SagaAgregate {
             this.sendService.sendMessage(CANCEL_PAYMENT_COMMAND, cancelPayment, this.mapper);
             this.sendService.sendMessage(CANCEL_PRODUCT_RESERVATION_COMMAND, cancelProdRes,
                                          this.mapper);
-//            this.publishCancelPaymentCommand(message);//11
-//            this.publishCancelProductReservationCommand(message);//9
 
         }
         this.sendService.sendMessage(APPROVE_ORDER_COMMAND, command, this.mapper);
@@ -100,10 +100,6 @@ public class PayentSagaAgregateImpl implements SagaAgregate {
                 , REJECT_ORDER_COMMAND_PAYMENT, new PaymentCanceledEvent(), message);
 
         this.sendService.sendMessage(REJECT_ORDER_COMMAND_PAYMENT, command, this.mapper);
-//        String paymentId = null;
-//        if (this.payment != null){
-//            paymentId = this.payment.getId();
-//        }
         this.paymentsService.reversePayment(command.getUserId(), command.getPaymentId());
         return command;
     }

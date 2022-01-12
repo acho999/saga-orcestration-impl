@@ -60,6 +60,9 @@ public class ProductInventoryServiceImpl implements ProductInventoryService {
     @Override
     public void resetQuantity(String productId) {
         Product prod = this.repo.findById(productId).get();
+        if(this.oldQuantity <= 0){
+            this.oldQuantity = prod.getQuantity();
+        }
         prod.setQuantity(this.oldQuantity);
         this.repo.saveAndFlush(prod);
     }
@@ -85,7 +88,7 @@ public class ProductInventoryServiceImpl implements ProductInventoryService {
         Product prod = this.repo.findById(productId).get();
         this.oldQuantity = prod.getQuantity();
         int quantity = this.oldQuantity - qty;
-        if (quantity < 0){
+        if (quantity <= 0){
             return;
         }
         prod.setQuantity(quantity);
