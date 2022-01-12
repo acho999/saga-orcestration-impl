@@ -84,6 +84,8 @@ public class PayentSagaAgregateImpl implements SagaAgregate {
             this.sendService.sendMessage(CANCEL_PRODUCT_RESERVATION_COMMAND, cancelProdRes,
                                          this.mapper);
 
+            return cancelPayment;
+
         }
         this.sendService.sendMessage(APPROVE_ORDER_COMMAND, command, this.mapper);
         return command;

@@ -36,7 +36,7 @@ public class ProductSagaAgregateImpl implements SagaAgregate {
     @KafkaListener(topics = PRODUCT_RESERVATION_CANCELED_EVENT, groupId = droupId)
     public Command handleProductReservationCanceledEvent(String message)
         throws JsonProcessingException {
-        System.out.println("handleProductReservationCanceledEvent");
+
         RejectOrderCommand command = (RejectOrderCommand) this.factory.readEvent(
             PRODUCT_RESERVATION_CANCELED_EVENT,
             REJECT_ORDER_COMMAND_PRODUCT,
@@ -51,7 +51,7 @@ public class ProductSagaAgregateImpl implements SagaAgregate {
     @KafkaListener(topics = PRODUCT_RESERVED_EVENT, groupId = droupId)
     public Command handleProductReservedEvent(String message)
         throws JsonProcessingException {
-        System.out.println("handleProductReservedEvent");
+
         ProcessPaymentCommand command = (ProcessPaymentCommand) this.factory
             .readEvent(PRODUCT_RESERVED_EVENT, PROCESS_PAYMENT_COMMAND,
                        new ProductReservedEvent(), message);
@@ -69,7 +69,7 @@ public class ProductSagaAgregateImpl implements SagaAgregate {
 
             this.sendService.sendMessage(CANCEL_PRODUCT_RESERVATION_COMMAND, cancelProdRes,
                                          this.mapper);
-            return null;
+            return cancelProdRes;
         }
 
         service.extractQuantity(command.getProductId(), command.getQuantity());
