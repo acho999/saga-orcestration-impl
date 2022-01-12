@@ -34,6 +34,7 @@ public class PaymentsServiceImpl implements PaymentsService {
 
     @Override
     public Payment savePayment(String userId, PaymentRequestDTO pmnt) {
+
         this.mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
         Payment payment = this.createPayment(pmnt);
@@ -45,6 +46,7 @@ public class PaymentsServiceImpl implements PaymentsService {
             payment.setState(PaymentState.PAYMENT_REJECTED);
             //to do invoke reject payment
         }
+
         this.repo.saveAndFlush(payment);
         this.usersService.changeBalance(userId, payment);
         return payment;

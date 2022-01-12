@@ -42,7 +42,9 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     public UserDTO getUser(String userId){
+
         this.mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+
         User usr = this.repo.findById(userId).get();
         UserDTO dto = mapper.map(usr, UserDTO.class);
         dto.setPayments(usr.getUserPayments());
@@ -52,6 +54,7 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     public void changeBalance(String userId, Payment payment){
+
         this.mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
         User usr = this.repo.findById(userId).get();

@@ -15,13 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.angel.models.states.OrderState;
-
-import java.util.List;
-import java.util.Optional;
-
-
 import static com.angel.models.constants.TopicConstants.*;
-
 
 @Service
 public class OrdersServiceImpl implements OrdersService {
@@ -39,18 +33,17 @@ public class OrdersServiceImpl implements OrdersService {
     private SendMessage send;
 
     @Override
-    public OrderResponseDTO getOrder(String id){
+    public OrderResponseDTO getOrder(String id) {
         this.mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         Order order = this.repo.findById(id).get();
-        OrderResponseDTO dto = this.mapper.map(order,OrderResponseDTO.class);
-        //this.approveOrder(id);
-        return  dto;
+        OrderResponseDTO dto = this.mapper.map(order, OrderResponseDTO.class);
+        return dto;
     }
 
     @Override
     @Transactional
     public OrderRequestDTO createOrder(OrderRequestDTO order)
-        throws  JsonProcessingException {
+        throws JsonProcessingException {
         this.mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
         Order newOrder = this.mapper.map(order, Order.class);
@@ -75,28 +68,24 @@ public class OrdersServiceImpl implements OrdersService {
         return dto;
     }
 
-    @Override//as parameter may be orderId
+    @Override
     @Transactional
     public boolean cancelOrder(String orderId) {
 
         Order order = this.repo.findById(orderId).get();
 
-        if(order.getState().equals(OrderState.ORDER_CANCELLED)){
+        if (order.getState().equals(OrderState.ORDER_CANCELLED)) {
             return true;
         }
 
         order.setState(OrderState.ORDER_CANCELLED);
-
         this.repo.saveAndFlush(order);
-
         return true;
     }
 
-    @Override//as parameter may be orderId
+    @Override
     @Transactional
     public boolean approveOrder(String orderId) {
-        System.out.println(orderId);
-        System.out.println(this.repo.existsById(orderId));
 
         Order order = this.repo.findById(orderId).get();
         order.setState(OrderState.ORDER_CREATED);

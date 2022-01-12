@@ -27,23 +27,21 @@ public class SagaImpl implements Saga {
     @Autowired
     private OrdersServiceImpl ordersService;
 
-    private static final String droupId = GROUP_ID;
-
     @Autowired
     private Factory factory;
+
+    private static final String droupId = GROUP_ID;
 
     @Override//2
     @KafkaListener(topics = ORDER_CREATED_EVENT, groupId = droupId)
     public Command handleOrderCreatedEvent(String message)
         throws JsonProcessingException {
-        //1
-        System.out.println("handleOrderCreatedEvent");
-        Command command = this.factory.readEvent(ORDER_CREATED_EVENT,RESERVE_PRODUCT_COMMAND,
-                                                  new OrderCreatedEvent(), message);
+
+        Command command = this.factory.readEvent(ORDER_CREATED_EVENT, RESERVE_PRODUCT_COMMAND,
+                                                 new OrderCreatedEvent(), message);
         this.sendService.sendMessage(RESERVE_PRODUCT_COMMAND, command, this.mapper);
         return command;
     }
-
 
     @Override//8
     @KafkaListener(topics = ORDER_APPROVED_EVENT, groupId = droupId)
@@ -72,7 +70,8 @@ public class SagaImpl implements Saga {
     public Event handleCreateOrderCommand(String message)
         throws JsonProcessingException {
         System.out.println("handleCreateOrderCommand");
-        Event event = this.factory.readCommand(CREATE_ORDER_COMMAND,ORDER_CREATED_EVENT,new CreateOrderCommand(), message);
+        Event event = this.factory.readCommand(CREATE_ORDER_COMMAND, ORDER_CREATED_EVENT,
+                                               new CreateOrderCommand(), message);
         this.sendService.sendMessage(ORDER_CREATED_EVENT, event, this.mapper);
         return event;
     }
@@ -83,8 +82,8 @@ public class SagaImpl implements Saga {
         throws JsonProcessingException {
         System.out.println("handleReserveProductCommand");
         Event event = this.factory.readCommand(RESERVE_PRODUCT_COMMAND,
-                                                PRODUCT_RESERVED_EVENT,
-                                                new ReserveProductCommand(),message);
+                                               PRODUCT_RESERVED_EVENT,
+                                               new ReserveProductCommand(), message);
         this.sendService.sendMessage(PRODUCT_RESERVED_EVENT, event, this.mapper);
         return event;
     }
@@ -95,8 +94,8 @@ public class SagaImpl implements Saga {
         throws JsonProcessingException {
         System.out.println("handleProcessPaymentCommand");
         Event event = this.factory.readCommand(PROCESS_PAYMENT_COMMAND,
-                                                PAYMENT_PROCESSED_EVENT,
-                                                new ProcessPaymentCommand(),message);
+                                               PAYMENT_PROCESSED_EVENT,
+                                               new ProcessPaymentCommand(), message);
         this.sendService.sendMessage(PAYMENT_PROCESSED_EVENT, event, this.mapper);
         return event;
     }
@@ -107,8 +106,8 @@ public class SagaImpl implements Saga {
         throws JsonProcessingException {
         System.out.println("handleApproveOrderCommand");
         Event event = this.factory.readCommand(APPROVE_ORDER_COMMAND,
-                                                ORDER_APPROVED_EVENT,
-                                                new ApproveOrderCommand(),message);
+                                               ORDER_APPROVED_EVENT,
+                                               new ApproveOrderCommand(), message);
         this.sendService.sendMessage(ORDER_APPROVED_EVENT, event, this.mapper);
         return event;
     }
@@ -120,7 +119,7 @@ public class SagaImpl implements Saga {
         System.out.println("handleCancelPaymentCommand");
         Event event = this.factory.readCommand(CANCEL_PAYMENT_COMMAND,
                                                PAYMENT_CANCELED_EVENT,
-                                               new CancelPaymentCommand(),message);
+                                               new CancelPaymentCommand(), message);
         this.sendService.sendMessage(PAYMENT_CANCELED_EVENT, event, this.mapper);
         return event;
     }
@@ -143,8 +142,8 @@ public class SagaImpl implements Saga {
         throws JsonProcessingException {
         System.out.println("handleRejectOrderCommand");
         Event event = this.factory.readCommand(REJECT_ORDER_COMMAND_PAYMENT,
-                                                ORDER_REJECTED_EVENT,
-                                                new RejectOrderCommand(),message);
+                                               ORDER_REJECTED_EVENT,
+                                               new RejectOrderCommand(), message);
         this.sendService.sendMessage(ORDER_REJECTED_EVENT, event, this.mapper);
         return event;
     }
@@ -156,7 +155,7 @@ public class SagaImpl implements Saga {
         System.out.println("handleRejectOrderCommand");
         Event event = this.factory.readCommand(REJECT_ORDER_COMMAND_PRODUCT,
                                                ORDER_REJECTED_EVENT,
-                                               new RejectOrderCommand(),message);
+                                               new RejectOrderCommand(), message);
         this.sendService.sendMessage(ORDER_REJECTED_EVENT, event, this.mapper);
         return event;
     }
