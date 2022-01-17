@@ -2,10 +2,10 @@ package com.angel.orderservice.services.impl;
 
 import com.angel.models.DTO.OrderRequestDTO;
 import com.angel.models.DTO.OrderResponseDTO;
+import com.angel.models.events.OrderCreatedEvent;
 import com.angel.orderservice.models.Order;
 import com.angel.orderservice.repos.OrdersRepo;
 import com.angel.orderservice.services.api.OrdersService;
-import com.angel.models.commands.CreateOrderCommand;
 import com.angel.saga.api.SendMessage;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -54,7 +54,7 @@ public class OrdersServiceImpl implements OrdersService {
         dto.setId(newOrder.getOrderId());
         dto.setOrderState(newOrder.getState());
 
-        CreateOrderCommand cmd = CreateOrderCommand.builder()
+        OrderCreatedEvent event = OrderCreatedEvent.builder()
             .orderId(newOrder.getOrderId())
             .productId(dto.getProductId())
             .quantity(dto.getQuantity())
@@ -63,8 +63,7 @@ public class OrdersServiceImpl implements OrdersService {
             .price(dto.getPrice())
             .build();
 
-        //1
-        send.sendMessage(CREATE_ORDER_COMMAND, cmd, objectMapper);
+        send.sendMessage(ORDER_CREATED_EVENT, event, objectMapper);
         return dto;
     }
 
