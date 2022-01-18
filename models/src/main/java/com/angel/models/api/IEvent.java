@@ -1,5 +1,7 @@
 package com.angel.models.api;
 
-public interface IEvent {
+import java.io.Serializable;
+
+public interface IEvent extends Serializable {
 
 }

@@ -12,11 +12,9 @@ public interface Factory {
 
     Command commandFactory(Event evt, String topic);
 
-    Command readEvent(String currentTopic, String nextTopicCommand, Event evt, String message)
-        throws JsonProcessingException;
+    Command readEvent(String currentTopic, String nextTopicCommand, Event evt);
 
-    Event readCommand(String currentTopic, String nextTopicCommand, Command cmd, String message)
-        throws JsonProcessingException;
+    Event readCommand(String currentTopic, String nextTopicCommand, Command cmd);
 
     JsonNode convertJsonToJsonNode(String message)
         throws JsonProcessingException;

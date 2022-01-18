@@ -27,7 +27,7 @@ public class FactoryImpl implements Factory {
     }
 
     @Override
-    public synchronized Event eventFactory(Command cmd, String topic) {
+    public Event eventFactory(Command cmd, String topic) {
         if (cmd == null) {
             return null;
         }
@@ -74,7 +74,7 @@ public class FactoryImpl implements Factory {
                     .build();
             case PRODUCT_RESERVATION_CANCELED_EVENT:
                 ProductReservationCancelCommand canceltCmd = (ProductReservationCancelCommand) cmd;
-                return ProductReservationCalseledEvent.builder()
+                return ProductReservationCanceledEvent.builder()
                     .orderId(canceltCmd.getOrderId())
                     .quantity(canceltCmd.getQuantity())
                     .userId(canceltCmd.getUserId())
@@ -94,7 +94,7 @@ public class FactoryImpl implements Factory {
                     .quantity(cancelPayment.getQuantity())
                     .build();
             case ORDER_REJECTED_EVENT:
-                RejectOrderCommand rejectCmd = (RejectOrderCommand) cmd;
+                RejectOrderCommandProduct rejectCmd = (RejectOrderCommandProduct) cmd;
                 return OrderRejectedEvent.builder()
                     .orderId(rejectCmd.getOrderId())
                     .reason(rejectCmd.getReason())
@@ -107,7 +107,7 @@ public class FactoryImpl implements Factory {
     }
 
     @Override
-    public synchronized Command commandFactory(Event evt, String topic) {
+    public Command commandFactory(Event evt, String topic) {
         if (evt == null) {
             return null;
         }
@@ -153,7 +153,7 @@ public class FactoryImpl implements Factory {
                     .price(approvetCmd.getPrice())
                     .build();
             case CANCEL_PRODUCT_RESERVATION_COMMAND:
-                ProductReservationCalseledEvent canceltCmd = (ProductReservationCalseledEvent) evt;
+                ProductReservationCanceledEvent canceltCmd = (ProductReservationCanceledEvent) evt;
                 return ProductReservationCancelCommand.builder()
                     .orderId(canceltCmd.getOrderId())
                     .quantity(canceltCmd.getQuantity())
@@ -176,7 +176,7 @@ public class FactoryImpl implements Factory {
                     .build();
             case REJECT_ORDER_COMMAND_PAYMENT:
                 PaymentCanceledEvent rejectCmd = (PaymentCanceledEvent) evt;
-                return RejectOrderCommand.builder()
+                return RejectOrderCommandProduct.builder()
                     .orderId(rejectCmd.getOrderId())
                     .reason("Not enpugh balance!")
                     .userId(rejectCmd.getUserId())
@@ -185,8 +185,8 @@ public class FactoryImpl implements Factory {
                     .build();
 
             case REJECT_ORDER_COMMAND_PRODUCT:
-                ProductReservationCalseledEvent rejectEv = (ProductReservationCalseledEvent) evt;
-                return RejectOrderCommand.builder()
+                ProductReservationCanceledEvent rejectEv = (ProductReservationCanceledEvent) evt;
+                return RejectOrderCommandProduct.builder()
                     .orderId(rejectEv.getOrderId())
                     .reason("Not enpugh quantity!")
                     .userId(rejectEv.getUserId())
@@ -201,25 +201,15 @@ public class FactoryImpl implements Factory {
     }
 
     @Override
-    public synchronized Command readEvent(String currentTopic, String nextTopicCommand, Event evt,
-                             String message)
-        throws JsonProcessingException {
-        JsonNode actualObj = this.mapper.readTree(message);
-        this.event = this.mapper.readValue(actualObj.toString(), evt.getClass());
-        Command createdCommand = commandFactory(this.event, nextTopicCommand);
+    public Command readEvent(String currentTopic, String nextTopicCommand, Event evt){
+        Command createdCommand = commandFactory(evt, nextTopicCommand);
         return createdCommand;
     }
 
     //read command from topic, create and send event
     @Override
-    public synchronized Event readCommand(String currentTopic, String nextTopicCommand, Command cmd,
-                             String message)
-        throws JsonProcessingException {
-
-        JsonNode actualObj = this.mapper.readTree(message);
-        this.command = this.mapper.readValue(actualObj.toString(), cmd.getClass());
-
-        Event createdEvent = eventFactory(this.command, nextTopicCommand);
+    public Event readCommand(String currentTopic, String nextTopicCommand, Command cmd){
+        Event createdEvent = eventFactory(cmd, nextTopicCommand);
         return createdEvent;
     }
 

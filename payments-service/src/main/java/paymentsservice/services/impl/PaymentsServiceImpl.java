@@ -43,7 +43,7 @@ public class PaymentsServiceImpl implements PaymentsService {
         User user = this.mapper.map(this.usersService.getUser(userId), User.class);
 
         if ((user.getBalance() - payment.getAmount()) < 0){
-            payment.setState(PaymentState.PAYMENT_REJECTED);
+            payment.setState(PaymentState.REJECTED);
             //to do invoke reject payment
         }
 
@@ -60,7 +60,7 @@ public class PaymentsServiceImpl implements PaymentsService {
         if (paymentId != null){
             pmt = this.repo.findById(paymentId).get();
 
-            pmt.setState(PaymentState.PAYMENT_REJECTED);
+            pmt.setState(PaymentState.REJECTED);
 
             this.usersService.reverseUserBalance(userId, pmt.getAmount());
 
@@ -69,7 +69,7 @@ public class PaymentsServiceImpl implements PaymentsService {
 
         pmt = this.repo.findAll().stream().filter(x->x.getUserId().getUserId().equals(userId)).findFirst().get();
 
-        pmt.setState(PaymentState.PAYMENT_REJECTED);
+        pmt.setState(PaymentState.REJECTED);
 
         this.usersService.reverseUserBalance(userId, pmt.getAmount());
 

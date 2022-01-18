@@ -6,23 +6,19 @@ import com.angel.models.events.*;
 import com.angel.models.states.PaymentState;
 import com.angel.saga.api.Factory;
 import com.angel.saga.api.SendMessage;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 import paymentsservice.models.Payment;
 import paymentsservice.sagaAgregate.api.SagaAgregate;
 import paymentsservice.services.api.PaymentsService;
 
-
 import static com.angel.models.constants.TopicConstants.*;
 
 @Component
+@KafkaListener(topics = {PAYMENT_PROCESSED_EVENT, PAYMENT_CANCELED_EVENT}, groupId = GROUP_ID)
 public class PayentSagaAgregateImpl implements SagaAgregate {
-
-    @Autowired
-    private ObjectMapper mapper;
 
     @Autowired
     private SendMessage sendService;
@@ -35,23 +31,17 @@ public class PayentSagaAgregateImpl implements SagaAgregate {
 
     private Payment payment;
 
-    private static final String droupId = GROUP_ID;
-
     @Override//6
-    @KafkaListener(topics = PAYMENT_PROCESSED_EVENT, groupId = droupId)
-    public Command handlePaymentProcessedEvent(String message)
-        throws JsonProcessingException {
-        System.out.println("handlePaymentProcessedEvent");
-
+    @KafkaHandler
+    public Command handlePaymentProcessedEvent(PaymentProcessedEvent event){
         ApproveOrderCommand command = (ApproveOrderCommand) this.factory
             .readEvent(PAYMENT_PROCESSED_EVENT,
                        APPROVE_ORDER_COMMAND,
-                       new PaymentProcessedEvent(),
-                       message);
+                       event);
 
         PaymentRequestDTO pmnt = new PaymentRequestDTO();
         pmnt.setUserId(command.getUserId());
-        pmnt.setState(PaymentState.PAYMENT_APPROVED);
+        pmnt.setState(PaymentState.APPROVED);
         pmnt.setQuantity(command.getQuantity());
         pmnt.setOrderId(command.getOrderId());
         pmnt.setProductId(command.getProductId());
@@ -59,7 +49,7 @@ public class PayentSagaAgregateImpl implements SagaAgregate {
 
         this.payment = this.paymentsService.savePayment(command.getUserId(), pmnt);
 
-        if (command != null && this.payment.getState().equals(PaymentState.PAYMENT_REJECTED)) {
+        if (command != null && this.payment.getState().equals(PaymentState.REJECTED)) {
 
             CancelPaymentCommand cancelPayment = new CancelPaymentCommand();
             cancelPayment.setPaymentState(pmnt.getState());
@@ -71,7 +61,7 @@ public class PayentSagaAgregateImpl implements SagaAgregate {
             cancelPayment.setPaymentId(this.payment.getId());
 
             ProductReservationCancelCommand cancelProdRes = new ProductReservationCancelCommand();
-            cancelProdRes.setPaymentState(PaymentState.PAYMENT_REJECTED);
+            cancelProdRes.setPaymentState(PaymentState.REJECTED);
             cancelProdRes.setProductId(pmnt.getProductId());
             cancelProdRes.setQuantity(pmnt.getQuantity());
             cancelProdRes.setUserId(pmnt.getUserId());
@@ -80,28 +70,24 @@ public class PayentSagaAgregateImpl implements SagaAgregate {
             cancelProdRes.setPaymentId(pmnt.getId());
             cancelProdRes.setPaymentId(this.payment.getId());
 
-            this.sendService.sendMessage(CANCEL_PAYMENT_COMMAND, cancelPayment, this.mapper);
-            this.sendService.sendMessage(CANCEL_PRODUCT_RESERVATION_COMMAND, cancelProdRes,
-                                         this.mapper);
+            this.sendService.sendMessage(CANCEL_PAYMENT_COMMAND, cancelPayment);
+            this.sendService.sendMessage(CANCEL_PRODUCT_RESERVATION_COMMAND, cancelProdRes);
 
             return cancelPayment;
 
         }
-        this.sendService.sendMessage(APPROVE_ORDER_COMMAND, command, this.mapper);
+        this.sendService.sendMessage(APPROVE_ORDER_COMMAND, command);
         return command;
     }
 
     @Override//12
-    @KafkaListener(topics = PAYMENT_CANCELED_EVENT, groupId = droupId)
-    public Command handlePaymentCanceledEvent(String message)
-        throws JsonProcessingException {
-        System.out.println("handlePaymentCanceledEvent");
+    @KafkaHandler
+    public Command handlePaymentCanceledEvent(PaymentCanceledEvent event){
+        RejectOrderCommandProduct command =
+            (RejectOrderCommandProduct) this.factory.readEvent(PAYMENT_CANCELED_EVENT
+                , REJECT_ORDER_COMMAND_PAYMENT, event);
 
-        RejectOrderCommand command =
-            (RejectOrderCommand) this.factory.readEvent(PAYMENT_CANCELED_EVENT
-                , REJECT_ORDER_COMMAND_PAYMENT, new PaymentCanceledEvent(), message);
-
-        this.sendService.sendMessage(REJECT_ORDER_COMMAND_PAYMENT, command, this.mapper);
+        this.sendService.sendMessage(REJECT_ORDER_COMMAND_PAYMENT, command);
         this.paymentsService.reversePayment(command.getUserId(), command.getPaymentId());
         return command;
     }

@@ -9,17 +9,17 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class RejectOrderCommand extends Command{
+public class RejectOrderCommandProduct extends Command{
 
     private String reason;
-    private OrderState state = OrderState.ORDER_CANCELLED;
+    private OrderState state = OrderState.CANCELLED;
     private String paymentId;
 
-    public RejectOrderCommand(String a){}
+    public RejectOrderCommandProduct(String a){}
 
 
     @Builder
-    public RejectOrderCommand(String reason, String userId, String orderId,String productId, String paymentId){
+    public RejectOrderCommandProduct(String reason, String userId, String orderId, String productId, String paymentId){
         super(userId, orderId, 0.0d, productId, 0);
         this.reason = reason;
         this.paymentId = paymentId;

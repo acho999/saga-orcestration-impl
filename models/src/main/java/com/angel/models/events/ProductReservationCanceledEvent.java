@@ -9,17 +9,17 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ProductReservationCalseledEvent extends Event{
+public class ProductReservationCanceledEvent extends Event{
 
     private String reason;
     private String paymentId;
     private PaymentState paymentState;
 
-    public ProductReservationCalseledEvent(String a){}
+    public ProductReservationCanceledEvent(String a){}
 
 
     @Builder
-    public ProductReservationCalseledEvent(String productId, int quantity, String reason, String userId, String orderId, double price){
+    public ProductReservationCanceledEvent(String productId, int quantity, String reason, String userId, String orderId, double price){
         super(userId, orderId, price, productId, quantity);
         this.reason = reason;
     }

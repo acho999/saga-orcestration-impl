@@ -19,7 +19,7 @@ public class ApproveOrderCommand extends Command{
     @Builder
     public ApproveOrderCommand(String orderId, String userId, String productId, int quantity, double price){
         super(userId, orderId, price, productId, quantity);
-        this.state = OrderState.ORDER_COMPLETED;
+        this.state = OrderState.COMPLETED;
     }
 
 }

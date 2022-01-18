@@ -6,6 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public interface SendMessage {
 
-    void sendMessage(String topicName, IEvent event, ObjectMapper mapper) throws JsonProcessingException;
+    void sendMessage(String topicName, IEvent event);
 
 }

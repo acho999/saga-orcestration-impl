@@ -1,24 +1,25 @@
-package com.angel.models.events;
+package com.angel.models.commands;
 
+import com.angel.models.states.OrderState;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import com.angel.models.states.OrderState;
 
 @Getter
 @Setter
 @NoArgsConstructor
-public class OrderRejectedEvent extends Event{
+public class RejectOrderCommandPayment extends Command{
 
     private String reason;
     private OrderState state = OrderState.CANCELLED;
     private String paymentId;
 
-    public OrderRejectedEvent(String a){}
+    public RejectOrderCommandPayment(String a){}
+
 
     @Builder
-    public OrderRejectedEvent(String reason, String userId, String orderId,String productId, String paymentId){
+    public RejectOrderCommandPayment(String reason, String userId, String orderId, String productId, String paymentId){
         super(userId, orderId, 0.0d, productId, 0);
         this.reason = reason;
         this.paymentId = paymentId;

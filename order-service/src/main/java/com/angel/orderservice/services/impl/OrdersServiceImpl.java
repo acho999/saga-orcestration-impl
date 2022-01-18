@@ -24,9 +24,6 @@ public class OrdersServiceImpl implements OrdersService {
     private OrdersRepo repo;
 
     @Autowired
-    private ObjectMapper objectMapper;
-
-    @Autowired
     private ModelMapper mapper;
 
     @Autowired
@@ -47,7 +44,7 @@ public class OrdersServiceImpl implements OrdersService {
         this.mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
         Order newOrder = this.mapper.map(order, Order.class);
-        newOrder.setState(OrderState.ORDER_PENDING);
+        newOrder.setState(OrderState.PENDING);
         this.repo.saveAndFlush(newOrder);
 
         OrderRequestDTO dto = order;
@@ -59,11 +56,11 @@ public class OrdersServiceImpl implements OrdersService {
             .productId(dto.getProductId())
             .quantity(dto.getQuantity())
             .userId(dto.getUserId())
-            .state(OrderState.ORDER_PENDING)
+            .state(OrderState.PENDING)
             .price(dto.getPrice())
             .build();
 
-        send.sendMessage(ORDER_CREATED_EVENT, event, objectMapper);
+        send.sendMessage(ORDER_CREATED_EVENT, event);
         return dto;
     }
 
@@ -73,11 +70,11 @@ public class OrdersServiceImpl implements OrdersService {
 
         Order order = this.repo.findById(orderId).get();
 
-        if (order.getState().equals(OrderState.ORDER_CANCELLED)) {
+        if (order.getState().equals(OrderState.CANCELLED)) {
             return true;
         }
 
-        order.setState(OrderState.ORDER_CANCELLED);
+        order.setState(OrderState.CANCELLED);
         this.repo.saveAndFlush(order);
         return true;
     }
@@ -87,7 +84,7 @@ public class OrdersServiceImpl implements OrdersService {
     public boolean approveOrder(String orderId) {
 
         Order order = this.repo.findById(orderId).get();
-        order.setState(OrderState.ORDER_CREATED);
+        order.setState(OrderState.CREATED);
         this.repo.saveAndFlush(order);
 
         return true;
