@@ -1,6 +1,7 @@
 package productInventoryservice.services.impl;
 
 import com.angel.models.DTO.ProductDTO;
+import com.angel.models.states.PaymentState;
 import org.apache.kafka.common.quota.ClientQuotaAlteration;
 import org.modelmapper.convention.MatchingStrategies;
 import productInventoryservice.models.Product;
@@ -54,15 +55,23 @@ public class ProductInventoryServiceImpl implements ProductInventoryService {
             return false;
         }
         return true;
-
     }
 //tested
     @Override
-    public void resetQuantity(String productId) {
+    public void resetQuantity(String productId, int quantity, PaymentState state) {
+
         Product prod = this.repo.findById(productId).get();
+
+        int prodQuantity = prod.getQuantity();
+
         if(this.oldQuantity <= 0){
-            this.oldQuantity = prod.getQuantity();
+            this.oldQuantity = prodQuantity;
         }
+        System.out.println(state);
+        if(quantity <= prodQuantity && state.equals(PaymentState.REJECTED)){
+            this.oldQuantity = quantity + prodQuantity;
+        }
+
         prod.setQuantity(this.oldQuantity);
         this.repo.saveAndFlush(prod);
     }
@@ -87,9 +96,7 @@ public class ProductInventoryServiceImpl implements ProductInventoryService {
     public void extractQuantity(String productId, int qty) {
         Product prod = this.repo.findById(productId).get();
         this.oldQuantity = prod.getQuantity();
-        System.out.println(this.oldQuantity);
         int quantity = this.oldQuantity - qty;
-        System.out.println(quantity);
         if (quantity <= 0){
             return;
         }

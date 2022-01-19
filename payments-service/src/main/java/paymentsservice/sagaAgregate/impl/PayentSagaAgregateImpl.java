@@ -17,7 +17,7 @@ import paymentsservice.services.api.PaymentsService;
 import static com.angel.models.constants.TopicConstants.*;
 
 @Component
-@KafkaListener(topics = {PAYMENT_PROCESSED_EVENT, PAYMENT_CANCELED_EVENT}, groupId = GROUP_ID)
+@KafkaListener(topics = {PROCESS_PAYMENT_COMMAND, CANCEL_PAYMENT_COMMAND}, groupId = GROUP_ID)
 public class PayentSagaAgregateImpl implements SagaAgregate {
 
     @Autowired
@@ -31,14 +31,12 @@ public class PayentSagaAgregateImpl implements SagaAgregate {
 
     private Payment payment;
 
-    @Override//6
+    @Override//5
     @KafkaHandler
-    public Command handlePaymentProcessedEvent(PaymentProcessedEvent event){
-        ApproveOrderCommand command = (ApproveOrderCommand) this.factory
-            .readEvent(PAYMENT_PROCESSED_EVENT,
-                       APPROVE_ORDER_COMMAND,
-                       event);
-
+    public Event handleProcessPaymentCommand(ProcessPaymentCommand command){
+        Event event = this.factory.readCommand(PROCESS_PAYMENT_COMMAND,
+                                               PAYMENT_PROCESSED_EVENT,
+                                               command);
         PaymentRequestDTO pmnt = new PaymentRequestDTO();
         pmnt.setUserId(command.getUserId());
         pmnt.setState(PaymentState.APPROVED);
@@ -51,7 +49,7 @@ public class PayentSagaAgregateImpl implements SagaAgregate {
 
         if (command != null && this.payment.getState().equals(PaymentState.REJECTED)) {
 
-            CancelPaymentCommand cancelPayment = new CancelPaymentCommand();
+            PaymentCanceledEvent cancelPayment = new PaymentCanceledEvent();
             cancelPayment.setPaymentState(pmnt.getState());
             cancelPayment.setUserId(pmnt.getUserId());
             cancelPayment.setProductId(pmnt.getProductId());
@@ -60,7 +58,7 @@ public class PayentSagaAgregateImpl implements SagaAgregate {
             cancelPayment.setPrice(pmnt.getPrice());
             cancelPayment.setPaymentId(this.payment.getId());
 
-            ProductReservationCancelCommand cancelProdRes = new ProductReservationCancelCommand();
+            ProductReservationCanceledEvent cancelProdRes = new ProductReservationCanceledEvent();
             cancelProdRes.setPaymentState(PaymentState.REJECTED);
             cancelProdRes.setProductId(pmnt.getProductId());
             cancelProdRes.setQuantity(pmnt.getQuantity());
@@ -70,26 +68,20 @@ public class PayentSagaAgregateImpl implements SagaAgregate {
             cancelProdRes.setPaymentId(pmnt.getId());
             cancelProdRes.setPaymentId(this.payment.getId());
 
-            this.sendService.sendMessage(CANCEL_PAYMENT_COMMAND, cancelPayment);
-            this.sendService.sendMessage(CANCEL_PRODUCT_RESERVATION_COMMAND, cancelProdRes);
+            this.sendService.sendMessage(PAYMENT_CANCELED_EVENT, cancelPayment);
+            this.sendService.sendMessage(PRODUCT_RESERVATION_CANCELED_EVENT, cancelProdRes);
 
-            return cancelPayment;
+            return null;
 
         }
-        this.sendService.sendMessage(APPROVE_ORDER_COMMAND, command);
-        return command;
+        this.sendService.sendMessage(PAYMENT_PROCESSED_EVENT, event);
+        return event;
     }
 
-    @Override//12
+    @Override//11
     @KafkaHandler
-    public Command handlePaymentCanceledEvent(PaymentCanceledEvent event){
-        RejectOrderCommandProduct command =
-            (RejectOrderCommandProduct) this.factory.readEvent(PAYMENT_CANCELED_EVENT
-                , REJECT_ORDER_COMMAND_PAYMENT, event);
-
-        this.sendService.sendMessage(REJECT_ORDER_COMMAND_PAYMENT, command);
+    public void handleCancelPaymentCommand(CancelPaymentCommand command){
         this.paymentsService.reversePayment(command.getUserId(), command.getPaymentId());
-        return command;
     }
 
 }

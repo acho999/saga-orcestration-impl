@@ -2,6 +2,7 @@ package productInventoryservice.endpoints;
 
 import com.angel.models.DTO.ProductDTO;
 import com.angel.models.DTO.UserDTO;
+import com.angel.models.states.PaymentState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -61,7 +62,7 @@ public class ProductsController {
     )
     public ResponseEntity resetQuantity(@PathVariable String productId){
 
-        this.service.resetQuantity(productId);
+        this.service.resetQuantity(productId, 0, PaymentState.REJECTED);
         return ResponseEntity.ok().build();
     }
 //tested

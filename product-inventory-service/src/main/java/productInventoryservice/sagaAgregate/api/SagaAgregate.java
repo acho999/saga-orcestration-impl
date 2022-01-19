@@ -1,14 +1,11 @@
 package productInventoryservice.sagaAgregate.api;
 
-import com.angel.models.commands.Command;
-import com.angel.models.events.ProductReservationCanceledEvent;
-import com.angel.models.events.ProductReservedEvent;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.angel.models.commands.ProductReservationCancelCommand;
+import com.angel.models.commands.ReserveProductCommand;
+import com.angel.models.events.Event;
 
 public interface SagaAgregate {
 
-    Command handleProductReservationCanceledEvent(ProductReservationCanceledEvent message)
-        throws JsonProcessingException;
-    Command handleProductReservedEvent(ProductReservedEvent message)
-        throws JsonProcessingException;
+    void handleCancelProductReservationCommand(ProductReservationCancelCommand command);
+    Event handleReserveProductCommand(ReserveProductCommand command);
 }

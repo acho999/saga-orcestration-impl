@@ -15,7 +15,7 @@ import productInventoryservice.services.api.ProductInventoryService;
 import static com.angel.models.constants.TopicConstants.*;
 
 @Component
-@KafkaListener(topics = {PRODUCT_RESERVED_EVENT, PRODUCT_RESERVATION_CANCELED_EVENT}, groupId = GROUP_ID)
+@KafkaListener(topics = {RESERVE_PRODUCT_COMMAND, CANCEL_PRODUCT_RESERVATION_COMMAND}, groupId = GROUP_ID)
 public class ProductSagaAgregateImpl implements SagaAgregate {
 
     @Autowired
@@ -27,31 +27,21 @@ public class ProductSagaAgregateImpl implements SagaAgregate {
     @Autowired
     private Factory factory;
 
-    @Override//10
+    @Override//9
     @KafkaHandler
-    public Command handleProductReservationCanceledEvent(ProductReservationCanceledEvent event){
-
-        RejectOrderCommandProduct command = (RejectOrderCommandProduct) this.factory.readEvent(
-            PRODUCT_RESERVATION_CANCELED_EVENT,
-            REJECT_ORDER_COMMAND_PRODUCT,
-            event);
-
-        service.resetQuantity(command.getProductId());
-        this.sendService.sendMessage(REJECT_ORDER_COMMAND_PRODUCT, command);
-        return command;
+    public void handleCancelProductReservationCommand(ProductReservationCancelCommand command){
+        service.resetQuantity(command.getProductId(), command.getQuantity(), command.getPaymentState());;
     }
 
     @Override//4
     @KafkaHandler
-    public Command handleProductReservedEvent(ProductReservedEvent event){
-
-        ProcessPaymentCommand command = (ProcessPaymentCommand) this.factory
-            .readEvent(PRODUCT_RESERVED_EVENT, PROCESS_PAYMENT_COMMAND,
-                       event);
-
+    public Event handleReserveProductCommand(ReserveProductCommand command){
+        Event event = this.factory.readCommand(RESERVE_PRODUCT_COMMAND,
+                                               PRODUCT_RESERVED_EVENT,
+                                               command);
         if (!service.isAvailable(command.getProductId(), command.getQuantity())) {
 
-            ProductReservationCancelCommand cancelProdRes = new ProductReservationCancelCommand();
+            ProductReservationCanceledEvent cancelProdRes = new ProductReservationCanceledEvent();
             cancelProdRes.setPaymentState(PaymentState.REJECTED);
             cancelProdRes.setProductId(command.getProductId());
             cancelProdRes.setQuantity(command.getQuantity());
@@ -60,14 +50,13 @@ public class ProductSagaAgregateImpl implements SagaAgregate {
             cancelProdRes.setOrderId(command.getOrderId());
             cancelProdRes.setPaymentId("");
 
-            this.sendService.sendMessage(CANCEL_PRODUCT_RESERVATION_COMMAND, cancelProdRes);
-            return cancelProdRes;
+            this.sendService.sendMessage(PRODUCT_RESERVATION_CANCELED_EVENT, cancelProdRes);
+            return null;
         }
 
         service.extractQuantity(command.getProductId(), command.getQuantity());
-
-        this.sendService.sendMessage(PROCESS_PAYMENT_COMMAND, command);
-        return command;
+        this.sendService.sendMessage(PRODUCT_RESERVED_EVENT, event);
+        return event;
     }
 
 }

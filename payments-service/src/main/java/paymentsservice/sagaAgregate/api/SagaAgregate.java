@@ -1,6 +1,8 @@
 package paymentsservice.sagaAgregate.api;
 
+import com.angel.models.commands.CancelPaymentCommand;
 import com.angel.models.commands.Command;
+import com.angel.models.commands.ProcessPaymentCommand;
 import com.angel.models.events.Event;
 import com.angel.models.events.PaymentCanceledEvent;
 import com.angel.models.events.PaymentProcessedEvent;
@@ -12,10 +14,8 @@ import java.util.Properties;
 public interface SagaAgregate {
 
 
-    Command handlePaymentProcessedEvent(PaymentProcessedEvent message)
-        throws JsonProcessingException;
+    Event handleProcessPaymentCommand(ProcessPaymentCommand command);
 
-    Command handlePaymentCanceledEvent(PaymentCanceledEvent message)
-        throws JsonProcessingException;
+    void handleCancelPaymentCommand(CancelPaymentCommand message);
 
 }
