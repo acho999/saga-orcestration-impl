@@ -38,6 +38,7 @@ public class PaymentsServiceImpl implements PaymentsService {
         this.mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
         Payment payment = this.createPayment(pmnt);
+
         payment.setAmount(payment.getPrice() * payment.getQuantity());
 
         User user = this.mapper.map(this.usersService.getUser(userId), User.class);
@@ -60,16 +61,12 @@ public class PaymentsServiceImpl implements PaymentsService {
         if (paymentId != null){
             pmt = this.repo.findById(paymentId).get();
 
-            pmt.setState(PaymentState.REJECTED);
-
             this.usersService.reverseUserBalance(userId, pmt.getAmount());
 
             return true;
         }
 
         pmt = this.repo.findAll().stream().filter(x->x.getUserId().getUserId().equals(userId)).findFirst().get();
-
-        pmt.setState(PaymentState.REJECTED);
 
         this.usersService.reverseUserBalance(userId, pmt.getAmount());
 

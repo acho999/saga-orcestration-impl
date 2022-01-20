@@ -29,6 +29,7 @@ public class IEventDeserializer implements Deserializer<IEvent> {
                 case "PaymentProcessedEvent" : return (PaymentProcessedEvent) SerializationUtils.deserialize(bytes);
                 case "ProductReservationCanceledEvent" : return (ProductReservationCanceledEvent) SerializationUtils.deserialize(bytes);
                 case "ProductReservedEvent" : return (ProductReservedEvent) SerializationUtils.deserialize(bytes);
+                case "PaymentCanceledEvent" : return (PaymentCanceledEvent) SerializationUtils.deserialize(bytes);
 
                 default: return null;
 

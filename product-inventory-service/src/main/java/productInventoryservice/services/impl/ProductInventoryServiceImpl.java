@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import productInventoryservice.services.api.ProductInventoryService;
 
 import java.util.Optional;
+import java.util.logging.Logger;
 
 
 @Service
@@ -28,7 +29,8 @@ public class ProductInventoryServiceImpl implements ProductInventoryService {
 
     private int oldQuantity;
 
-
+    private static final Logger logger = Logger.getLogger(ProductInventoryServiceImpl
+                                                              .class.getSimpleName());
 
     @Override
     public ProductDTO getProduct(String productId) {
@@ -67,10 +69,12 @@ public class ProductInventoryServiceImpl implements ProductInventoryService {
         if(this.oldQuantity <= 0){
             this.oldQuantity = prodQuantity;
         }
-        System.out.println(state);
+
         if(quantity <= prodQuantity && state.equals(PaymentState.REJECTED)){
             this.oldQuantity = quantity + prodQuantity;
         }
+
+        logger.info("after reset - " + oldQuantity);
 
         prod.setQuantity(this.oldQuantity);
         this.repo.saveAndFlush(prod);
@@ -94,12 +98,19 @@ public class ProductInventoryServiceImpl implements ProductInventoryService {
 //tested
     @Override
     public void extractQuantity(String productId, int qty) {
+
         Product prod = this.repo.findById(productId).get();
+
         this.oldQuantity = prod.getQuantity();
+
         int quantity = this.oldQuantity - qty;
+
+        logger.info("before reset - " + quantity);
+
         if (quantity <= 0){
             return;
         }
+
         prod.setQuantity(quantity);
         this.repo.saveAndFlush(prod);
     }

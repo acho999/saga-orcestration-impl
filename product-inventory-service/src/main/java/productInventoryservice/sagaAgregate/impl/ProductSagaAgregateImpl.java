@@ -8,6 +8,7 @@ import com.angel.saga.api.SendMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 import productInventoryservice.sagaAgregate.api.SagaAgregate;
 import productInventoryservice.services.api.ProductInventoryService;
@@ -29,13 +30,13 @@ public class ProductSagaAgregateImpl implements SagaAgregate {
 
     @Override//9
     @KafkaHandler
-    public void handleCancelProductReservationCommand(ProductReservationCancelCommand command){
+    public void handleCancelProductReservationCommand(@Payload ProductReservationCancelCommand command){
         service.resetQuantity(command.getProductId(), command.getQuantity(), command.getPaymentState());;
     }
 
     @Override//4
     @KafkaHandler
-    public Event handleReserveProductCommand(ReserveProductCommand command){
+    public Event handleReserveProductCommand(@Payload ReserveProductCommand command){
         Event event = this.factory.readCommand(RESERVE_PRODUCT_COMMAND,
                                                PRODUCT_RESERVED_EVENT,
                                                command);

@@ -14,7 +14,7 @@ import java.util.Properties;
 public interface SagaAgregate {
 
 
-    Event handleProcessPaymentCommand(ProcessPaymentCommand command);
+    Event handleProcessPaymentCommand(ProcessPaymentCommand command) throws InterruptedException;
 
     void handleCancelPaymentCommand(CancelPaymentCommand message);
 

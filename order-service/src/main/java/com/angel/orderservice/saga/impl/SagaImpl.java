@@ -10,6 +10,7 @@ import com.angel.orderservice.saga.api.Saga;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
 import static com.angel.models.constants.TopicConstants.*;
@@ -32,7 +33,7 @@ public class SagaImpl implements Saga {
 
     @Override//2
     @KafkaHandler
-    public Command handleOrderCreatedEvent(OrderCreatedEvent event) {
+    public Command handleOrderCreatedEvent(@Payload OrderCreatedEvent event) {
 
         Command command = (ReserveProductCommand) this.factory
             .readEvent(ORDER_CREATED_EVENT, RESERVE_PRODUCT_COMMAND,
@@ -44,7 +45,7 @@ public class SagaImpl implements Saga {
 
     @Override//3
     @KafkaHandler
-    public Command handleProductReservedEvent(ProductReservedEvent event) {
+    public Command handleProductReservedEvent(@Payload ProductReservedEvent event) {
 
         ProcessPaymentCommand command = (ProcessPaymentCommand) this.factory
             .readEvent(PRODUCT_RESERVED_EVENT, PROCESS_PAYMENT_COMMAND,
@@ -56,7 +57,7 @@ public class SagaImpl implements Saga {
 
     @Override//5
     @KafkaHandler
-    public Command handlePaymentProcessedEvent(PaymentProcessedEvent event) {
+    public Command handlePaymentProcessedEvent(@Payload PaymentProcessedEvent event) {
 
         ApproveOrderCommand command = (ApproveOrderCommand) this.factory
             .readEvent(PAYMENT_PROCESSED_EVENT, APPROVE_ORDER_COMMAND,
@@ -68,13 +69,13 @@ public class SagaImpl implements Saga {
 
     @Override//8 order created successfully
     @KafkaHandler
-    public void handleOrderApprovedEvent(OrderApprovedEvent event) {
+    public void handleOrderApprovedEvent(@Payload OrderApprovedEvent event) {
         this.ordersService.approveOrder(event.getOrderId());
     }
 
     @Override//10
     @KafkaHandler
-    public Command handleProductReservationCanceledEvent(ProductReservationCanceledEvent event) {
+    public Command handleProductReservationCanceledEvent(@Payload ProductReservationCanceledEvent event) {
 
         RejectOrderCommandProduct command = (RejectOrderCommandProduct) this.factory
             .readEvent(PRODUCT_RESERVATION_CANCELED_EVENT, REJECT_ORDER_COMMAND_PRODUCT,
@@ -97,7 +98,7 @@ public class SagaImpl implements Saga {
 
     @Override//12
     @KafkaHandler
-    public Command handlePaymentCanceledEvent(PaymentCanceledEvent event) {
+    public Command handlePaymentCanceledEvent(@Payload PaymentCanceledEvent event) {
 
         RejectOrderCommandProduct command = (RejectOrderCommandProduct) this.factory
             .readEvent(PAYMENT_CANCELED_EVENT, REJECT_ORDER_COMMAND_PAYMENT,
@@ -120,7 +121,7 @@ public class SagaImpl implements Saga {
 
     @Override//14
     @KafkaHandler
-    public void handleOrderRejectedEvent(OrderRejectedEvent event) {
+    public void handleOrderRejectedEvent(@Payload OrderRejectedEvent event) {
         this.ordersService.cancelOrder(event.getOrderId());
     }
 

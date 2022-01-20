@@ -8,9 +8,11 @@ import org.springframework.stereotype.Service;
 import paymentsservice.models.Payment;
 import paymentsservice.models.User;
 import paymentsservice.repos.UsersRepo;
+import paymentsservice.sagaAgregate.impl.PaymentSagaAgregateImpl;
 import paymentsservice.services.api.UsersService;
 
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 import javax.transaction.Transactional;
 
@@ -25,6 +27,9 @@ public class UsersServiceImpl implements UsersService {
     private UsersRepo repo;
 
     private double currentBalance;
+
+    private static final Logger logger = Logger.getLogger(PaymentSagaAgregateImpl.class.getSimpleName());
+
 
     @Override
     public UserDTO createUser(UserDTO dto){
@@ -61,13 +66,13 @@ public class UsersServiceImpl implements UsersService {
 
         usr.getUserPayments().add(payment);
 
-        this.currentBalance = usr.getBalance() - payment.getAmount();
+        this.currentBalance = usr.getBalance();
 
-        if (currentBalance <= 0){
-            this.currentBalance = usr.getBalance();
-        }
+        double newBalance = usr.getBalance() - payment.getAmount();
 
-        usr.setBalance(currentBalance);
+        logger.info(String.valueOf("before reverse" + " " + newBalance));
+
+        usr.setBalance(newBalance);
 
         this.repo.saveAndFlush(usr);
 
@@ -79,6 +84,8 @@ public class UsersServiceImpl implements UsersService {
        User usr =  this.repo.findById(userId).get();
 
        usr.setBalance(currentBalance);
+
+        logger.info(String.valueOf("after reverse" + " " + usr.getBalance()));
 
        this.repo.saveAndFlush(usr);
     }

@@ -9,16 +9,19 @@ import com.angel.saga.api.SendMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 import paymentsservice.models.Payment;
 import paymentsservice.sagaAgregate.api.SagaAgregate;
 import paymentsservice.services.api.PaymentsService;
 
+import java.util.logging.Logger;
+
 import static com.angel.models.constants.TopicConstants.*;
 
 @Component
 @KafkaListener(topics = {PROCESS_PAYMENT_COMMAND, CANCEL_PAYMENT_COMMAND}, groupId = GROUP_ID)
-public class PayentSagaAgregateImpl implements SagaAgregate {
+public class PaymentSagaAgregateImpl implements SagaAgregate {
 
     @Autowired
     private SendMessage sendService;
@@ -28,6 +31,8 @@ public class PayentSagaAgregateImpl implements SagaAgregate {
 
     @Autowired
     private Factory factory;
+
+    private static final Logger logger = Logger.getLogger(PaymentSagaAgregateImpl.class.getSimpleName());
 
     private Payment payment;
 
@@ -50,7 +55,7 @@ public class PayentSagaAgregateImpl implements SagaAgregate {
         if (command != null && this.payment.getState().equals(PaymentState.REJECTED)) {
 
             PaymentCanceledEvent cancelPayment = new PaymentCanceledEvent();
-            cancelPayment.setPaymentState(pmnt.getState());
+            cancelPayment.setPaymentState(PaymentState.REJECTED);
             cancelPayment.setUserId(pmnt.getUserId());
             cancelPayment.setProductId(pmnt.getProductId());
             cancelPayment.setQuantity(pmnt.getQuantity());
@@ -80,7 +85,7 @@ public class PayentSagaAgregateImpl implements SagaAgregate {
 
     @Override//11
     @KafkaHandler
-    public void handleCancelPaymentCommand(CancelPaymentCommand command){
+    public void handleCancelPaymentCommand(@Payload CancelPaymentCommand command){
         this.paymentsService.reversePayment(command.getUserId(), command.getPaymentId());
     }
 

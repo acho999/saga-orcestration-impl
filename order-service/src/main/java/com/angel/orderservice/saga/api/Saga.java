@@ -11,11 +11,11 @@ import com.angel.models.events.ProductReservedEvent;
 
 
 public interface Saga {
-    Command handleOrderCreatedEvent(OrderCreatedEvent message);
+    Command handleOrderCreatedEvent(OrderCreatedEvent event);
     Command handleProductReservedEvent(ProductReservedEvent event);
     Command handlePaymentProcessedEvent(PaymentProcessedEvent event);
-    void handleOrderApprovedEvent(OrderApprovedEvent message);
+    void handleOrderApprovedEvent(OrderApprovedEvent event);
     Command handleProductReservationCanceledEvent(ProductReservationCanceledEvent event);
-    Command handlePaymentCanceledEvent(PaymentCanceledEvent message);
-    void handleOrderRejectedEvent(OrderRejectedEvent message);
+    Command handlePaymentCanceledEvent(PaymentCanceledEvent event);
+    void handleOrderRejectedEvent(OrderRejectedEvent event);
 }
