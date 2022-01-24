@@ -23,7 +23,7 @@ public class TopicConstants {
     public static final String GET_PRODUCT_PRICE = "getProductPrice";
     public static final String SET_PRODUCT_PRICE = "setProductPrice";
 
-    public static final String GROUP_ID = "angel29";
+    public static final String GROUP_ID = "angel30";
 
     public static final String SERVER = "localhost:9092";
 

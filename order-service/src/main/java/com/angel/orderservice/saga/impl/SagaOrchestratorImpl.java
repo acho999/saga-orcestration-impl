@@ -34,8 +34,7 @@ public class SagaOrchestratorImpl implements SagaOrchestrator {
 
     @Override//2
     @KafkaHandler
-    public Command handleOrderCreatedEvent(@Payload OrderCreatedEvent event)
-        throws InterruptedException {
+    public Command handleOrderCreatedEvent(@Payload OrderCreatedEvent event){
 
         Command command = (ReserveProductCommand) this.factory
             .readEvent(ORDER_CREATED_EVENT, RESERVE_PRODUCT_COMMAND,
