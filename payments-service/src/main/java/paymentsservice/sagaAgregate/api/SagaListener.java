@@ -11,7 +11,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 
 import java.util.Properties;
 
-public interface SagaAgregate {
+public interface SagaListener {
 
 
     Event handleProcessPaymentCommand(ProcessPaymentCommand command) throws InterruptedException;

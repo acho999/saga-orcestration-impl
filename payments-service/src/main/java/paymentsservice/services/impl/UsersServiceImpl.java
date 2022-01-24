@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import paymentsservice.models.Payment;
 import paymentsservice.models.User;
 import paymentsservice.repos.UsersRepo;
-import paymentsservice.sagaAgregate.impl.PaymentSagaAgregateImpl;
+import paymentsservice.sagaAgregate.impl.PaymentSagaListenerImpl;
 import paymentsservice.services.api.UsersService;
 
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ public class UsersServiceImpl implements UsersService {
 
     private double currentBalance;
 
-    private static final Logger logger = Logger.getLogger(PaymentSagaAgregateImpl.class.getSimpleName());
+    private static final Logger logger = Logger.getLogger(PaymentSagaListenerImpl.class.getSimpleName());
 
 
     @Override

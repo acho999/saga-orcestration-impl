@@ -2,6 +2,7 @@ package com.angel.saga.impl;
 
 import com.angel.models.api.IEvent;
 import com.angel.models.commands.*;
+import com.angel.models.entities.Product;
 import com.angel.models.events.*;
 import com.angel.saga.api.Factory;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -40,7 +41,6 @@ public class FactoryImpl implements Factory {
                     .quantity(createCmd.getQuantity())
                     .state(createCmd.getState())
                     .userId(createCmd.getUserId())
-                    .price(createCmd.getPrice())
                     .build();
             case PAYMENT_PROCESSED_EVENT:
                 ProcessPaymentCommand paymentCmd = (ProcessPaymentCommand) cmd;
@@ -49,7 +49,6 @@ public class FactoryImpl implements Factory {
                     .paymentId(paymentCmd.getPaymentId())
                     .paymentState(paymentCmd.getPaymentState())
                     .userId(paymentCmd.getUserId())
-                    .price(paymentCmd.getPrice())
                     .quantity(paymentCmd.getQuantity())
                     .productId(paymentCmd.getProductId())
                     .build();
@@ -60,7 +59,6 @@ public class FactoryImpl implements Factory {
                     .userId(reserveCmd.getUserId())
                     .productId(reserveCmd.getProductId())
                     .quantity(reserveCmd.getQuantity())
-                    .price(reserveCmd.getPrice())
                     .build();
             case ORDER_APPROVED_EVENT:
                 ApproveOrderCommand approvetCmd = (ApproveOrderCommand) cmd;
@@ -70,7 +68,6 @@ public class FactoryImpl implements Factory {
                     .userId(approvetCmd.getUserId())
                     .productId(approvetCmd.getProductId())
                     .quantity(approvetCmd.getQuantity())
-                    .price(approvetCmd.getPrice())
                     .build();
             case PRODUCT_RESERVATION_CANCELED_EVENT:
                 ProductReservationCancelCommand canceltCmd = (ProductReservationCancelCommand) cmd;
@@ -80,14 +77,12 @@ public class FactoryImpl implements Factory {
                     .userId(canceltCmd.getUserId())
                     .productId(canceltCmd.getProductId())
                     .reason(canceltCmd.getReason())
-                    .price(canceltCmd.getPrice())
                     .build();
             case PAYMENT_CANCELED_EVENT:
                 CancelPaymentCommand cancelPayment = (CancelPaymentCommand) cmd;
                 return PaymentCanceledEvent.builder()
                     .orderId(cancelPayment.getOrderId())
                     .userId(cancelPayment.getUserId())
-                    .price(cancelPayment.getPrice())
                     .paymentState(cancelPayment.getPaymentState())
                     .paymentId(cancelPayment.getPaymentId())
                     .productId(cancelPayment.getProductId())
@@ -120,7 +115,6 @@ public class FactoryImpl implements Factory {
                     .productId(createCmd.getProductId())
                     .quantity(createCmd.getQuantity())
                     .state(createCmd.getState())
-                    .price(createCmd.getPrice())
                     .userId(createCmd.getUserId())
                     .build();
             case PROCESS_PAYMENT_COMMAND:
@@ -128,7 +122,6 @@ public class FactoryImpl implements Factory {
                 return ProcessPaymentCommand.builder()
                     .orderId(paymentCmd.getOrderId())
                     .userId(paymentCmd.getUserId())
-                    .price(paymentCmd.getPrice())
                     .quantity(paymentCmd.getQuantity())
                     .paymentId(null)
                     .paymentState(null)
@@ -141,7 +134,6 @@ public class FactoryImpl implements Factory {
                     .userId(reserveCmd.getUserId())
                     .productId(reserveCmd.getProductId())
                     .quantity(reserveCmd.getQuantity())
-                    .price(reserveCmd.getPrice())
                     .build();
             case APPROVE_ORDER_COMMAND:
                 PaymentProcessedEvent approvetCmd = (PaymentProcessedEvent) evt;
@@ -150,7 +142,6 @@ public class FactoryImpl implements Factory {
                     .userId(approvetCmd.getUserId())
                     .quantity(approvetCmd.getQuantity())
                     .productId(approvetCmd.getProductId())
-                    .price(approvetCmd.getPrice())
                     .build();
             case CANCEL_PRODUCT_RESERVATION_COMMAND:
                 ProductReservationCanceledEvent canceltCmd = (ProductReservationCanceledEvent) evt;
@@ -160,19 +151,16 @@ public class FactoryImpl implements Factory {
                     .userId(canceltCmd.getUserId())
                     .productId(canceltCmd.getProductId())
                     .reason(canceltCmd.getReason())
-                    .price(canceltCmd.getPrice())
                     .build();
             case CANCEL_PAYMENT_COMMAND:
                 PaymentCanceledEvent cancelPayment = (PaymentCanceledEvent) evt;
                 return CancelPaymentCommand.builder()
                     .orderId(cancelPayment.getOrderId())
                     .userId(cancelPayment.getUserId())
-                    .price(cancelPayment.getPrice())
                     .paymentState(cancelPayment.getPaymentState())
                     .paymentId(cancelPayment.getPaymentId())
                     .productId(cancelPayment.getProductId())
                     .quantity(cancelPayment.getQuantity())
-                    .price(cancelPayment.getPrice())
                     .build();
             case REJECT_ORDER_COMMAND_PAYMENT:
                 PaymentCanceledEvent rejectCmd = (PaymentCanceledEvent) evt;
@@ -227,6 +215,11 @@ public class FactoryImpl implements Factory {
         throws JsonProcessingException {
         JsonNode actualObj = this.mapper.readTree(message);
         return actualObj;
+    }
+
+    @Override
+    public Product createProduct() {
+        return new Product();
     }
 
 }

@@ -16,8 +16,8 @@ public class OrderCreatedEvent extends Event {
 
     public OrderCreatedEvent(String a){}
     @Builder
-    public OrderCreatedEvent(String orderId, String userId, String productId, int quantity, OrderState state, double price){
-        super(userId, orderId, price, productId, quantity);
+    public OrderCreatedEvent(String orderId, String userId, String productId, int quantity, OrderState state){
+        super(userId, orderId, productId, quantity);
         this.state = state;
     }
 

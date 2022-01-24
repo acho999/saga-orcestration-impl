@@ -14,8 +14,8 @@ public class ReserveProductCommand extends Command{
 
 
     @Builder
-    public ReserveProductCommand(String orderId, String userId, String productId, int quantity, double price){
-        super(userId,orderId, price, productId, quantity);
+    public ReserveProductCommand(String orderId, String userId, String productId, int quantity){
+        super(userId,orderId, productId, quantity);
     }
 
 }

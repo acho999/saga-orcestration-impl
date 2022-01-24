@@ -20,7 +20,7 @@ public class RejectOrderCommandPayment extends Command{
 
     @Builder
     public RejectOrderCommandPayment(String reason, String userId, String orderId, String productId, String paymentId){
-        super(userId, orderId, 0.0d, productId, 0);
+        super(userId, orderId, productId, 0);
         this.reason = reason;
         this.paymentId = paymentId;
     }

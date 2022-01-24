@@ -15,4 +15,6 @@ public interface PaymentsService {
     Payment createPayment(PaymentRequestDTO payment);
 
     Payment getPayment(String id);
+
+    void setProductPrice(double price);
 }

@@ -4,7 +4,7 @@ import com.angel.models.commands.ApproveOrderCommand;
 import com.angel.models.commands.RejectOrderCommandPayment;
 import com.angel.models.commands.RejectOrderCommandProduct;
 import com.angel.models.events.Event;
-import com.angel.orderservice.saga.api.SagaAgregate;
+import com.angel.orderservice.saga.api.SagaListener;
 import com.angel.saga.api.Factory;
 import com.angel.saga.api.SendMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ import static com.angel.models.constants.TopicConstants.REJECT_ORDER_COMMAND_PRO
 @KafkaListener(topics = { APPROVE_ORDER_COMMAND, REJECT_ORDER_COMMAND_PAYMENT,
                           REJECT_ORDER_COMMAND_PRODUCT}, groupId = GROUP_ID)
 @Component
-public class OrderSagaAgregateImpl implements SagaAgregate {
+public class OrderSagaListenerImpl implements SagaListener {
 
     @Autowired
     private SendMessage sendService;

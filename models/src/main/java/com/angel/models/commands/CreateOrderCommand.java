@@ -18,8 +18,8 @@ public class CreateOrderCommand extends Command{
 
     @Builder
     public CreateOrderCommand(String orderId, String userId, String productId, int quantity,
-                              OrderState state, double price){
-        super(userId, orderId, price, productId, quantity);
+                              OrderState state){
+        super(userId, orderId, productId, quantity);
         this.state = state;
     }
 

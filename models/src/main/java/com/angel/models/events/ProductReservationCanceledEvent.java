@@ -19,8 +19,8 @@ public class ProductReservationCanceledEvent extends Event{
 
 
     @Builder
-    public ProductReservationCanceledEvent(String productId, int quantity, String reason, String userId, String orderId, double price){
-        super(userId, orderId, price, productId, quantity);
+    public ProductReservationCanceledEvent(String productId, int quantity, String reason, String userId, String orderId){
+        super(userId, orderId, productId, quantity);
         this.reason = reason;
     }
 

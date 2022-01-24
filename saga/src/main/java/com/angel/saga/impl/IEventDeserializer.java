@@ -2,6 +2,7 @@ package com.angel.saga.impl;
 
 import com.angel.models.api.IEvent;
 import com.angel.models.commands.*;
+import com.angel.models.entities.Product;
 import com.angel.models.events.*;
 import org.apache.kafka.common.serialization.Deserializer;
 import org.springframework.util.SerializationUtils;
@@ -30,6 +31,7 @@ public class IEventDeserializer implements Deserializer<IEvent> {
                 case "ProductReservationCanceledEvent" : return (ProductReservationCanceledEvent) SerializationUtils.deserialize(bytes);
                 case "ProductReservedEvent" : return (ProductReservedEvent) SerializationUtils.deserialize(bytes);
                 case "PaymentCanceledEvent" : return (PaymentCanceledEvent) SerializationUtils.deserialize(bytes);
+                case "Product" : return (Product) SerializationUtils.deserialize(bytes);
 
                 default: return null;
 

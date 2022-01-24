@@ -18,8 +18,8 @@ public class ProcessPaymentCommand extends Command{
 
 
         @Builder
-        public ProcessPaymentCommand(String paymentId, PaymentState paymentState, String orderId, String userId, double price, int quantity, String productId){
-                super(userId, orderId, price, productId, quantity);
+        public ProcessPaymentCommand(String paymentId, PaymentState paymentState, String orderId, String userId, int quantity, String productId){
+                super(userId, orderId, productId, quantity);
                 this.paymentState = paymentState;
                 this.paymentId = paymentId;
         }

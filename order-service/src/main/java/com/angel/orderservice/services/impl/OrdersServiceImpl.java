@@ -57,7 +57,6 @@ public class OrdersServiceImpl implements OrdersService {
             .quantity(dto.getQuantity())
             .userId(dto.getUserId())
             .state(OrderState.PENDING)
-            .price(dto.getPrice())
             .build();
 
         send.sendMessage(ORDER_CREATED_EVENT, event);

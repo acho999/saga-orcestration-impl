@@ -13,7 +13,6 @@ public class OrderResponseDTO {
     private String orderId;
     private OrderState state;
     private int quantity;
-    private double price;
 
 //    public static class Builder{
 //

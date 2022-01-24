@@ -19,8 +19,8 @@ public class PaymentCanceledEvent extends Event{
     @Builder
     public PaymentCanceledEvent(String paymentId, PaymentState paymentState,
                                 String orderId, String userId,
-                                double price, String productId, int quantity){
-        super(userId, orderId, price, productId, quantity);
+                                String productId, int quantity){
+        super(userId, orderId, productId, quantity);
         this.paymentState = paymentState;
         this.paymentId = paymentId;
     }

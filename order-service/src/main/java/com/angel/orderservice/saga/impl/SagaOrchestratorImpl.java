@@ -1,12 +1,13 @@
 package com.angel.orderservice.saga.impl;
 
 import com.angel.models.commands.*;
+import com.angel.models.entities.Product;
 import com.angel.models.events.*;
 import com.angel.models.states.PaymentState;
 import com.angel.orderservice.services.impl.OrdersServiceImpl;
 import com.angel.saga.api.Factory;
 import com.angel.saga.api.SendMessage;
-import com.angel.orderservice.saga.api.Saga;
+import com.angel.orderservice.saga.api.SagaOrchestrator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -20,7 +21,7 @@ import static com.angel.models.constants.TopicConstants.*;
                          PAYMENT_PROCESSED_EVENT, PAYMENT_CANCELED_EVENT,
                          PRODUCT_RESERVATION_CANCELED_EVENT,
                          ORDER_APPROVED_EVENT, ORDER_REJECTED_EVENT}, groupId = GROUP_ID)
-public class SagaImpl implements Saga {
+public class SagaOrchestratorImpl implements SagaOrchestrator {
 
     @Autowired
     private SendMessage sendService;
@@ -33,12 +34,16 @@ public class SagaImpl implements Saga {
 
     @Override//2
     @KafkaHandler
-    public Command handleOrderCreatedEvent(@Payload OrderCreatedEvent event) {
+    public Command handleOrderCreatedEvent(@Payload OrderCreatedEvent event)
+        throws InterruptedException {
 
         Command command = (ReserveProductCommand) this.factory
             .readEvent(ORDER_CREATED_EVENT, RESERVE_PRODUCT_COMMAND,
                        event);
+        Product prod = this.factory.createProduct();
+        prod.setId(command.getProductId());
 
+        this.sendService.sendMessage(SET_PRODUCT_PRICE, prod);
         this.sendService.sendMessage(RESERVE_PRODUCT_COMMAND, command);
         return command;
     }
@@ -50,7 +55,6 @@ public class SagaImpl implements Saga {
         ProcessPaymentCommand command = (ProcessPaymentCommand) this.factory
             .readEvent(PRODUCT_RESERVED_EVENT, PROCESS_PAYMENT_COMMAND,
                        event);
-
         this.sendService.sendMessage(PROCESS_PAYMENT_COMMAND, command);
         return command;
     }
@@ -84,7 +88,6 @@ public class SagaImpl implements Saga {
         ProductReservationCancelCommand cancelProdRes = ProductReservationCancelCommand.builder()
             .productId(event.getProductId())
             .orderId(event.getOrderId())
-            .price(event.getPrice())
             .quantity(event.getQuantity())
             .userId(event.getUserId())
             .reason(event.getReason())
@@ -107,7 +110,6 @@ public class SagaImpl implements Saga {
         CancelPaymentCommand cancelPayment = CancelPaymentCommand.builder()
             .productId(event.getProductId())
             .orderId(event.getOrderId())
-            .price(event.getPrice())
             .quantity(event.getQuantity())
             .userId(event.getUserId())
             .paymentId(event.getPaymentId())

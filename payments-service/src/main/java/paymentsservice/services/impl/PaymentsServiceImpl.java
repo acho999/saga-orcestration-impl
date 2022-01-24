@@ -11,7 +11,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import paymentsservice.repos.UsersRepo;
 import paymentsservice.services.api.PaymentsService;
 import paymentsservice.services.api.UsersService;
 
@@ -31,6 +30,12 @@ public class PaymentsServiceImpl implements PaymentsService {
     @Autowired
     private UsersService usersService;
 
+    private double productPrice;
+
+    @Override
+    public void setProductPrice(double productPrice) {
+        this.productPrice = productPrice;
+    }
 
     @Override
     public Payment savePayment(String userId, PaymentRequestDTO pmnt) {
@@ -39,7 +44,9 @@ public class PaymentsServiceImpl implements PaymentsService {
 
         Payment payment = this.createPayment(pmnt);
 
-        payment.setAmount(payment.getPrice() * payment.getQuantity());
+        System.out.println(this.productPrice + " from save payment");
+
+        payment.setAmount(this.productPrice * payment.getQuantity());
 
         User user = this.mapper.map(this.usersService.getUser(userId), User.class);
 

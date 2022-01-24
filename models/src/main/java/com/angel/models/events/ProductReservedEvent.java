@@ -15,7 +15,7 @@ public class ProductReservedEvent extends Event{
 
 
     @Builder
-    public ProductReservedEvent(String orderId, String userId, String productId, int quantity,double price){
-        super(userId,orderId, price, productId, quantity);
+    public ProductReservedEvent(String orderId, String userId, String productId, int quantity){
+        super(userId,orderId, productId, quantity);
     }
 }

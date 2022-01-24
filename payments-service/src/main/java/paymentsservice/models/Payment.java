@@ -47,9 +47,6 @@ public class Payment {
     @Column(name = "amount")
     private double amount;
 
-    @Column(name = "price")
-    private double price;
-
     @Column(name = "quantity")
     private int quantity;
 

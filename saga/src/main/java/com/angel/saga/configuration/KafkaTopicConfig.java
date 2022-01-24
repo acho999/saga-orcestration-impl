@@ -78,5 +78,13 @@ public class KafkaTopicConfig {
     public NewTopic topic14() {
         return new NewTopic("reserveProductEvent", 1, (short) 1);
     }
+    @Bean
+    public NewTopic topic15() {
+        return new NewTopic("getProductPrice", 1, (short) 1);
+    }
+    @Bean
+    public NewTopic topic16() {
+        return new NewTopic("setProductPrice", 1, (short) 1);
+    }
 
 }

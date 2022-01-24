@@ -10,9 +10,9 @@ import com.angel.models.events.ProductReservationCanceledEvent;
 import com.angel.models.events.ProductReservedEvent;
 
 
-public interface Saga {
-    Command handleOrderCreatedEvent(OrderCreatedEvent event);
-    Command handleProductReservedEvent(ProductReservedEvent event);
+public interface SagaOrchestrator {
+    Command handleOrderCreatedEvent(OrderCreatedEvent event) throws InterruptedException;
+    Command handleProductReservedEvent(ProductReservedEvent event) throws InterruptedException;
     Command handlePaymentProcessedEvent(PaymentProcessedEvent event);
     void handleOrderApprovedEvent(OrderApprovedEvent event);
     Command handleProductReservationCanceledEvent(ProductReservationCanceledEvent event);
