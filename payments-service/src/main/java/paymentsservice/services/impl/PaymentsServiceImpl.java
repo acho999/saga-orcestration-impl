@@ -52,7 +52,6 @@ public class PaymentsServiceImpl implements PaymentsService {
 
         if ((user.getBalance() - payment.getAmount()) < 0){
             payment.setState(PaymentState.REJECTED);
-            //to do invoke reject payment
         }
 
         this.repo.saveAndFlush(payment);

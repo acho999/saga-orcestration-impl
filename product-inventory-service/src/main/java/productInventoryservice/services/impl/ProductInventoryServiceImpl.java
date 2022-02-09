@@ -44,7 +44,7 @@ public class ProductInventoryServiceImpl implements ProductInventoryService {
 
         return prod;
     }
-//tested
+
     @Override
     public boolean  isAvailable(String productId, int desiredQuantity){
 
@@ -53,12 +53,11 @@ public class ProductInventoryServiceImpl implements ProductInventoryService {
         int quantity = product.getQuantity();
 
         if (quantity <= 0 || desiredQuantity > quantity){
-            //invoke product reserve cancelation command
             return false;
         }
         return true;
     }
-//tested
+
     @Override
     public void resetQuantity(String productId, int quantity, PaymentState state) {
 
@@ -95,7 +94,7 @@ public class ProductInventoryServiceImpl implements ProductInventoryService {
 
         return dto;
     }
-//tested
+
     @Override
     public void extractQuantity(String productId, int qty) {
 
