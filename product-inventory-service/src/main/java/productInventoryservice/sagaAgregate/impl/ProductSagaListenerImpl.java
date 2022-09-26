@@ -1,12 +1,15 @@
 package productInventoryservice.sagaAgregate.impl;
 
 import com.angel.models.DTO.ProductDTO;
-import com.angel.models.commands.*;
+import com.angel.models.commands.ProductReservationCancelCommand;
+import com.angel.models.commands.ReserveProductCommand;
 import com.angel.models.entities.Product;
-import com.angel.models.events.*;
+import com.angel.models.events.Event;
+import com.angel.models.events.ProductReservationCanceledEvent;
 import com.angel.models.states.PaymentState;
 import com.angel.saga.api.Factory;
 import com.angel.saga.api.SendMessage;
+import com.angel.saga.logging.CustomLogging;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -14,9 +17,6 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 import productInventoryservice.sagaAgregate.api.SagaListener;
 import productInventoryservice.services.api.ProductInventoryService;
-import productInventoryservice.services.impl.ProductInventoryServiceImpl;
-
-import java.util.logging.Logger;
 
 import static com.angel.models.constants.TopicConstants.*;
 
@@ -26,15 +26,16 @@ public class ProductSagaListenerImpl implements SagaListener {
 
     @Autowired
     private SendMessage sendService;
-
-    @Autowired
     private ProductInventoryService service;
-
-    @Autowired
     private Factory factory;
 
-    private static final Logger logger = Logger.getLogger(ProductInventoryServiceImpl.class.getSimpleName());
-
+    @Autowired
+    public ProductSagaListenerImpl(SendMessage sendService,
+                                   ProductInventoryService service, Factory factory) {
+        this.sendService = sendService;
+        this.service = service;
+        this.factory = factory;
+    }
 
     @Override//9
     @KafkaHandler
@@ -71,7 +72,7 @@ public class ProductSagaListenerImpl implements SagaListener {
     public void handleProductPriceEvent(@Payload Product product){
         ProductDTO prod = this.service.getProduct(product.getId());
         product.setPrice(prod.getPrice());
-        logger.info(String.valueOf(product.getPrice() + " " + "from product inventory"));
+        CustomLogging.log(ProductSagaListenerImpl.class,product.getPrice() + " " + "from product inventory");
         this.sendService.sendMessage(GET_PRODUCT_PRICE, product);
     }
 

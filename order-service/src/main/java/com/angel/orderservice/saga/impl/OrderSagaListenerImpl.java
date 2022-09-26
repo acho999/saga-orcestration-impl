@@ -24,11 +24,14 @@ import static com.angel.models.constants.TopicConstants.REJECT_ORDER_COMMAND_PRO
 @Component
 public class OrderSagaListenerImpl implements SagaListener {
 
-    @Autowired
     private SendMessage sendService;
+    private Factory factory;
 
     @Autowired
-    private Factory factory;
+    public OrderSagaListenerImpl(SendMessage sendService, Factory factory) {
+        this.sendService = sendService;
+        this.factory = factory;
+    }
 
     @Override//7
     @KafkaHandler

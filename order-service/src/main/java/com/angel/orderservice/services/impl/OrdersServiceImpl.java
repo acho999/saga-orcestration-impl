@@ -20,14 +20,17 @@ import static com.angel.models.constants.TopicConstants.*;
 @Service
 public class OrdersServiceImpl implements OrdersService {
 
-    @Autowired
+
     private OrdersRepo repo;
-
-    @Autowired
     private ModelMapper mapper;
+    private SendMessage send;
 
     @Autowired
-    private SendMessage send;
+    public OrdersServiceImpl(OrdersRepo repo, ModelMapper mapper, SendMessage send) {
+        this.repo = repo;
+        this.mapper = mapper;
+        this.send = send;
+    }
 
     @Override
     public OrderResponseDTO getOrder(String id) {
@@ -39,8 +42,7 @@ public class OrdersServiceImpl implements OrdersService {
 
     @Override
     @Transactional
-    public OrderRequestDTO createOrder(OrderRequestDTO order)
-        throws JsonProcessingException {
+    public OrderRequestDTO createOrder(OrderRequestDTO order){
         this.mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
         Order newOrder = this.mapper.map(order, Order.class);

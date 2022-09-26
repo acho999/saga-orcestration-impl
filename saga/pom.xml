@@ -11,14 +11,14 @@
 
     <properties>
         <spring-boot.repackage.skip>true</spring-boot.repackage.skip>
-        <!-- this prop is for skipping repackage because this couse exception and should be added in
+        <!-- this prop is for skipping repackage because this cause exception and should be added in
         modules which will be used like dependencies-->
     </properties>
 
     <groupId>com.angel</groupId>
     <artifactId>saga</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>order-service</name>
+    <name>saga</name>
     <description>Demo project for Spring Boot</description>
 
     <packaging>jar</packaging>

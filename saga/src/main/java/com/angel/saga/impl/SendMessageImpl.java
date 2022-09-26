@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
+
 @Component
 public class SendMessageImpl implements SendMessage {
 
@@ -16,7 +18,9 @@ public class SendMessageImpl implements SendMessage {
     @Override
     public void sendMessage(String topicName, IEvent event){
 
-
+        if(Objects.isNull(topicName) || Objects.isNull(event)){
+            //throw IllegalArgumentException or custom exception
+        }
         this.kafkaTemplate.send(topicName, event);
 
 //        ListenableFuture<SendResult<String, String>> future =

@@ -41,7 +41,7 @@ public class ProductsController {
     public ResponseEntity<ProductDTO> getProduct(@PathVariable String id){
 
         ProductDTO dto = this.service.getProduct(id);
-        return new ResponseEntity<ProductDTO>(dto, null, HttpStatus.CREATED);
+        return new ResponseEntity<ProductDTO>(dto, null, HttpStatus.OK);
     }
 //tested
     @RequestMapping(value = "/extract/{productId}",

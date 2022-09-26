@@ -10,8 +10,7 @@ public interface OrdersService {
 
     OrderResponseDTO getOrder(String id);
 
-    OrderRequestDTO createOrder(OrderRequestDTO order)
-        throws JsonProcessingException, InterruptedException;
+    OrderRequestDTO createOrder(OrderRequestDTO order);
 
     boolean cancelOrder(String orderId);
 

@@ -21,16 +21,19 @@ import java.util.Optional;
 @Transactional
 public class PaymentsServiceImpl implements PaymentsService {
 
-    @Autowired
     private PaymentsRepo repo;
-
-    @Autowired
     private ModelMapper mapper;
-
-    @Autowired
     private UsersService usersService;
 
     private double productPrice;
+
+    @Autowired
+    public PaymentsServiceImpl(PaymentsRepo repo, ModelMapper mapper,
+                               UsersService usersService) {
+        this.repo = repo;
+        this.mapper = mapper;
+        this.usersService = usersService;
+    }
 
     @Override
     public void setProductPrice(double productPrice) {

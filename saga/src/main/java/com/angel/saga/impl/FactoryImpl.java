@@ -20,17 +20,15 @@ public class FactoryImpl implements Factory {
     private final ObjectMapper mapper;
     private Event event = null;
     private Command command = null;
-    private final Logger logger;
 
     public FactoryImpl() {
         this.mapper = new ObjectMapper();
-        this.logger = Logger.getLogger("KafkaConsumerConfigImpl");
     }
 
     @Override
     public Event eventFactory(Command cmd, String topic) {
         if (cmd == null) {
-            return null;
+            return null;//or throw IllegalArgumentException or custom exception for topic/cmd
         }
         switch (topic) {//1
             case ORDER_CREATED_EVENT:
@@ -104,7 +102,7 @@ public class FactoryImpl implements Factory {
     @Override
     public Command commandFactory(Event evt, String topic) {
         if (evt == null) {
-            return null;
+            return null;//or throw IllegalArgumentException or custom exception for topic/evt
         }
 
         switch (topic) {

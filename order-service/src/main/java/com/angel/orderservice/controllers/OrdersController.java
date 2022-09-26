@@ -18,8 +18,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/orders")
 public class OrdersController {
 
-    @Autowired
     private OrdersService service;
+
+    @Autowired
+    public OrdersController(OrdersService service) {
+        this.service = service;
+    }
 
     @RequestMapping(method = RequestMethod.POST, value = "/create",
         produces = MediaType.APPLICATION_JSON_VALUE,

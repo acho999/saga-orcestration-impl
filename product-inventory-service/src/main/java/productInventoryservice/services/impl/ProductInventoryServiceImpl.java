@@ -2,6 +2,7 @@ package productInventoryservice.services.impl;
 
 import com.angel.models.DTO.ProductDTO;
 import com.angel.models.states.PaymentState;
+import com.angel.saga.logging.CustomLogging;
 import org.apache.kafka.common.quota.ClientQuotaAlteration;
 import org.modelmapper.convention.MatchingStrategies;
 import productInventoryservice.models.Product;
@@ -20,17 +21,15 @@ import java.util.logging.Logger;
 @Transactional
 public class ProductInventoryServiceImpl implements ProductInventoryService {
 
-
-    @Autowired
     private ProductsInventoryRepo repo;
-
-    @Autowired
     private ModelMapper mapper;
-
     private int oldQuantity;
 
-    private static final Logger logger = Logger.getLogger(ProductInventoryServiceImpl
-                                                              .class.getSimpleName());
+    @Autowired
+    public ProductInventoryServiceImpl(ProductsInventoryRepo repo, ModelMapper mapper) {
+        this.repo = repo;
+        this.mapper = mapper;
+    }
 
     @Override
     public ProductDTO getProduct(String productId) {
@@ -73,7 +72,7 @@ public class ProductInventoryServiceImpl implements ProductInventoryService {
             this.oldQuantity = quantity + prodQuantity;
         }
 
-        logger.info("after reset - " + oldQuantity);
+        CustomLogging.log(ProductInventoryServiceImpl.class, "after reset - " + oldQuantity);
 
         prod.setQuantity(this.oldQuantity);
         this.repo.saveAndFlush(prod);
@@ -104,7 +103,7 @@ public class ProductInventoryServiceImpl implements ProductInventoryService {
 
         int quantity = this.oldQuantity - qty;
 
-        logger.info("before reset - " + quantity);
+        CustomLogging.log(ProductInventoryServiceImpl.class,"before reset - " + quantity);
 
         if (quantity <= 0){
             return;

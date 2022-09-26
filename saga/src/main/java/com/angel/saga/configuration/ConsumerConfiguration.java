@@ -1,6 +1,5 @@
 package com.angel.saga.configuration;
 
-import com.angel.models.api.IEvent;
 import com.angel.saga.impl.IEventDeserializer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -10,9 +9,12 @@ import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
-import static com.angel.models.constants.TopicConstants.*;
+
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.angel.models.constants.TopicConstants.GROUP_ID;
+import static com.angel.models.constants.TopicConstants.SERVER;
 
 @Configuration
 @EnableKafka

@@ -1,6 +1,7 @@
 package paymentsservice.services.impl;
 
 import com.angel.models.DTO.UserDTO;
+import com.angel.saga.logging.CustomLogging;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,11 +9,9 @@ import org.springframework.stereotype.Service;
 import paymentsservice.models.Payment;
 import paymentsservice.models.User;
 import paymentsservice.repos.UsersRepo;
-import paymentsservice.sagaAgregate.impl.PaymentSagaListenerImpl;
 import paymentsservice.services.api.UsersService;
 
 import java.util.ArrayList;
-import java.util.logging.Logger;
 
 import javax.transaction.Transactional;
 
@@ -20,16 +19,16 @@ import javax.transaction.Transactional;
 @Transactional
 public class UsersServiceImpl implements UsersService {
 
-    @Autowired
+
     private ModelMapper mapper;
-
-    @Autowired
     private UsersRepo repo;
-
     private double currentBalance;
 
-    private static final Logger logger = Logger.getLogger(PaymentSagaListenerImpl.class.getSimpleName());
-
+    @Autowired
+    public UsersServiceImpl(ModelMapper mapper, UsersRepo repo) {
+        this.mapper = mapper;
+        this.repo = repo;
+    }
 
     @Override
     public UserDTO createUser(UserDTO dto){
@@ -70,7 +69,7 @@ public class UsersServiceImpl implements UsersService {
 
         double newBalance = usr.getBalance() - payment.getAmount();
 
-        logger.info(String.valueOf("before reverse" + " " + newBalance));
+        CustomLogging.log(UsersServiceImpl.class, "before reverse" + " " + newBalance);
 
         usr.setBalance(newBalance);
 
@@ -85,7 +84,7 @@ public class UsersServiceImpl implements UsersService {
 
        usr.setBalance(currentBalance);
 
-        logger.info(String.valueOf("after reverse" + " " + usr.getBalance()));
+        CustomLogging.log(UsersServiceImpl.class, "after reverse" + " " + usr.getBalance());
 
        this.repo.saveAndFlush(usr);
     }

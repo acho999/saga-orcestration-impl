@@ -23,14 +23,17 @@ import static com.angel.models.constants.TopicConstants.*;
                          ORDER_APPROVED_EVENT, ORDER_REJECTED_EVENT}, groupId = GROUP_ID)
 public class SagaOrchestratorImpl implements SagaOrchestrator {
 
-    @Autowired
     private SendMessage sendService;
-
-    @Autowired
     private OrdersServiceImpl ordersService;
+    private Factory factory;
 
     @Autowired
-    private Factory factory;
+    public SagaOrchestratorImpl(SendMessage sendService,
+                                OrdersServiceImpl ordersService, Factory factory) {
+        this.sendService = sendService;
+        this.ordersService = ordersService;
+        this.factory = factory;
+    }
 
     @Override//2
     @KafkaHandler

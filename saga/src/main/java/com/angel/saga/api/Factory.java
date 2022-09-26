@@ -1,6 +1,5 @@
 package com.angel.saga.api;
 
-import com.angel.models.api.IEvent;
 import com.angel.models.commands.Command;
 import com.angel.models.entities.Product;
 import com.angel.models.events.Event;

@@ -7,6 +7,7 @@ import com.angel.models.events.*;
 import com.angel.models.states.PaymentState;
 import com.angel.saga.api.Factory;
 import com.angel.saga.api.SendMessage;
+import com.angel.saga.logging.CustomLogging;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -25,23 +26,22 @@ import static com.angel.models.constants.TopicConstants.*;
 @KafkaListener(topics = {PROCESS_PAYMENT_COMMAND, CANCEL_PAYMENT_COMMAND, GET_PRODUCT_PRICE}, groupId = GROUP_ID)
 public class PaymentSagaListenerImpl implements SagaListener {
 
-    @Autowired
     private SendMessage sendService;
-
-    @Autowired
     private PaymentsService paymentsService;
+    private Factory factory;
+    private Payment payment;
 
     @Autowired
-    private Factory factory;
-
-
-    private static final Logger logger = Logger.getLogger(PaymentSagaListenerImpl.class.getSimpleName());
-
-    private Payment payment;
+    public PaymentSagaListenerImpl(SendMessage sendService,
+                                   PaymentsService paymentsService, Factory factory) {
+        this.sendService = sendService;
+        this.paymentsService = paymentsService;
+        this.factory = factory;
+    }
 
     @KafkaHandler
     private void getProductPrice(Product product){
-        logger.info(String.valueOf(product.getPrice() +" " + "from handler in payment"));
+        CustomLogging.log(PaymentSagaListenerImpl.class, product.getPrice() + " " + "from handler in payment");
         this.paymentsService.setProductPrice(product.getPrice());
 
     }
