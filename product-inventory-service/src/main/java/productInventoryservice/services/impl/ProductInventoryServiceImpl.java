@@ -1,6 +1,7 @@
 package productInventoryservice.services.impl;
 
 import com.angel.models.DTO.ProductDTO;
+import com.angel.models.exceptions.NotFoundException;
 import com.angel.models.states.PaymentState;
 import com.angel.saga.logging.CustomLogging;
 import org.apache.kafka.common.quota.ClientQuotaAlteration;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import productInventoryservice.services.api.ProductInventoryService;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Logger;
 
@@ -34,9 +36,16 @@ public class ProductInventoryServiceImpl implements ProductInventoryService {
     @Override
     public ProductDTO getProduct(String productId) {
 
+        if( productId.isEmpty() || Objects.isNull(productId)){
+            throw new IllegalArgumentException("ProductId ca not be null or empty string!");
+        }
+
         this.mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
         Optional<Product> product = this.repo.findById(productId);
+        if(product.isEmpty()){
+            throw new NotFoundException("Product not found!");
+        }
         ProductDTO prod = this.mapper.map(product.get(), ProductDTO.class);
 
         this.oldQuantity = prod.getQuantity();
@@ -46,6 +55,10 @@ public class ProductInventoryServiceImpl implements ProductInventoryService {
 
     @Override
     public boolean  isAvailable(String productId, int desiredQuantity){
+
+        if(desiredQuantity == 0){
+            throw new IllegalArgumentException("Desired quantity should be greater than 0!");
+        }
 
         ProductDTO product = this.getProduct(productId);
 
@@ -60,9 +73,23 @@ public class ProductInventoryServiceImpl implements ProductInventoryService {
     @Override
     public void resetQuantity(String productId, int quantity, PaymentState state) {
 
-        Product prod = this.repo.findById(productId).get();
+        if(productId.isEmpty() || Objects.isNull(productId)){
+            throw new IllegalArgumentException("ProductId can not be null or empty!");
+        }
+        if(quantity == 0){
+            throw new IllegalArgumentException("Quantity must be greater than 0!");
+        }
+        if(Objects.isNull(state)){
+            throw new IllegalArgumentException("State can not be null!");
+        }
 
-        int prodQuantity = prod.getQuantity();
+        Optional<Product> prod = this.repo.findById(productId);
+
+        if(prod.isEmpty()){
+            throw new NotFoundException("Product not found!");
+        }
+
+        int prodQuantity = prod.get().getQuantity();
 
         if(this.oldQuantity <= 0){
             this.oldQuantity = prodQuantity;
@@ -74,12 +101,15 @@ public class ProductInventoryServiceImpl implements ProductInventoryService {
 
         CustomLogging.log(ProductInventoryServiceImpl.class, "after reset - " + oldQuantity);
 
-        prod.setQuantity(this.oldQuantity);
-        this.repo.saveAndFlush(prod);
+        prod.get().setQuantity(this.oldQuantity);
+        this.repo.saveAndFlush(prod.get());
     }
 
     @Override
     public ProductDTO createProduct(ProductDTO product) {
+        if(Objects.isNull(product)){
+            throw new IllegalArgumentException("ProductDTO can not be null!");
+        }
         Product prod = new Product();
         prod.setQuantity(product.getQuantity());
         prod.setDescription(product.getDescription());
@@ -97,9 +127,22 @@ public class ProductInventoryServiceImpl implements ProductInventoryService {
     @Override
     public void extractQuantity(String productId, int qty) {
 
-        Product prod = this.repo.findById(productId).get();
+        if(productId.isEmpty() || Objects.isNull(productId)){
+            throw new IllegalArgumentException("ProductId can not be null or empty string!");
+        }
+        if (qty == 0){
+            throw new IllegalArgumentException("Quantity must be greater than o!");
+        }
 
-        this.oldQuantity = prod.getQuantity();
+        Optional<Product> prod = this.repo.findById(productId);
+
+        if(prod.isEmpty()){
+            throw new NotFoundException("Product not found!");
+        }
+
+        Product product = prod.get();
+
+        this.oldQuantity = product.getQuantity();
 
         int quantity = this.oldQuantity - qty;
 
@@ -109,7 +152,7 @@ public class ProductInventoryServiceImpl implements ProductInventoryService {
             return;
         }
 
-        prod.setQuantity(quantity);
-        this.repo.saveAndFlush(prod);
+        product.setQuantity(quantity);
+        this.repo.saveAndFlush(product);
     }
 }

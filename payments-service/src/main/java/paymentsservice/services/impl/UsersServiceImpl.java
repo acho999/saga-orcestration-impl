@@ -1,6 +1,7 @@
 package paymentsservice.services.impl;
 
 import com.angel.models.DTO.UserDTO;
+import com.angel.models.exceptions.NotFoundException;
 import com.angel.saga.logging.CustomLogging;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -12,6 +13,8 @@ import paymentsservice.repos.UsersRepo;
 import paymentsservice.services.api.UsersService;
 
 import java.util.ArrayList;
+import java.util.Objects;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -20,8 +23,8 @@ import javax.transaction.Transactional;
 public class UsersServiceImpl implements UsersService {
 
 
-    private ModelMapper mapper;
-    private UsersRepo repo;
+    private final ModelMapper mapper;
+    private final UsersRepo repo;
     private double currentBalance;
 
     @Autowired
@@ -31,7 +34,11 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
-    public UserDTO createUser(UserDTO dto){
+    public UserDTO createUser(UserDTO dto) {
+
+        if (Objects.isNull(dto)) {
+            throw new IllegalArgumentException("Request body can not be null!");
+        }
 
         User user = new User();
         user.setUserPayments(new ArrayList<Payment>());
@@ -45,23 +52,38 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
-    public UserDTO getUser(String userId){
-
+    public UserDTO getUser(String userId) {
+        if (userId.isEmpty() || Objects.isNull(userId)) {
+            throw new IllegalArgumentException("UserId can not be null or empty string!");
+        }
         this.mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-
-        User usr = this.repo.findById(userId).get();
-        UserDTO dto = mapper.map(usr, UserDTO.class);
-        dto.setPayments(usr.getUserPayments());
+        Optional<User> usr = this.repo.findById(userId);
+        if (usr.isEmpty()) {
+            throw new NotFoundException("User not found!");
+        }
+        UserDTO dto = mapper.map(usr.get(), UserDTO.class);
+        dto.setPayments(usr.get().getUserPayments());
 
         return dto;
     }
 
     @Override
-    public void changeBalance(String userId, Payment payment){
+    public void changeBalance(String userId, Payment payment) {
+
+        if (userId.isEmpty() || Objects.isNull(userId) || Objects.isNull(payment)) {
+            throw new IllegalArgumentException(
+                "UserId can not be null or empty string. Payment can not be null!");
+        }
 
         this.mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
-        User usr = this.repo.findById(userId).get();
+        Optional<User> user = this.repo.findById(userId);
+
+        if (user.isEmpty()) {
+            throw new NotFoundException("User not found!");
+        }
+
+        User usr = user.get();
 
         usr.getUserPayments().add(payment);
 
@@ -78,15 +100,21 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
-    public void reverseUserBalance(String userId, double amount){
+    public void reverseUserBalance(String userId, double amount) {
 
-       User usr =  this.repo.findById(userId).get();
+        Optional<User> user = this.repo.findById(userId);
 
-       usr.setBalance(currentBalance);
+        if (user.isEmpty()) {
+            throw new NotFoundException("User not found!");
+        }
+
+        User usr = user.get();
+
+        usr.setBalance(currentBalance);
 
         CustomLogging.log(UsersServiceImpl.class, "after reverse" + " " + usr.getBalance());
 
-       this.repo.saveAndFlush(usr);
+        this.repo.saveAndFlush(usr);
     }
 
 }

@@ -1,4 +1,4 @@
-package com.angel.orderservice.endpoints;
+package productInventoryservice.endpoints;
 
 import com.angel.models.exceptions.NotFoundException;
 import org.springframework.http.HttpStatus;
@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import javax.servlet.http.HttpServletRequest;
 
 @RestControllerAdvice
-public class OrdersControllerAdvice {
+public class ControllerAdvice {
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<NotFoundException> notFoundExceptionHandler(HttpServletRequest request,
-                                                                           NotFoundException ex) {//here parameters are autowired
+                                                                      NotFoundException ex) {//here parameters are autowired
         return new ResponseEntity(ex, HttpStatus.NOT_FOUND);
     }
 

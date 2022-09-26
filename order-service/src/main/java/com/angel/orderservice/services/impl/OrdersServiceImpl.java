@@ -24,9 +24,9 @@ import static com.angel.models.constants.TopicConstants.ORDER_CREATED_EVENT;
 public class OrdersServiceImpl implements OrdersService {
 
 
-    private OrdersRepo repo;
-    private ModelMapper mapper;
-    private SendMessage send;
+    private final OrdersRepo repo;
+    private final ModelMapper mapper;
+    private final SendMessage send;
 
     @Autowired
     public OrdersServiceImpl(OrdersRepo repo, ModelMapper mapper, SendMessage send) {
@@ -42,7 +42,7 @@ public class OrdersServiceImpl implements OrdersService {
         }
         this.mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         Optional<Order> order = this.repo.findById(id);
-        if (!order.isPresent()) {
+        if (order.isEmpty()) {
             throw new NotFoundException("Order not found!");
         }
         OrderResponseDTO dto = this.mapper.map(order.get(), OrderResponseDTO.class);
@@ -88,7 +88,7 @@ public class OrdersServiceImpl implements OrdersService {
         }
         Optional<Order> order = this.repo.findById(orderId);
 
-        if (!order.isPresent()) {
+        if (order.isEmpty()) {
             throw new NotFoundException("Order not found!");
         }
 
@@ -111,7 +111,7 @@ public class OrdersServiceImpl implements OrdersService {
 
         Optional<Order> order = this.repo.findById(orderId);
 
-        if (!order.isPresent()) {
+        if (order.isEmpty()) {
             throw new NotFoundException("Order not found!");
         }
 
