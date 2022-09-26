@@ -24,6 +24,7 @@
         <module>payments-service</module>
         <module>product-inventory-service</module>
         <module>saga</module>
+        <module>swagger_config</module>
     </modules>
 
     <properties>
@@ -41,6 +42,8 @@
         <slf4j-api.version>1.7.25</slf4j-api.version>
         <slf4j-log4j12.version>1.7.25</slf4j-log4j12.version>
         <spring.kafka.version>2.8.0</spring.kafka.version>
+        <swagger.version>2.9.2</swagger.version>
+        <swagger.ui.version>2.9.2</swagger.ui.version>
     </properties>
 
     <dependencyManagement>

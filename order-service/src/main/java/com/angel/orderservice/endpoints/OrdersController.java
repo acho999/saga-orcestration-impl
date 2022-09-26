@@ -1,9 +1,8 @@
-package com.angel.orderservice.controllers;
+package com.angel.orderservice.endpoints;
 
 import com.angel.models.DTO.OrderRequestDTO;
 import com.angel.models.DTO.OrderResponseDTO;
 import com.angel.orderservice.services.api.OrdersService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -28,8 +27,7 @@ public class OrdersController {
     @RequestMapping(method = RequestMethod.POST, value = "/create",
         produces = MediaType.APPLICATION_JSON_VALUE,
         consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<OrderRequestDTO> createOrder(@RequestBody OrderRequestDTO request)
-        throws JsonProcessingException, InterruptedException {
+    public ResponseEntity<OrderRequestDTO> createOrder(@RequestBody OrderRequestDTO request){
 
         OrderRequestDTO dto = this.service.createOrder(request);
 
