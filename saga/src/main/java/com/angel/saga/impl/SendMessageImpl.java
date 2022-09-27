@@ -17,9 +17,11 @@ public class SendMessageImpl implements SendMessage {
 
     @Override
     public void sendMessage(String topicName, IEvent event){
-
-        if(Objects.isNull(topicName) || Objects.isNull(event)){
-            //throw IllegalArgumentException or custom exception
+        if( topicName.isEmpty() || Objects.isNull(topicName)){
+            throw new IllegalArgumentException("The topicName can not be null or empty string!");
+        }
+        if(Objects.isNull(event)){
+            throw new IllegalArgumentException("The event can not be null!");
         }
         this.kafkaTemplate.send(topicName, event);
 

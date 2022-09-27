@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import static com.angel.models.constants.TopicConstants.*;
@@ -27,8 +28,11 @@ public class FactoryImpl implements Factory {
 
     @Override
     public Event eventFactory(Command cmd, String topic) {
-        if (cmd == null) {
-            return null;//or throw IllegalArgumentException or custom exception for topic/cmd
+        if (Objects.isNull(cmd)) {
+            throw new IllegalArgumentException("The command can not be null!");
+        }
+        if( topic.isEmpty() || Objects.isNull(topic)){
+            throw new IllegalArgumentException("The topic can not be null or empty string!");
         }
         switch (topic) {//1
             case ORDER_CREATED_EVENT:
@@ -101,8 +105,11 @@ public class FactoryImpl implements Factory {
 
     @Override
     public Command commandFactory(Event evt, String topic) {
-        if (evt == null) {
-            return null;//or throw IllegalArgumentException or custom exception for topic/evt
+        if (Objects.isNull(evt)) {
+            throw new IllegalArgumentException("The event can not be null!");
+        }
+        if( topic.isEmpty() || Objects.isNull(topic)){
+            throw new IllegalArgumentException("The topic can not be null or empty string!");
         }
 
         switch (topic) {
@@ -188,6 +195,9 @@ public class FactoryImpl implements Factory {
 
     @Override
     public Command readEvent(String currentTopic, String nextTopicCommand, Event evt){
+        if( currentTopic.isEmpty() || Objects.isNull(currentTopic)){
+            throw new IllegalArgumentException("The current topic can not be null or empty string!");
+        }
         Command createdCommand = commandFactory(evt, nextTopicCommand);
         return createdCommand;
     }
@@ -195,6 +205,9 @@ public class FactoryImpl implements Factory {
     //read command from topic, create and send event
     @Override
     public Event readCommand(String currentTopic, String nextTopicCommand, Command cmd){
+        if( currentTopic.isEmpty() || Objects.isNull(currentTopic)){
+            throw new IllegalArgumentException("The current topic can not be null or empty string!");
+        }
         Event createdEvent = eventFactory(cmd, nextTopicCommand);
         return createdEvent;
     }
