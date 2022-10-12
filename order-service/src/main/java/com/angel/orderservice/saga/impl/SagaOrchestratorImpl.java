@@ -23,9 +23,9 @@ import static com.angel.models.constants.TopicConstants.*;
                          ORDER_APPROVED_EVENT, ORDER_REJECTED_EVENT}, groupId = GROUP_ID)
 public class SagaOrchestratorImpl implements SagaOrchestrator {
 
-    private SendMessage sendService;
-    private OrdersServiceImpl ordersService;
-    private Factory factory;
+    private final SendMessage sendService;
+    private final OrdersServiceImpl ordersService;
+    private final Factory factory;
 
     @Autowired
     public SagaOrchestratorImpl(SendMessage sendService,
@@ -39,7 +39,7 @@ public class SagaOrchestratorImpl implements SagaOrchestrator {
     @KafkaHandler
     public Command handleOrderCreatedEvent(@Payload OrderCreatedEvent event){
 
-        Command command = (ReserveProductCommand) this.factory
+        ReserveProductCommand command = (ReserveProductCommand) this.factory
             .readEvent(ORDER_CREATED_EVENT, RESERVE_PRODUCT_COMMAND,
                        event);
         Product prod = this.factory.createProduct();

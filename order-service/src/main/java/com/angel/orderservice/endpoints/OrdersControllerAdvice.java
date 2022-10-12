@@ -1,6 +1,6 @@
 package com.angel.orderservice.endpoints;
 
-import com.angel.models.exceptions.NotFoundException;
+import com.angel.orderservice.exceptions.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

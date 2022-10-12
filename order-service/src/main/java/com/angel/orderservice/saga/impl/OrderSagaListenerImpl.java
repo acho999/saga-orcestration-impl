@@ -24,8 +24,8 @@ import static com.angel.models.constants.TopicConstants.REJECT_ORDER_COMMAND_PRO
 @Component
 public class OrderSagaListenerImpl implements SagaListener {
 
-    private SendMessage sendService;
-    private Factory factory;
+    private final SendMessage sendService;
+    private final Factory factory;
 
     @Autowired
     public OrderSagaListenerImpl(SendMessage sendService, Factory factory) {

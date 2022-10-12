@@ -1,4 +1,4 @@
-package com.angel.models.exceptions;
+package com.angel.orderservice.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
