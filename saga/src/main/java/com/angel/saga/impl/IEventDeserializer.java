@@ -4,7 +4,6 @@ import com.angel.models.api.IEvent;
 import com.angel.models.commands.*;
 import com.angel.models.entities.Product;
 import com.angel.models.events.*;
-import com.angel.models.exceptions.NotFoundException;
 import org.apache.kafka.common.serialization.Deserializer;
 import org.springframework.util.SerializationUtils;
 
@@ -59,7 +58,7 @@ public class IEventDeserializer implements Deserializer<IEvent> {
                 return (Product) SerializationUtils.deserialize(bytes);
 
             default:
-                throw new NotFoundException("Class name not found and cn not be deserialized!");
+                throw new IllegalStateException("Class name not found and can not be deserialized!");
 
         }
 

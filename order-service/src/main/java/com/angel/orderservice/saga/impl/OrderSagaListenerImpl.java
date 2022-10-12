@@ -12,6 +12,8 @@ import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
+
 import static com.angel.models.constants.TopicConstants.APPROVE_ORDER_COMMAND;
 import static com.angel.models.constants.TopicConstants.GROUP_ID;
 import static com.angel.models.constants.TopicConstants.ORDER_APPROVED_EVENT;
@@ -36,6 +38,9 @@ public class OrderSagaListenerImpl implements SagaListener {
     @Override//7
     @KafkaHandler
     public Event handleApproveOrderCommand(ApproveOrderCommand command){
+        if( Objects.isNull(command)){
+            throw new IllegalArgumentException("The command can not be null!");
+        }
         Event event = this.factory.readCommand(APPROVE_ORDER_COMMAND,
                                                ORDER_APPROVED_EVENT,
                                                command);
@@ -46,6 +51,9 @@ public class OrderSagaListenerImpl implements SagaListener {
     @Override//15
     @KafkaHandler
     public Event handleRejectOrderCommandProduct(RejectOrderCommandProduct command){
+        if( Objects.isNull(command)){
+            throw new IllegalArgumentException("The command can not be null!");
+        }
         Event event = this.factory.readCommand(REJECT_ORDER_COMMAND_PRODUCT,
                                                ORDER_REJECTED_EVENT,
                                                command);
@@ -56,6 +64,9 @@ public class OrderSagaListenerImpl implements SagaListener {
     @Override//13
     @KafkaHandler
     public Event handleRejectOrderCommandPayment(RejectOrderCommandPayment command){
+        if( Objects.isNull(command)){
+            throw new IllegalArgumentException("The command can not be null!");
+        }
         Event event = this.factory.readCommand(REJECT_ORDER_COMMAND_PAYMENT,
                                                ORDER_REJECTED_EVENT,
                                                command);

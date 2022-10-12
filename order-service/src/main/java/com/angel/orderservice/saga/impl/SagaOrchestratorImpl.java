@@ -14,6 +14,8 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
+
 import static com.angel.models.constants.TopicConstants.*;
 
 @Component
@@ -39,6 +41,9 @@ public class SagaOrchestratorImpl implements SagaOrchestrator {
     @KafkaHandler
     public Command handleOrderCreatedEvent(@Payload OrderCreatedEvent event){
 
+        if( Objects.isNull(event)){
+            throw new IllegalArgumentException("The Event can not be null!");
+        }
         ReserveProductCommand command = (ReserveProductCommand) this.factory
             .readEvent(ORDER_CREATED_EVENT, RESERVE_PRODUCT_COMMAND,
                        event);
@@ -53,7 +58,9 @@ public class SagaOrchestratorImpl implements SagaOrchestrator {
     @Override//3
     @KafkaHandler
     public Command handleProductReservedEvent(@Payload ProductReservedEvent event) {
-
+        if( Objects.isNull(event)){
+            throw new IllegalArgumentException("The Event can not be null!");
+        }
         ProcessPaymentCommand command = (ProcessPaymentCommand) this.factory
             .readEvent(PRODUCT_RESERVED_EVENT, PROCESS_PAYMENT_COMMAND,
                        event);
@@ -64,7 +71,9 @@ public class SagaOrchestratorImpl implements SagaOrchestrator {
     @Override//5
     @KafkaHandler
     public Command handlePaymentProcessedEvent(@Payload PaymentProcessedEvent event) {
-
+        if( Objects.isNull(event)){
+            throw new IllegalArgumentException("The Event can not be null!");
+        }
         ApproveOrderCommand command = (ApproveOrderCommand) this.factory
             .readEvent(PAYMENT_PROCESSED_EVENT, APPROVE_ORDER_COMMAND,
                        event);
@@ -76,13 +85,18 @@ public class SagaOrchestratorImpl implements SagaOrchestrator {
     @Override//8 order created successfully
     @KafkaHandler
     public void handleOrderApprovedEvent(@Payload OrderApprovedEvent event) {
+        if( Objects.isNull(event)){
+            throw new IllegalArgumentException("The Event can not be null!");
+        }
         this.ordersService.approveOrder(event.getOrderId());
     }
 
     @Override//10
     @KafkaHandler
     public Command handleProductReservationCanceledEvent(@Payload ProductReservationCanceledEvent event) {
-
+        if( Objects.isNull(event)){
+            throw new IllegalArgumentException("The Event can not be null!");
+        }
         RejectOrderCommandProduct command = (RejectOrderCommandProduct) this.factory
             .readEvent(PRODUCT_RESERVATION_CANCELED_EVENT, REJECT_ORDER_COMMAND_PRODUCT,
                        event);
@@ -104,7 +118,9 @@ public class SagaOrchestratorImpl implements SagaOrchestrator {
     @Override//12
     @KafkaHandler
     public Command handlePaymentCanceledEvent(@Payload PaymentCanceledEvent event) {
-
+        if( Objects.isNull(event)){
+            throw new IllegalArgumentException("The Event can not be null!");
+        }
         RejectOrderCommandProduct command = (RejectOrderCommandProduct) this.factory
             .readEvent(PAYMENT_CANCELED_EVENT, REJECT_ORDER_COMMAND_PAYMENT,
                        event);
@@ -126,6 +142,9 @@ public class SagaOrchestratorImpl implements SagaOrchestrator {
     @Override//14
     @KafkaHandler
     public void handleOrderRejectedEvent(@Payload OrderRejectedEvent event) {
+        if( Objects.isNull(event)){
+            throw new IllegalArgumentException("The Event can not be null!");
+        }
         this.ordersService.cancelOrder(event.getOrderId());
     }
 

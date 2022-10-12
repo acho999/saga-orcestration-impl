@@ -25,13 +25,11 @@ public class OrdersServiceImpl implements OrdersService {
 
 
     private final OrdersRepo repo;
-    private final ModelMapper mapper;
     private final SendMessage send;
 
     @Autowired
-    public OrdersServiceImpl(OrdersRepo repo, ModelMapper mapper, SendMessage send) {
+    public OrdersServiceImpl(OrdersRepo repo, SendMessage send) {
         this.repo = repo;
-        this.mapper = mapper;
         this.send = send;
     }
 
@@ -45,12 +43,18 @@ public class OrdersServiceImpl implements OrdersService {
         if (Objects.isNull(id) || id.isEmpty()) {
             throw new IllegalArgumentException("Id can not be null or empty string!");
         }
-        this.mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-        Optional<Order> order = this.repo.findById(id);
-        if (order.isEmpty()) {
+        Optional<Order> orderOptional = this.repo.findById(id);
+        if (orderOptional.isEmpty()) {
             throw new NotFoundException("Order not found!");
         }
-        OrderResponseDTO dto = this.mapper.map(order.get(), OrderResponseDTO.class);
+        Order order = orderOptional.get();
+        OrderResponseDTO dto = new OrderResponseDTO.Builder()
+            .setOrderId(order.getOrderId())
+            .setQuantity(order.getQuantity())
+            .setProductId(order.getProductId())
+            .setUserId(order.getUserId())
+            .setOrderState(order.getState())
+            .build();
         return dto;
     }
 
@@ -62,9 +66,12 @@ public class OrdersServiceImpl implements OrdersService {
             throw new IllegalArgumentException("Order can not be null!");
         }
 
-        this.mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-
-        Order newOrder = this.mapper.map(order, Order.class);
+        Order newOrder = Order.builder()
+            .userId(order.getUserId())
+            .state(order.getOrderState())
+            .quantity(order.getQuantity())
+            .productId(order.getProductId())
+            .build();
         newOrder.setState(OrderState.PENDING);
         this.repo.saveAndFlush(newOrder);
 
@@ -77,7 +84,7 @@ public class OrdersServiceImpl implements OrdersService {
             .productId(dto.getProductId())
             .quantity(dto.getQuantity())
             .userId(dto.getUserId())
-            .state(OrderState.PENDING)
+            .state(newOrder.getState())
             .build();
 
         send.sendMessage(ORDER_CREATED_EVENT, event);
@@ -125,7 +132,5 @@ public class OrdersServiceImpl implements OrdersService {
 
         return true;
     }
-
-
 }
 

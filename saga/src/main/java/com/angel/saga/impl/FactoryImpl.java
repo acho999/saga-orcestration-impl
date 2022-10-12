@@ -201,9 +201,7 @@ public class FactoryImpl implements Factory {
         if( nextTopicCommand.isEmpty() || Objects.isNull(nextTopicCommand)){
             throw new IllegalArgumentException("The next topic command can not be null or empty string!");
         }
-        if( Objects.isNull(evt)){
-            throw new IllegalArgumentException("The Event can not be null!");
-        }
+
         Command createdCommand = commandFactory(evt, nextTopicCommand);
         return createdCommand;
     }
@@ -217,9 +215,7 @@ public class FactoryImpl implements Factory {
         if( nextTopicCommand.isEmpty() || Objects.isNull(nextTopicCommand)){
             throw new IllegalArgumentException("The next topic command can not be null or empty string!");
         }
-        if( Objects.isNull(cmd)){
-            throw new IllegalArgumentException("The command can not be null!");
-        }
+
         Event createdEvent = eventFactory(cmd, nextTopicCommand);
         return createdEvent;
     }
