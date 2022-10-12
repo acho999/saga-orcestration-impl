@@ -35,6 +35,11 @@ public class OrdersServiceImpl implements OrdersService {
         this.send = send;
     }
 
+    /**
+     * 
+     * @param id
+     * @return
+     */
     @Override
     public OrderResponseDTO getOrder(String id) {
         if (Objects.isNull(id) || id.isEmpty()) {
