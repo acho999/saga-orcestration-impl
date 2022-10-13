@@ -68,15 +68,14 @@ public class OrdersServiceImpl implements OrdersService {
 
         Order newOrder = Order.builder()
             .userId(order.getUserId())
-            .state(order.getOrderState())
             .quantity(order.getQuantity())
             .productId(order.getProductId())
+            .state(OrderState.PENDING)
             .build();
-        newOrder.setState(OrderState.PENDING);
         this.repo.saveAndFlush(newOrder);
 
         OrderRequestDTO dto = order;
-        dto.setId(newOrder.getOrderId());
+        dto.setOrderId(newOrder.getOrderId());
         dto.setOrderState(newOrder.getState());
 
         OrderCreatedEvent event = OrderCreatedEvent.builder()
@@ -110,7 +109,7 @@ public class OrdersServiceImpl implements OrdersService {
 
         order.get().setState(OrderState.CANCELLED);
         this.repo.saveAndFlush(order.get());
-        return true;
+        return order.get().getState().equals(OrderState.CANCELLED);
     }
 
     @Override
@@ -130,7 +129,7 @@ public class OrdersServiceImpl implements OrdersService {
         order.get().setState(OrderState.CREATED);
         this.repo.saveAndFlush(order.get());
 
-        return true;
+        return order.get().getState().equals(OrderState.CREATED);
     }
 }
 
