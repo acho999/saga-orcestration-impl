@@ -9,8 +9,6 @@ import com.angel.orderservice.models.Order;
 import com.angel.orderservice.repos.OrdersRepo;
 import com.angel.orderservice.services.api.OrdersService;
 import com.angel.saga.api.SendMessage;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +20,6 @@ import static com.angel.models.constants.TopicConstants.ORDER_CREATED_EVENT;
 
 @Service
 public class OrdersServiceImpl implements OrdersService {
-
 
     private final OrdersRepo repo;
     private final SendMessage send;

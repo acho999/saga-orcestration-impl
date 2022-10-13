@@ -112,7 +112,8 @@ class OrdersServiceImplTest {
         this.order.setOrderId(id);
         when(this.repo.findById(id)).thenReturn(Optional.empty());
         NotFoundException notFoundException = assertThrows(
-            NotFoundException.class, ()->this.ordersServiceTest.cancelOrder(this.order.getOrderId()));
+            NotFoundException.class, ()->this.ordersServiceTest.cancelOrder(this.order.getOrderId())
+        );
         assertEquals("Order not found!", notFoundException.getMessage());
     }
 
@@ -138,7 +139,8 @@ class OrdersServiceImplTest {
         this.order.setOrderId(id);
         when(this.repo.findById(id)).thenReturn(Optional.empty());
         NotFoundException notFoundException = assertThrows(
-            NotFoundException.class, ()->this.ordersServiceTest.approveOrder(this.order.getOrderId()));
+            NotFoundException.class, ()->this.ordersServiceTest.approveOrder(this.order.getOrderId())
+        );
         assertEquals("Order not found!", notFoundException.getMessage());
     }
 }
