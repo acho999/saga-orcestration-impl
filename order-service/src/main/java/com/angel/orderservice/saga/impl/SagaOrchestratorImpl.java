@@ -85,11 +85,11 @@ public class SagaOrchestratorImpl implements SagaOrchestrator {
 
     @Override//8 order created successfully
     @KafkaHandler
-    public void handleOrderApprovedEvent(@Payload OrderApprovedEvent event) {
+    public Boolean handleOrderApprovedEvent(@Payload OrderApprovedEvent event) {
         if( Objects.isNull(event)){
             throw new IllegalArgumentException(EVENT_CAN_NOT_BE_NULL);
         }
-        this.ordersService.approveOrder(event.getOrderId());
+        return this.ordersService.approveOrder(event.getOrderId());
     }
 
     @Override//10
@@ -122,7 +122,7 @@ public class SagaOrchestratorImpl implements SagaOrchestrator {
         if( Objects.isNull(event)){
             throw new IllegalArgumentException(EVENT_CAN_NOT_BE_NULL);
         }
-        RejectOrderCommandProduct command = (RejectOrderCommandProduct) this.factory
+        RejectOrderCommandPayment command = (RejectOrderCommandPayment) this.factory
             .readEvent(PAYMENT_CANCELED_EVENT, REJECT_ORDER_COMMAND_PAYMENT,
                        event);
 
@@ -142,11 +142,11 @@ public class SagaOrchestratorImpl implements SagaOrchestrator {
 
     @Override//14
     @KafkaHandler
-    public void handleOrderRejectedEvent(@Payload OrderRejectedEvent event) {
+    public Boolean handleOrderRejectedEvent(@Payload OrderRejectedEvent event) {
         if( Objects.isNull(event)){
             throw new IllegalArgumentException(EVENT_CAN_NOT_BE_NULL);
         }
-        this.ordersService.cancelOrder(event.getOrderId());
+        return this.ordersService.cancelOrder(event.getOrderId());
     }
 
 }

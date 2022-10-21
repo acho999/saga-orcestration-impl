@@ -24,6 +24,7 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import java.util.Objects;
 import java.util.Properties;
 
 import javax.persistence.EntityManager;
@@ -33,7 +34,7 @@ import javax.sql.DataSource;
 @Configuration
 @EnableJpaRepositories(basePackages = "com.angel.orderservice.repos")
 @EnableTransactionManagement
-@PropertySource(value = {"application.yaml" })
+@PropertySource(value = {"classpath:./application.yaml" })
 @EnableKafka
 @Import({ConsumerConfiguration.class, KafkaTopicConfig.class, ProducerConfiguration.class})
 public class OrdersServiceConfig {
@@ -65,7 +66,8 @@ public class OrdersServiceConfig {
     public DataSource dataSource() {
 
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName(env.getProperty("spring.datasource.driver-class-name"));
+        dataSource.setDriverClassName(
+            Objects.requireNonNull(env.getProperty("spring.datasource.driver-class-name")));
         dataSource.setUrl(env.getProperty("spring.datasource.url"));
         dataSource.setPassword(env.getProperty("spring.datasource.password"));
         dataSource.setUsername(env.getProperty("spring.datasource.username"));

@@ -14,8 +14,8 @@ public interface SagaOrchestrator {
     Command handleOrderCreatedEvent(OrderCreatedEvent event) throws InterruptedException;
     Command handleProductReservedEvent(ProductReservedEvent event) throws InterruptedException;
     Command handlePaymentProcessedEvent(PaymentProcessedEvent event);
-    void handleOrderApprovedEvent(OrderApprovedEvent event);
+    Boolean handleOrderApprovedEvent(OrderApprovedEvent event);
     Command handleProductReservationCanceledEvent(ProductReservationCanceledEvent event);
     Command handlePaymentCanceledEvent(PaymentCanceledEvent event);
-    void handleOrderRejectedEvent(OrderRejectedEvent event);
+    Boolean handleOrderRejectedEvent(OrderRejectedEvent event);
 }

@@ -1,12 +1,12 @@
 package paymentsservice.services.impl;
 
 import com.angel.models.DTO.UserDTO;
-import com.angel.models.exceptions.NotFoundException;
 import com.angel.saga.logging.CustomLogging;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import paymentsservice.exceptions.NotFoundException;
 import paymentsservice.models.Payment;
 import paymentsservice.models.User;
 import paymentsservice.repos.UsersRepo;

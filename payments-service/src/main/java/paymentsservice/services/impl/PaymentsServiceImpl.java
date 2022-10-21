@@ -2,9 +2,9 @@ package paymentsservice.services.impl;
 
 import com.angel.models.DTO.PaymentRequestDTO;
 import com.angel.models.DTO.UserDTO;
-import com.angel.models.exceptions.NotFoundException;
 import com.angel.models.states.PaymentState;
 import org.modelmapper.convention.MatchingStrategies;
+import paymentsservice.exceptions.NotFoundException;
 import paymentsservice.models.Payment;
 import paymentsservice.models.User;
 import paymentsservice.repos.PaymentsRepo;

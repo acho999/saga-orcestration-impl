@@ -1,13 +1,17 @@
 package com.angel.models.entities;
 
 import com.angel.models.api.IEvent;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@NoArgsConstructor
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Product implements IEvent {
 
     private String id;

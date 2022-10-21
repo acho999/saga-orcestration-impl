@@ -19,8 +19,10 @@ public class ProductReservationCancelCommand extends Command{
 
 
     @Builder
-    public ProductReservationCancelCommand(String productId, int quantity, String reason, String userId, String orderId){
+    public ProductReservationCancelCommand(String paymentId,PaymentState paymentState , String productId, int quantity, String reason, String userId, String orderId){
         super(userId, orderId, productId, quantity);
+        this.paymentId = paymentId;
+        this.paymentState = paymentState;
         this.reason = reason;
     }
 
