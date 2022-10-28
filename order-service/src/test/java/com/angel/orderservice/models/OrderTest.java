@@ -7,11 +7,11 @@ import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-//@ActiveProfiles("test")
+@ActiveProfiles("test")
 class OrderTest {
 
     @Test
-    public void orderUnitTest(){
+    public void orderTest(){
         Order order = Mockito.spy(Order.builder().build());//here we test builder and allargsconstructor
         order.setOrderId("fakeOrderId");
         order.setQuantity(1);

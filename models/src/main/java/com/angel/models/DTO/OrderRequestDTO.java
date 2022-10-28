@@ -1,12 +1,25 @@
 package com.angel.models.DTO;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreType;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import com.angel.models.states.OrderState;
+import lombok.ToString;
+
+import java.io.Serializable;
 
 @Getter
 @Setter
-public class OrderRequestDTO {
+@NoArgsConstructor
+@Data//this should be here in order for test to be deserialized
+public class OrderRequestDTO implements Serializable {
 
     private String orderId;
     private OrderState orderState;
@@ -14,6 +27,7 @@ public class OrderRequestDTO {
     private String productId;
     private int quantity;
 
+    //@JsonIgnoreType
     public static class Builder{
 
         private String userId;

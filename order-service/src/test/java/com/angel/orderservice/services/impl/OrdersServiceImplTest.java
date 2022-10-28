@@ -15,6 +15,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
+import static com.angel.models.constants.CommonConstants.FAKE_ORDER_ID;
+import static com.angel.models.constants.CommonConstants.FAKE_PRODUCT_ID;
+import static com.angel.models.constants.CommonConstants.FAKE_USER_ID;
+import static com.angel.models.constants.CommonConstants.QUANTITY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -69,12 +73,11 @@ class OrdersServiceImplTest {
     @Test
     void shouldCreateOrder() {
         OrderRequestDTO dto = new OrderRequestDTO.Builder()
-            .setOrderId(this.order.getOrderId())
-            .setOrderState(this.order.getState())
-            .setProductId(this.order.getProductId())
-            .setQuantity(this.order.getQuantity())
-            .setUserId(this.order.getUserId())
-            .build();
+            .setOrderId(FAKE_ORDER_ID)
+            .setOrderState(OrderState.PENDING)
+            .setProductId(FAKE_PRODUCT_ID)
+            .setUserId(FAKE_USER_ID)
+            .setQuantity(QUANTITY).build();
 
         when(this.repo.saveAndFlush(any(Order.class))).thenReturn(this.order);
         OrderRequestDTO reqDto = this.ordersServiceTest.createOrder(dto);

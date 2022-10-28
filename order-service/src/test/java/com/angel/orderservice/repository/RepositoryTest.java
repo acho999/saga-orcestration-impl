@@ -15,7 +15,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
-//@ActiveProfiles("test")
+@ActiveProfiles("test")
 public class RepositoryTest {
 
     @Autowired
@@ -36,7 +36,7 @@ public class RepositoryTest {
     }
 
     @Test
-    public void shouldCreateAndSaveOrderUnitTest(){
+    public void shouldCreateAndSaveOrderTest(){
         Order order = Order.builder()
             .productId("shoes")
             .quantity(1)
@@ -48,13 +48,13 @@ public class RepositoryTest {
     }
 
     @Test
-    public void shouldGetOrderByIdUnitTest(){
+    public void shouldGetOrderByIdTest(){
         Order order = this.repo.getById(this.orderId);
         assertEquals(this.orderId, order.getOrderId());
     }
 
     @Test
-    public void shouldUpdateOrderByIdUnitTest(){
+    public void shouldUpdateOrderByIdTest(){
         Order orderUpdated = null;
         Optional<Order> order = this.repo.findById(this.orderId);
         if(order.isPresent()){
@@ -69,13 +69,13 @@ public class RepositoryTest {
     }
 
     @Test
-    public void shouldGetAllOrdersUnitTest(){
+    public void shouldGetAllOrdersTest(){
         List<Order> orders = this.repo.findAll();
         assertTrue(orders.size() > 0);
     }
 
     @Test
-    public void shouldDeleteOrderByIdUnitTest(){
+    public void shouldDeleteOrderByIdTest(){
         Optional<Order> order = this.repo.findById(this.orderId);
         order.ifPresent(value -> this.repo.delete(value));
         assertNull(this.repo.findById(this.orderId).orElse(null));

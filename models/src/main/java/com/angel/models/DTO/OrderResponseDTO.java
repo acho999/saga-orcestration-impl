@@ -1,11 +1,13 @@
 package com.angel.models.DTO;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import com.angel.models.states.OrderState;
 
 @Getter
 @Setter
+@Data
 public class OrderResponseDTO {
 
     private String userId;

@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-@Api("Api for working with orders.")
+@Api("Endpoints for working with orders.")
 @RestController
 @RequestMapping(value = "/orders")
 public class OrdersController {
