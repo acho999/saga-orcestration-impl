@@ -30,6 +30,7 @@ public class PaymentSagaListenerImpl implements SagaListener {
     private PaymentsService paymentsService;
     private Factory factory;
     private Payment payment;
+    private final Class<PaymentSagaListenerImpl> cl = PaymentSagaListenerImpl.class;
 
     @Autowired
     public PaymentSagaListenerImpl(SendMessage sendService,
@@ -41,7 +42,7 @@ public class PaymentSagaListenerImpl implements SagaListener {
 
     @KafkaHandler
     private void getProductPrice(Product product){
-        CustomLogging.log(PaymentSagaListenerImpl.class, product.getPrice() + " " + "from handler in payment");
+        CustomLogging.log(cl, product.getPrice() + " " + "from handler in payment");
         this.paymentsService.setProductPrice(product.getPrice());
 
     }

@@ -24,11 +24,10 @@ import static com.angel.models.constants.TopicConstants.*;
 @KafkaListener(topics = {RESERVE_PRODUCT_COMMAND, CANCEL_PRODUCT_RESERVATION_COMMAND, SET_PRODUCT_PRICE}, groupId = GROUP_ID)
 public class ProductSagaListenerImpl implements SagaListener {
 
-    @Autowired
     private SendMessage sendService;
     private ProductInventoryService service;
     private Factory factory;
-
+    private final Class<ProductSagaListenerImpl> cl = ProductSagaListenerImpl.class;
     @Autowired
     public ProductSagaListenerImpl(SendMessage sendService,
                                    ProductInventoryService service, Factory factory) {
@@ -72,7 +71,7 @@ public class ProductSagaListenerImpl implements SagaListener {
     public void handleProductPriceEvent(@Payload Product product){
         ProductDTO prod = this.service.getProduct(product.getId());
         product.setPrice(prod.getPrice());
-        CustomLogging.log(ProductSagaListenerImpl.class,product.getPrice() + " " + "from product inventory");
+        CustomLogging.log(cl,product.getPrice() + " " + "from product inventory");
         this.sendService.sendMessage(GET_PRODUCT_PRICE, product);
     }
 

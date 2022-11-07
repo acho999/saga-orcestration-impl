@@ -27,8 +27,8 @@ public class RepositoryTest {
     void setUp() {
         Order order = Order.builder()
             .productId("shoes")
-            .quantity(1)
-            .state(OrderState.CREATED)
+            .qty(1)
+            .orderState(OrderState.CREATED)
             .userId("userId")
             .build();
         this.repo.saveAndFlush(order);
@@ -39,8 +39,8 @@ public class RepositoryTest {
     public void shouldCreateAndSaveOrderTest(){
         Order order = Order.builder()
             .productId("shoes")
-            .quantity(1)
-            .state(OrderState.CREATED)
+            .qty(1)
+            .orderState(OrderState.CREATED)
             .userId("userId")
             .build();
         Order savedOrder = this.repo.saveAndFlush(order);
@@ -58,11 +58,11 @@ public class RepositoryTest {
         Order orderUpdated = null;
         Optional<Order> order = this.repo.findById(this.orderId);
         if(order.isPresent()){
-            order.get().setState(OrderState.COMPLETED);
+            order.get().setOrderState(OrderState.COMPLETED);
             orderUpdated = this.repo.saveAndFlush(order.get());
         }
         if (orderUpdated != null) {
-            assertEquals(OrderState.COMPLETED, orderUpdated.getState());
+            assertEquals(OrderState.COMPLETED, orderUpdated.getOrderState());
             return;
         }
         fail();

@@ -26,14 +26,14 @@ import javax.persistence.Table;
 public class Order {
 
     @Id
-    @Column(name = "Id", unique = true, nullable = false)
+    @Column(name = "orderId", unique = true, nullable = false)
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private String orderId;
 
     @Column(name = "orderState", nullable = false)
     @Enumerated(value = EnumType.STRING)
-    private OrderState state;
+    private OrderState orderState;
 
     @Column(name = "userId", nullable = false)
     private String userId;
@@ -41,7 +41,7 @@ public class Order {
     @Column(name = "productId", nullable = false)
     private String productId;
 
-    @Column(name = "quantity", nullable = false)
-    private int quantity;
+    @Column(name = "qty", nullable = false)
+    private int qty;
 
 }

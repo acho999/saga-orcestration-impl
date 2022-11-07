@@ -1,8 +1,9 @@
-package com.angel.orderservice.endpoints;
+package com.angel.orderservice.endpointsTest;
 
 import com.angel.models.DTO.OrderRequestDTO;
 import com.angel.models.DTO.OrderResponseDTO;
 import com.angel.models.states.OrderState;
+import com.angel.orderservice.endpoints.OrdersController;
 import com.angel.orderservice.services.api.OrdersService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

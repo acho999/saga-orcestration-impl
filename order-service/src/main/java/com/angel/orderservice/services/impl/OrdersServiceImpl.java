@@ -47,10 +47,10 @@ public class OrdersServiceImpl implements OrdersService {
         Order order = orderOptional.get();
         OrderResponseDTO dto = new OrderResponseDTO.Builder()
             .setOrderId(order.getOrderId())
-            .setQuantity(order.getQuantity())
+            .setQuantity(order.getQty())
             .setProductId(order.getProductId())
             .setUserId(order.getUserId())
-            .setOrderState(order.getState())
+            .setOrderState(order.getOrderState())
             .build();
         return dto;
     }
@@ -65,22 +65,22 @@ public class OrdersServiceImpl implements OrdersService {
 
         Order newOrder = Order.builder()
             .userId(order.getUserId())
-            .quantity(order.getQuantity())
+            .qty(order.getQuantity())
             .productId(order.getProductId())
-            .state(OrderState.PENDING)
+            .orderState(OrderState.PENDING)
             .build();
         this.repo.saveAndFlush(newOrder);
 
         OrderRequestDTO dto = order;
         dto.setOrderId(newOrder.getOrderId());
-        dto.setOrderState(newOrder.getState());
+        dto.setOrderState(newOrder.getOrderState());
 
         OrderCreatedEvent event = OrderCreatedEvent.builder()
             .orderId(newOrder.getOrderId())
             .productId(dto.getProductId())
             .quantity(dto.getQuantity())
             .userId(dto.getUserId())
-            .state(newOrder.getState())
+            .state(newOrder.getOrderState())
             .build();
 
         send.sendMessage(ORDER_CREATED_EVENT, event);
@@ -100,13 +100,13 @@ public class OrdersServiceImpl implements OrdersService {
             throw new NotFoundException("Order not found!");
         }
 
-        if (order.get().getState().equals(OrderState.CANCELLED)) {
+        if (order.get().getOrderState().equals(OrderState.CANCELLED)) {
             return true;
         }
 
-        order.get().setState(OrderState.CANCELLED);
+        order.get().setOrderState(OrderState.CANCELLED);
         this.repo.saveAndFlush(order.get());
-        return order.get().getState().equals(OrderState.CANCELLED);
+        return order.get().getOrderState().equals(OrderState.CANCELLED);
     }
 
     @Override
@@ -123,10 +123,10 @@ public class OrdersServiceImpl implements OrdersService {
             throw new NotFoundException("Order not found!");
         }
 
-        order.get().setState(OrderState.CREATED);
+        order.get().setOrderState(OrderState.CREATED);
         this.repo.saveAndFlush(order.get());
 
-        return order.get().getState().equals(OrderState.CREATED);
+        return order.get().getOrderState().equals(OrderState.CREATED);
     }
 }
 

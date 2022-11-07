@@ -26,6 +26,7 @@ public class UsersServiceImpl implements UsersService {
     private final ModelMapper mapper;
     private final UsersRepo repo;
     private double currentBalance;
+    Class<UsersServiceImpl> cl = UsersServiceImpl.class;
 
     @Autowired
     public UsersServiceImpl(ModelMapper mapper, UsersRepo repo) {
@@ -91,7 +92,7 @@ public class UsersServiceImpl implements UsersService {
 
         double newBalance = usr.getBalance() - payment.getAmount();
 
-        CustomLogging.log(UsersServiceImpl.class, "before reverse" + " " + newBalance);
+        CustomLogging.log(cl, "before reverse" + " " + newBalance);
 
         usr.setBalance(newBalance);
 
@@ -112,7 +113,7 @@ public class UsersServiceImpl implements UsersService {
 
         usr.setBalance(currentBalance);
 
-        CustomLogging.log(UsersServiceImpl.class, "after reverse" + " " + usr.getBalance());
+        CustomLogging.log(cl, "after reverse" + " " + usr.getBalance());
 
         this.repo.saveAndFlush(usr);
     }

@@ -39,8 +39,8 @@ class OrdersServiceImplTest {
         this.order = Order.builder()
             .productId("shoes")
             .orderId("fakeId")
-            .quantity(1)
-            .state(OrderState.CREATED)
+            .qty(1)
+            .orderState(OrderState.CREATED)
             .userId("userId")
             .build();
     }
@@ -92,11 +92,11 @@ class OrdersServiceImplTest {
     @Test
     void shouldCancelOrder() {
         String id = "fakeId";
-        this.order.setState(OrderState.CANCELLED);
+        this.order.setOrderState(OrderState.CANCELLED);
         when(this.repo.findById(id)).thenReturn(Optional.of(this.order));
         assertTrue(this.ordersServiceTest.cancelOrder(id));
 
-        this.order.setState(OrderState.CREATED);
+        this.order.setOrderState(OrderState.CREATED);
         when(this.repo.findById(id)).thenReturn(Optional.of(this.order));
         assertTrue(this.ordersServiceTest.cancelOrder(id));
 
@@ -123,7 +123,7 @@ class OrdersServiceImplTest {
     @Test
     void shouldApproveOrder() {
         String id = "fakeId";
-        this.order.setState(OrderState.PENDING);
+        this.order.setOrderState(OrderState.PENDING);
         when(this.repo.findById(id)).thenReturn(Optional.of(this.order));
         assertTrue(this.ordersServiceTest.approveOrder(id));
 

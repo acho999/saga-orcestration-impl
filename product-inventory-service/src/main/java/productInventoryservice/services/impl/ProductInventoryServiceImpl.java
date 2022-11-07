@@ -1,22 +1,20 @@
 package productInventoryservice.services.impl;
 
 import com.angel.models.DTO.ProductDTO;
-import com.angel.models.exceptions.NotFoundException;
 import com.angel.models.states.PaymentState;
 import com.angel.saga.logging.CustomLogging;
-import org.apache.kafka.common.quota.ClientQuotaAlteration;
-import org.modelmapper.convention.MatchingStrategies;
-import productInventoryservice.models.Product;
-import productInventoryservice.repos.ProductsInventoryRepo;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import productInventoryservice.exceptions.NotFoundException;
+import productInventoryservice.models.Product;
+import productInventoryservice.repos.ProductsInventoryRepo;
 import productInventoryservice.services.api.ProductInventoryService;
 
 import java.util.Objects;
 import java.util.Optional;
-import java.util.logging.Logger;
 
 
 @Service
@@ -26,6 +24,7 @@ public class ProductInventoryServiceImpl implements ProductInventoryService {
     private ProductsInventoryRepo repo;
     private ModelMapper mapper;
     private int oldQuantity;
+    private final Class<ProductInventoryServiceImpl> cl = ProductInventoryServiceImpl.class;
 
     @Autowired
     public ProductInventoryServiceImpl(ProductsInventoryRepo repo, ModelMapper mapper) {
@@ -99,7 +98,7 @@ public class ProductInventoryServiceImpl implements ProductInventoryService {
             this.oldQuantity = quantity + prodQuantity;
         }
 
-        CustomLogging.log(ProductInventoryServiceImpl.class, "after reset - " + oldQuantity);
+        CustomLogging.log(cl, "after reset - " + oldQuantity);
 
         prod.get().setQuantity(this.oldQuantity);
         this.repo.saveAndFlush(prod.get());
@@ -146,7 +145,7 @@ public class ProductInventoryServiceImpl implements ProductInventoryService {
 
         int quantity = this.oldQuantity - qty;
 
-        CustomLogging.log(ProductInventoryServiceImpl.class,"before reset - " + quantity);
+        CustomLogging.log(cl,"before reset - " + quantity);
 
         if (quantity <= 0){
             return;
