@@ -19,6 +19,7 @@ import static com.angel.models.constants.CommonConstants.FAKE_ORDER_ID;
 import static com.angel.models.constants.CommonConstants.FAKE_PRODUCT_ID;
 import static com.angel.models.constants.CommonConstants.FAKE_USER_ID;
 import static com.angel.models.constants.CommonConstants.QUANTITY;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -54,15 +55,34 @@ public class OrdersControllerAcceptanceTest {
     }
 
     @Test
-    void getOrder() {
+    void getOrder() throws Exception {
+        this.mockMvc.perform(get("/orders/getOrder/{orderId}",FAKE_ORDER_ID)
+                                 .accept(MediaType.APPLICATION_JSON)
+                                 .contentType(MediaType.APPLICATION_JSON)
+            ).andDo(print())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
+            .andExpect(MockMvcResultMatchers.jsonPath("$.orderId", Matchers.equalTo(FAKE_ORDER_ID)));
     }
 
     @Test
-    void cancelOrder() {
+    void cancelOrder() throws Exception {
+        this.mockMvc.perform(post("/orders/cancel/{orderId}",FAKE_ORDER_ID)
+                                 .accept(MediaType.APPLICATION_JSON)
+                                 .contentType(MediaType.APPLICATION_JSON)
+            ).andDo(print())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
     }
 
     @Test
-    void approveOrder() {
+    void approveOrder() throws Exception {
+        this.mockMvc.perform(post("/orders/approve/{orderId}",FAKE_ORDER_ID)
+                                 .accept(MediaType.APPLICATION_JSON)
+                                 .contentType(MediaType.APPLICATION_JSON)
+            ).andDo(print())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
     }
 
 }

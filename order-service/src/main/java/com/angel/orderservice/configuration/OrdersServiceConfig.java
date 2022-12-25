@@ -6,6 +6,7 @@ import com.angel.saga.configuration.KafkaTopicConfig;
 import com.angel.saga.configuration.ProducerConfiguration;
 import com.angel.saga.impl.FactoryImpl;
 import com.angel.saga.impl.SendMessageImpl;
+import com.angel.swagger.config.SwaggerConfig;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,8 @@ import javax.sql.DataSource;
 @EnableTransactionManagement
 @PropertySource(value = {"classpath:./application.yaml" })
 @EnableKafka
-@Import({ConsumerConfiguration.class, KafkaTopicConfig.class, ProducerConfiguration.class})
+@Import({ConsumerConfiguration.class, KafkaTopicConfig.class, ProducerConfiguration.class,
+         SwaggerConfig.class})
 public class OrdersServiceConfig {
 
     @Autowired
