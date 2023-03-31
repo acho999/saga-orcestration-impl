@@ -1,6 +1,6 @@
 package com.angel.models.constants;
 
-public class TopicConstants {
+public final class TopicConstants {
 
     public static final String CREATE_ORDER_COMMAND = "createOrderCommand";
     public static final String RESERVE_PRODUCT_COMMAND = "reserveProductCommand";

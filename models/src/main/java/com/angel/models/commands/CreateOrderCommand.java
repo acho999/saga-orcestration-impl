@@ -7,10 +7,9 @@ import lombok.Setter;
 import com.angel.models.states.OrderState;
 
 @Getter
-@Setter
 @NoArgsConstructor
 public class CreateOrderCommand extends Command{
-
+//POJO class should be immutable (without setter and final also is thread safe)
     private OrderState state;
 
     public CreateOrderCommand(String a){}

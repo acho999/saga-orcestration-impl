@@ -19,7 +19,7 @@ public interface Factory {
     JsonNode convertJsonToJsonNode(String message)
         throws JsonProcessingException;
 
-    Product createProduct();
+    Product createProduct(String id);
 
 
 }

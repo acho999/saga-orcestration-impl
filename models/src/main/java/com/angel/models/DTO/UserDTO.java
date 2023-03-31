@@ -6,9 +6,8 @@ import lombok.Setter;
 import java.util.List;
 
 @Getter
-@Setter
-public class UserDTO {
-
+public final class UserDTO {
+//POJO class should be immutable (without setter and final also is thread safe)
     private String userId;
     private double balance;
     private List<?> payments;

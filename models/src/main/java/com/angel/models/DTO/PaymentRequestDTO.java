@@ -5,9 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-@Setter
-public class PaymentRequestDTO {
-
+public final class PaymentRequestDTO {
+//POJO class should be immutable (without setter and final also is thread safe)
     private String id;
     private String userId;
     private String orderId;

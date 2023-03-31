@@ -9,8 +9,10 @@ import com.angel.saga.api.SendMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
@@ -23,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -68,6 +71,8 @@ class OrdersServiceImplTest {
         NotFoundException notFoundException = assertThrows(
             NotFoundException.class, ()->this.ordersServiceTest.getOrder(order.getOrderId()));
         assertEquals("Order not found!", notFoundException.getMessage());
+
+        verify(send, Mockito.calls(1)).sendMessage(ArgumentMatchers.eq("TOPIC"), any());
     }
 
     @Test

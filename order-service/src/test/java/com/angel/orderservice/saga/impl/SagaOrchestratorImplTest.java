@@ -77,7 +77,7 @@ class SagaOrchestratorImplTest {
             .userId(FAKE_USER_ID)
             .quantity(QUANTITY)
             .build();
-        when(this.factory.createProduct()).thenReturn(product);
+        when(this.factory.createProduct(product.getId())).thenReturn(product);
         when(this.factory.readEvent(ORDER_CREATED_EVENT, RESERVE_PRODUCT_COMMAND, event))
             .thenReturn(command);
         assertEquals(FAKE_ORDER_ID, this.orchestratorTest.handleOrderCreatedEvent(event)

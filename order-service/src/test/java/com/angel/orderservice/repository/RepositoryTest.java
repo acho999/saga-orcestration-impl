@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
@@ -59,6 +60,7 @@ public class RepositoryTest {
         Optional<Order> order = this.repo.findById(this.orderId);
         if(order.isPresent()){
             order.get().setOrderState(OrderState.COMPLETED);
+            //create order
             orderUpdated = this.repo.saveAndFlush(order.get());
         }
         if (orderUpdated != null) {

@@ -7,10 +7,9 @@ import lombok.Setter;
 import com.angel.models.states.OrderState;
 
 @Getter
-@Setter
 @NoArgsConstructor
-public class OrderRejectedEvent extends Event{
-
+public final class OrderRejectedEvent extends Event{
+//POJO class should be immutable (without setter and final also is thread safe)
     private String reason;
     private OrderState state = OrderState.CANCELLED;
     private String paymentId;

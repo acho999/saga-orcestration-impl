@@ -7,9 +7,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
-@Setter
 @NoArgsConstructor
-public class ProductReservationCanceledEvent extends Event{
+public final class ProductReservationCanceledEvent extends Event{
+//POJO class should be immutable (without setter and final also is thread safe)
 
     private String reason;
     private String paymentId;

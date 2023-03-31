@@ -237,8 +237,8 @@ public class FactoryImpl implements Factory {
     }
 
     @Override
-    public Product createProduct() {
-        return new Product();
+    public Product createProduct(String id) {
+        return new Product(id,"name","description",0.0d,0);
     }
 
 }

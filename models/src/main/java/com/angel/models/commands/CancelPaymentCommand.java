@@ -7,9 +7,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
-@Setter
 @NoArgsConstructor
-public class CancelPaymentCommand extends Command{
+public final class CancelPaymentCommand extends Command{
+//POJO class should be immutable (without setter and final also is thread safe)
 
     private String paymentId;
     private PaymentState paymentState;

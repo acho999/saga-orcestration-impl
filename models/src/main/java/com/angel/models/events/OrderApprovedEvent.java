@@ -7,10 +7,9 @@ import lombok.Setter;
 import com.angel.models.states.OrderState;
 
 @Getter
-@Setter
 @NoArgsConstructor
-public class OrderApprovedEvent extends Event{
-
+public final class OrderApprovedEvent extends Event{
+//POJO class should be immutable (without setter and final also is thread safe)
     private OrderState state;
 
     public OrderApprovedEvent(String a){}

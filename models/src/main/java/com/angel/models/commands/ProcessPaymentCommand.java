@@ -7,10 +7,9 @@ import lombok.Setter;
 import com.angel.models.states.PaymentState;
 
 @Getter
-@Setter
 @NoArgsConstructor
 public class ProcessPaymentCommand extends Command{
-
+//POJO class should be immutable (without setter and final also is thread safe)
         private String paymentId;
         private PaymentState paymentState;
 

@@ -16,11 +16,10 @@ import lombok.ToString;
 import java.io.Serializable;
 
 @Getter
-@Setter
 @NoArgsConstructor
 @Data//this should be here in order for test to be deserialized
-public class OrderRequestDTO implements Serializable {
-
+public final class OrderRequestDTO implements Serializable {
+//POJO class should be immutable (without setter and final also is thread safe)
     private String orderId;
     private OrderState orderState;
     private String userId;

@@ -5,8 +5,8 @@ import lombok.Setter;
 import com.angel.models.states.PaymentState;
 
 @Getter
-@Setter
 public class PaymentResponseDTO {
+    //POJO class should be immutable (without setter and final also is thread safe)
 
     private String id;
     private String userId;

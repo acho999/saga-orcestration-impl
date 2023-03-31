@@ -8,12 +8,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
-@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Product implements IEvent {
-
+public final class Product implements IEvent {
+//POJO class should be immutable (without setter and final also is thread safe)
     private String id;
 
     private String name;

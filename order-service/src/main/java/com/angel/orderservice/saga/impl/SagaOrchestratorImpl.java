@@ -48,8 +48,7 @@ public class SagaOrchestratorImpl implements SagaOrchestrator {
         ReserveProductCommand command = (ReserveProductCommand) this.factory
             .readEvent(ORDER_CREATED_EVENT, RESERVE_PRODUCT_COMMAND,
                        event);
-        Product prod = this.factory.createProduct();
-        prod.setId(command.getProductId());
+        Product prod = this.factory.createProduct(command.getProductId());
 
         this.sendService.sendMessage(SET_PRODUCT_PRICE, prod);
         this.sendService.sendMessage(RESERVE_PRODUCT_COMMAND, command);
@@ -108,8 +107,8 @@ public class SagaOrchestratorImpl implements SagaOrchestrator {
             .quantity(event.getQuantity())
             .userId(event.getUserId())
             .reason(event.getReason())
+            .paymentState(PaymentState.REJECTED)
             .build();
-        cancelProdRes.setPaymentState(PaymentState.REJECTED);
 
         this.sendService.sendMessage(CANCEL_PRODUCT_RESERVATION_COMMAND, cancelProdRes);
         this.sendService.sendMessage(REJECT_ORDER_COMMAND_PRODUCT, command);

@@ -6,10 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
-@Setter
 @NoArgsConstructor
 public class ReserveProductCommand extends Command{
-
+//POJO class should be immutable (without setter and final also is thread safe)
     public ReserveProductCommand(String a){}
 
 

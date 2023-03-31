@@ -8,10 +8,9 @@ import com.angel.models.states.OrderState;
 import org.springframework.core.annotation.Order;
 
 @Getter
-@Setter
 @NoArgsConstructor
-public class OrderCreatedEvent extends Event {
-
+public final class OrderCreatedEvent extends Event {
+//POJO class should be immutable (without setter and final also is thread safe)
     private OrderState state;
 
     public OrderCreatedEvent(String a){}

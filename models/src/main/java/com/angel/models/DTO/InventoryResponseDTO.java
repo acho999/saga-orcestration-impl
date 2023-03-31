@@ -5,9 +5,8 @@ import lombok.Setter;
 import com.angel.models.states.InventoryState;
 
 @Getter
-@Setter
-public class InventoryResponseDTO {
-
+public final class InventoryResponseDTO {
+//POJO class should be immutable (without setter and final also is thread safe)
     private String userId;
     private String productId;
     private String orderId;

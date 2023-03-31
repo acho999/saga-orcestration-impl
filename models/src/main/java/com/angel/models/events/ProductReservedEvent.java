@@ -7,10 +7,9 @@ import lombok.Setter;
 
 
 @Getter
-@Setter
 @NoArgsConstructor
-public class ProductReservedEvent extends Event{
-
+public final class ProductReservedEvent extends Event{
+//POJO class should be immutable (without setter and final also is thread safe)
     public ProductReservedEvent(String a){}
 
 

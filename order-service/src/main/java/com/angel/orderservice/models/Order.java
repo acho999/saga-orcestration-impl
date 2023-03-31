@@ -23,7 +23,7 @@ import javax.persistence.Table;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Order {
+public final class Order {
 
     @Id
     @Column(name = "orderId", unique = true, nullable = false)
