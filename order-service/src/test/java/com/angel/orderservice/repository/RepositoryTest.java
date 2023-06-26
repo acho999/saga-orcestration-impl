@@ -7,13 +7,19 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static com.angel.models.constants.CommonConstants.FAKE_PRODUCT_ID;
+import static com.angel.models.constants.CommonConstants.FAKE_USER_ID;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 
 @DataJpaTest
 @ActiveProfiles("test")
@@ -27,10 +33,10 @@ public class RepositoryTest {
     @BeforeEach
     void setUp() {
         Order order = Order.builder()
-            .productId("shoes")
+            .productId(FAKE_PRODUCT_ID)
             .qty(1)
             .orderState(OrderState.CREATED)
-            .userId("userId")
+            .userId(FAKE_USER_ID)
             .build();
         this.repo.saveAndFlush(order);
         this.orderId = order.getOrderId();
@@ -39,10 +45,10 @@ public class RepositoryTest {
     @Test
     public void shouldCreateAndSaveOrderTest(){
         Order order = Order.builder()
-            .productId("shoes")
+            .productId(FAKE_PRODUCT_ID)
             .qty(1)
             .orderState(OrderState.CREATED)
-            .userId("userId")
+            .userId(FAKE_USER_ID)
             .build();
         Order savedOrder = this.repo.saveAndFlush(order);
         assertFalse(savedOrder.getOrderId().isEmpty());

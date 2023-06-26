@@ -3,6 +3,7 @@ package com.angel.orderservice.endpoints;
 import com.angel.models.DTO.OrderRequestDTO;
 import com.angel.models.DTO.OrderResponseDTO;
 import com.angel.orderservice.services.api.OrdersService;
+import com.angel.orderservice.services.api.ValidationService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import static com.angel.models.constants.CommonConstants.ARGUMENT_NOT_NULL;
+import static com.angel.models.constants.CommonConstants.ARGUMENT_NOT_EMPTY_STRING;
 
 @Api("Endpoints for working with orders.")
 @RestController
@@ -21,10 +24,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class OrdersController {
 
     private final OrdersService service;
+    private final ValidationService validationService;
 
     @Autowired
-    public OrdersController(OrdersService service) {
+    public OrdersController(OrdersService service, ValidationService validationService) {
         this.service = service;
+        this.validationService = validationService;
     }
 
     @ApiOperation("Creates order.")
@@ -32,6 +37,9 @@ public class OrdersController {
         produces = MediaType.APPLICATION_JSON_VALUE,
         consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<OrderRequestDTO> createOrder(@RequestBody OrderRequestDTO request){
+
+        //this could be performed here or in the service itself
+        this.validationService.validateIsNotNull(request, ARGUMENT_NOT_NULL);
 
         OrderRequestDTO dto = this.service.createOrder(request);
 
@@ -44,6 +52,9 @@ public class OrdersController {
         consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<OrderResponseDTO> getOrder(@PathVariable String orderId) {
 
+        this.validationService.validateIsNotNull(orderId, ARGUMENT_NOT_NULL);
+        this.validationService.isNotEmptyString(orderId, ARGUMENT_NOT_EMPTY_STRING);
+
         OrderResponseDTO response = this.service.getOrder(orderId);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -55,6 +66,9 @@ public class OrdersController {
         consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Boolean> cancelOrder(@PathVariable String orderId) {
 
+        this.validationService.validateIsNotNull(orderId, ARGUMENT_NOT_NULL);
+        this.validationService.isNotEmptyString(orderId, ARGUMENT_NOT_EMPTY_STRING);
+
         boolean isCanceled = this.service.cancelOrder(orderId);
 
         return ResponseEntity.ok(isCanceled);
@@ -65,7 +79,8 @@ public class OrdersController {
         produces = MediaType.APPLICATION_JSON_VALUE,
         consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Boolean> approveOrder(@PathVariable String orderId) {
-
+        this.validationService.validateIsNotNull(orderId, ARGUMENT_NOT_NULL);
+        this.validationService.isNotEmptyString(orderId, ARGUMENT_NOT_EMPTY_STRING);
         boolean isApproved = this.service.approveOrder(orderId);
 
         return ResponseEntity.ok(isApproved);

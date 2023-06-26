@@ -16,6 +16,7 @@ import com.angel.models.events.ProductReservationCanceledEvent;
 import com.angel.models.events.ProductReservedEvent;
 import com.angel.models.states.OrderState;
 import com.angel.models.states.PaymentState;
+import com.angel.orderservice.services.api.ValidationService;
 import com.angel.orderservice.services.impl.OrdersServiceImpl;
 import com.angel.saga.api.Factory;
 import com.angel.saga.api.SendMessage;
@@ -31,6 +32,7 @@ import static com.angel.models.constants.CommonConstants.FAKE_PRODUCT_ID;
 import static com.angel.models.constants.CommonConstants.FAKE_USER_ID;
 import static com.angel.models.constants.CommonConstants.PAYMENT_ID;
 import static com.angel.models.constants.CommonConstants.QUANTITY;
+import static com.angel.models.constants.CommonConstants.REASON;
 import static com.angel.models.constants.TopicConstants.APPROVE_ORDER_COMMAND;
 import static com.angel.models.constants.TopicConstants.ORDER_CREATED_EVENT;
 import static com.angel.models.constants.TopicConstants.PAYMENT_CANCELED_EVENT;
@@ -54,6 +56,7 @@ class SagaOrchestratorImplTest {
     @Mock private  SendMessage sendService;
     @Mock private  OrdersServiceImpl ordersService;
     @Mock private  Factory factory;
+    @Mock private ValidationService validationService;
 
     @Test
     void handleOrderCreatedEvent() {
@@ -82,14 +85,6 @@ class SagaOrchestratorImplTest {
             .thenReturn(command);
         assertEquals(FAKE_ORDER_ID, this.orchestratorTest.handleOrderCreatedEvent(event)
             .getOrderId());
-
-
-        IllegalArgumentException ex = assertThrows(
-            IllegalArgumentException.class,()->{
-                this.orchestratorTest.handleOrderCreatedEvent(null);
-            }
-        );
-        assertEquals(EVENT_CAN_NOT_BE_NULL, ex.getMessage());
     }
 
     @Test
@@ -112,13 +107,6 @@ class SagaOrchestratorImplTest {
             .thenReturn(command);
         assertEquals(FAKE_ORDER_ID, this.orchestratorTest.handleProductReservedEvent(event)
             .getOrderId());
-
-        IllegalArgumentException ex = assertThrows(
-            IllegalArgumentException.class,()->{
-                this.orchestratorTest.handleProductReservedEvent(null);
-            }
-        );
-        assertEquals(EVENT_CAN_NOT_BE_NULL, ex.getMessage());
     }
 
     @Test
@@ -141,12 +129,6 @@ class SagaOrchestratorImplTest {
             .thenReturn(command);
         assertEquals(FAKE_ORDER_ID, this.orchestratorTest.handlePaymentProcessedEvent(event)
             .getOrderId());
-        IllegalArgumentException ex = assertThrows(
-            IllegalArgumentException.class,()->{
-                this.orchestratorTest.handlePaymentProcessedEvent(null);
-            }
-        );
-        assertEquals(EVENT_CAN_NOT_BE_NULL, ex.getMessage());
     }
 
     @Test
@@ -160,13 +142,6 @@ class SagaOrchestratorImplTest {
             .build();
         when(this.ordersService.approveOrder(FAKE_ORDER_ID)).thenReturn(true);
         assertTrue(this.orchestratorTest.handleOrderApprovedEvent(event));
-
-        IllegalArgumentException ex = assertThrows(
-            IllegalArgumentException.class,()->{
-                this.orchestratorTest.handleOrderApprovedEvent(null);
-            }
-        );
-        assertEquals(EVENT_CAN_NOT_BE_NULL, ex.getMessage());
     }
 
     @Test
@@ -184,19 +159,12 @@ class SagaOrchestratorImplTest {
             .productId(FAKE_PRODUCT_ID)
             .userId(FAKE_USER_ID)
             .paymentId(PAYMENT_ID)
-            .reason("reason")
+            .reason(REASON)
             .build();
         when(this.factory.readEvent(PRODUCT_RESERVATION_CANCELED_EVENT, REJECT_ORDER_COMMAND_PRODUCT,event))
             .thenReturn(command);
         assertEquals(FAKE_ORDER_ID, this.orchestratorTest.handleProductReservationCanceledEvent(event)
             .getOrderId());
-
-        IllegalArgumentException ex = assertThrows(
-            IllegalArgumentException.class,()->{
-                this.orchestratorTest.handleProductReservationCanceledEvent(null);
-            }
-        );
-        assertEquals(EVENT_CAN_NOT_BE_NULL, ex.getMessage());
     }
 
     @Test
@@ -214,19 +182,12 @@ class SagaOrchestratorImplTest {
             .productId(FAKE_PRODUCT_ID)
             .userId(FAKE_USER_ID)
             .paymentId(PAYMENT_ID)
-            .reason("reason")
+            .reason(REASON)
             .build();
         when(this.factory.readEvent(PAYMENT_CANCELED_EVENT, REJECT_ORDER_COMMAND_PAYMENT,
                                     event)).thenReturn(command);
         assertEquals(FAKE_ORDER_ID, this.orchestratorTest.handlePaymentCanceledEvent(event)
             .getOrderId());
-
-        IllegalArgumentException ex = assertThrows(
-            IllegalArgumentException.class,()->{
-                this.orchestratorTest.handlePaymentCanceledEvent(null);
-            }
-        );
-        assertEquals(EVENT_CAN_NOT_BE_NULL, ex.getMessage());
     }
 
     @Test
@@ -236,16 +197,10 @@ class SagaOrchestratorImplTest {
             .productId(FAKE_PRODUCT_ID)
             .userId(FAKE_USER_ID)
             .paymentId(PAYMENT_ID)
-            .reason("reason")
+            .reason(REASON)
             .build();
 
         when(this.ordersService.cancelOrder(FAKE_ORDER_ID)).thenReturn(true);
         assertTrue(this.orchestratorTest.handleOrderRejectedEvent(event));
-        IllegalArgumentException ex = assertThrows(
-            IllegalArgumentException.class,()->{
-                this.orchestratorTest.handleOrderRejectedEvent(null);
-            }
-        );
-        assertEquals(EVENT_CAN_NOT_BE_NULL, ex.getMessage());
     }
 }

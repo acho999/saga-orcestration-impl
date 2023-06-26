@@ -5,6 +5,7 @@ import com.angel.models.DTO.OrderResponseDTO;
 import com.angel.models.states.OrderState;
 import com.angel.orderservice.endpoints.OrdersController;
 import com.angel.orderservice.services.api.OrdersService;
+import com.angel.orderservice.services.api.ValidationService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
@@ -22,6 +24,10 @@ import static com.angel.models.constants.CommonConstants.FAKE_ORDER_ID;
 import static com.angel.models.constants.CommonConstants.FAKE_PRODUCT_ID;
 import static com.angel.models.constants.CommonConstants.FAKE_USER_ID;
 import static com.angel.models.constants.CommonConstants.QUANTITY;
+import static com.angel.models.constants.CommonConstants.APPROVE_ORDER_URL;
+import static com.angel.models.constants.CommonConstants.CANCEL_ORDER_URL;
+import static com.angel.models.constants.CommonConstants.GET_ORDER_URL;
+import static com.angel.models.constants.CommonConstants.CREATE_ORDER_URL;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -30,6 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(controllers = {OrdersController.class})
 @AutoConfigureMockMvc
+@ActiveProfiles("test")
 class OrdersControllerMockMvcTest {
 
     @Autowired
@@ -40,6 +47,9 @@ class OrdersControllerMockMvcTest {
 
     @MockBean
     private OrdersService service;
+
+    @MockBean
+    private ValidationService validationService;
 
     @Test
     void createOrder() throws Exception {
@@ -52,7 +62,7 @@ class OrdersControllerMockMvcTest {
 
         ResponseEntity<OrderRequestDTO> response = new ResponseEntity<>(requestDTO, HttpStatus.CREATED);
         when(this.service.createOrder(requestDTO)).thenReturn(response.getBody());
-        this.mockMvc.perform(post("/orders/create")
+        this.mockMvc.perform(post(CREATE_ORDER_URL)
                                  .accept(MediaType.APPLICATION_JSON)
                                  .contentType(MediaType.APPLICATION_JSON)
                                  .content(this.mapper.writeValueAsBytes(requestDTO))
@@ -75,7 +85,7 @@ class OrdersControllerMockMvcTest {
 
         when(this.service.getOrder(FAKE_ORDER_ID)).thenReturn(response.getBody());
 
-        this.mockMvc.perform(get("/orders/getOrder/{orderId}",FAKE_ORDER_ID)
+        this.mockMvc.perform(get(GET_ORDER_URL, FAKE_ORDER_ID)
                                  .accept(MediaType.APPLICATION_JSON)
                                  .contentType(MediaType.APPLICATION_JSON)
             ).andDo(print())
@@ -88,7 +98,7 @@ class OrdersControllerMockMvcTest {
     void cancelOrder() throws Exception {
         when(this.service.cancelOrder(FAKE_ORDER_ID)).thenReturn(true);
 
-        this.mockMvc.perform(post("/orders/cancel/{orderId}",FAKE_ORDER_ID)
+        this.mockMvc.perform(post(CANCEL_ORDER_URL, FAKE_ORDER_ID)
                                  .accept(MediaType.APPLICATION_JSON)
                                  .contentType(MediaType.APPLICATION_JSON)
             ).andDo(print())
@@ -100,7 +110,7 @@ class OrdersControllerMockMvcTest {
     void approveOrder() throws Exception {
         when(this.service.cancelOrder(FAKE_ORDER_ID)).thenReturn(true);
 
-        this.mockMvc.perform(post("/orders/approve/{orderId}",FAKE_ORDER_ID)
+        this.mockMvc.perform(post(APPROVE_ORDER_URL, FAKE_ORDER_ID)
                                  .accept(MediaType.APPLICATION_JSON)
                                  .contentType(MediaType.APPLICATION_JSON)
             ).andDo(print())

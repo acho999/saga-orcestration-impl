@@ -5,6 +5,7 @@ import com.angel.models.commands.RejectOrderCommandPayment;
 import com.angel.models.commands.RejectOrderCommandProduct;
 import com.angel.models.events.OrderApprovedEvent;
 import com.angel.models.events.OrderRejectedEvent;
+import com.angel.orderservice.services.api.ValidationService;
 import com.angel.saga.api.Factory;
 import com.angel.saga.api.SendMessage;
 import org.junit.jupiter.api.Test;
@@ -36,6 +37,7 @@ class OrderSagaListenerImplTest {
     private OrderSagaListenerImpl listenerTest;
     @Mock private  SendMessage sendService;
     @Mock private  Factory factory;
+    @Mock private  ValidationService validationService;
 
     @Test
     void handleApproveOrderCommand() {
@@ -54,13 +56,6 @@ class OrderSagaListenerImplTest {
         when(this.factory.readCommand(APPROVE_ORDER_COMMAND,ORDER_APPROVED_EVENT,cmnd))
             .thenReturn(event);
         assertEquals(FAKE_ORDER_ID, this.listenerTest.handleApproveOrderCommand(cmnd).getOrderId());
-
-        IllegalArgumentException ex = assertThrows(
-            IllegalArgumentException.class,()->{
-                this.listenerTest.handleApproveOrderCommand(null);
-            }
-        );
-        assertEquals(COMMAND_CAN_NOT_BE_NULL, ex.getMessage());
     }
 
     @Test
@@ -83,13 +78,6 @@ class OrderSagaListenerImplTest {
             .thenReturn(event);
         assertEquals(FAKE_ORDER_ID, this.listenerTest.handleRejectOrderCommandProduct(product)
             .getOrderId());
-
-        IllegalArgumentException ex = assertThrows(
-            IllegalArgumentException.class,()->{
-                this.listenerTest.handleRejectOrderCommandProduct(null);
-            }
-        );
-        assertEquals(COMMAND_CAN_NOT_BE_NULL, ex.getMessage());
     }
 
     @Test
@@ -114,12 +102,5 @@ class OrderSagaListenerImplTest {
             .thenReturn(event);
         assertEquals(FAKE_ORDER_ID, this.listenerTest.handleRejectOrderCommandPayment(payment)
             .getOrderId());
-
-        IllegalArgumentException ex = assertThrows(
-            IllegalArgumentException.class,()->{
-                this.listenerTest.handleRejectOrderCommandPayment(null);
-            }
-        );
-        assertEquals(COMMAND_CAN_NOT_BE_NULL, ex.getMessage());
     }
 }

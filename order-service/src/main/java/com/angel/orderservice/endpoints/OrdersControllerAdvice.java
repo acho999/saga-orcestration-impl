@@ -18,7 +18,7 @@ public class OrdersControllerAdvice {
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<NotFoundException> illegalArgumentExceptionHandler(HttpServletRequest request,
+    public ResponseEntity<IllegalArgumentException> illegalArgumentExceptionHandler(HttpServletRequest request,
                                                                              IllegalArgumentException ex) {//here parameters are autowired
         return new ResponseEntity(ex, HttpStatus.BAD_REQUEST);
     }

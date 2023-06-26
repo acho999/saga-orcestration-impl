@@ -19,6 +19,10 @@ import static com.angel.models.constants.CommonConstants.FAKE_ORDER_ID;
 import static com.angel.models.constants.CommonConstants.FAKE_PRODUCT_ID;
 import static com.angel.models.constants.CommonConstants.FAKE_USER_ID;
 import static com.angel.models.constants.CommonConstants.QUANTITY;
+import static com.angel.models.constants.CommonConstants.CANCEL_ORDER_URL;
+import static com.angel.models.constants.CommonConstants.APPROVE_ORDER_URL;
+import static com.angel.models.constants.CommonConstants.CREATE_ORDER_URL;
+import static com.angel.models.constants.CommonConstants.GET_ORDER_URL;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -44,7 +48,7 @@ public class OrdersControllerAcceptanceTest {
             .setUserId(FAKE_USER_ID)
             .setQuantity(QUANTITY).build();
 
-        this.mockMvc.perform(post("/orders/create")
+        this.mockMvc.perform(post(CREATE_ORDER_URL)
                                  .accept(MediaType.APPLICATION_JSON)
                                  .contentType(MediaType.APPLICATION_JSON)
                                  .content(this.mapper.writeValueAsBytes(requestDTO))
@@ -56,7 +60,7 @@ public class OrdersControllerAcceptanceTest {
 
     @Test
     void getOrder() throws Exception {
-        this.mockMvc.perform(get("/orders/getOrder/{orderId}",FAKE_ORDER_ID)
+        this.mockMvc.perform(get(GET_ORDER_URL, FAKE_ORDER_ID)
                                  .accept(MediaType.APPLICATION_JSON)
                                  .contentType(MediaType.APPLICATION_JSON)
             ).andDo(print())
@@ -67,7 +71,7 @@ public class OrdersControllerAcceptanceTest {
 
     @Test
     void cancelOrder() throws Exception {
-        this.mockMvc.perform(post("/orders/cancel/{orderId}",FAKE_ORDER_ID)
+        this.mockMvc.perform(post(CANCEL_ORDER_URL, FAKE_ORDER_ID)
                                  .accept(MediaType.APPLICATION_JSON)
                                  .contentType(MediaType.APPLICATION_JSON)
             ).andDo(print())
@@ -77,7 +81,7 @@ public class OrdersControllerAcceptanceTest {
 
     @Test
     void approveOrder() throws Exception {
-        this.mockMvc.perform(post("/orders/approve/{orderId}",FAKE_ORDER_ID)
+        this.mockMvc.perform(post(APPROVE_ORDER_URL, FAKE_ORDER_ID)
                                  .accept(MediaType.APPLICATION_JSON)
                                  .contentType(MediaType.APPLICATION_JSON)
             ).andDo(print())

@@ -5,6 +5,7 @@ import com.angel.models.commands.RejectOrderCommandPayment;
 import com.angel.models.commands.RejectOrderCommandProduct;
 import com.angel.models.events.Event;
 import com.angel.orderservice.saga.api.SagaListener;
+import com.angel.orderservice.services.api.ValidationService;
 import com.angel.saga.api.Factory;
 import com.angel.saga.api.SendMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,21 +28,21 @@ import static com.angel.models.constants.CommonConstants.COMMAND_CAN_NOT_BE_NULL
 @Component
 public class OrderSagaListenerImpl implements SagaListener {
 
+    private final ValidationService validationService;
     private final SendMessage sendService;
     private final Factory factory;
 
     @Autowired
-    public OrderSagaListenerImpl(SendMessage sendService, Factory factory) {
+    public OrderSagaListenerImpl(SendMessage sendService, Factory factory, ValidationService validationService) {
         this.sendService = sendService;
         this.factory = factory;
+        this.validationService = validationService;
     }
 
     @Override//7
     @KafkaHandler
     public Event handleApproveOrderCommand(ApproveOrderCommand command){
-        if( Objects.isNull(command)){
-            throw new IllegalArgumentException(COMMAND_CAN_NOT_BE_NULL);
-        }
+        this.validationService.validateIsNotNull(command, COMMAND_CAN_NOT_BE_NULL);
         Event event = this.factory.readCommand(APPROVE_ORDER_COMMAND,
                                                ORDER_APPROVED_EVENT,
                                                command);
@@ -52,9 +53,7 @@ public class OrderSagaListenerImpl implements SagaListener {
     @Override//15
     @KafkaHandler
     public Event handleRejectOrderCommandProduct(RejectOrderCommandProduct command){
-        if( Objects.isNull(command)){
-            throw new IllegalArgumentException(COMMAND_CAN_NOT_BE_NULL);
-        }
+        this.validationService.validateIsNotNull(command, COMMAND_CAN_NOT_BE_NULL);
         Event event = this.factory.readCommand(REJECT_ORDER_COMMAND_PRODUCT,
                                                ORDER_REJECTED_EVENT,
                                                command);
@@ -65,9 +64,7 @@ public class OrderSagaListenerImpl implements SagaListener {
     @Override//13
     @KafkaHandler
     public Event handleRejectOrderCommandPayment(RejectOrderCommandPayment command){
-        if( Objects.isNull(command)){
-            throw new IllegalArgumentException(COMMAND_CAN_NOT_BE_NULL);
-        }
+        this.validationService.validateIsNotNull(command, COMMAND_CAN_NOT_BE_NULL);
         Event event = this.factory.readCommand(REJECT_ORDER_COMMAND_PAYMENT,
                                                ORDER_REJECTED_EVENT,
                                                command);

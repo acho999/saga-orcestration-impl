@@ -13,10 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Objects;
 import java.util.Optional;
 
+import static com.angel.models.constants.CommonConstants.NOT_FOUND;
 import static com.angel.models.constants.TopicConstants.ORDER_CREATED_EVENT;
+
 
 @Service
 public class OrdersServiceImpl implements OrdersService {
@@ -37,12 +38,9 @@ public class OrdersServiceImpl implements OrdersService {
      */
     @Override
     public OrderResponseDTO getOrder(String id) {
-        if (Objects.isNull(id) || id.isEmpty()) {
-            throw new IllegalArgumentException("Id can not be null or empty string!");
-        }
         Optional<Order> orderOptional = this.repo.findById(id);
         if (orderOptional.isEmpty()) {
-            throw new NotFoundException("Order not found!");
+            throw new NotFoundException(NOT_FOUND);
         }
         Order order = orderOptional.get();
         OrderResponseDTO dto = new OrderResponseDTO.Builder()
@@ -58,10 +56,6 @@ public class OrdersServiceImpl implements OrdersService {
     @Override
     @Transactional
     public OrderRequestDTO createOrder(OrderRequestDTO order){
-
-        if (Objects.isNull(order)) {
-            throw new IllegalArgumentException("Order can not be null!");
-        }
 
         Order newOrder = Order.builder()
             .userId(order.getUserId())
@@ -90,14 +84,10 @@ public class OrdersServiceImpl implements OrdersService {
     @Override
     @Transactional
     public boolean cancelOrder(String orderId) {
-
-        if (Objects.isNull(orderId) || orderId.isEmpty()) {
-            throw new IllegalArgumentException("Id can not be null or empty string!");
-        }
         Optional<Order> order = this.repo.findById(orderId);
 
         if (order.isEmpty()) {
-            throw new NotFoundException("Order not found!");
+            throw new NotFoundException(NOT_FOUND);
         }
 
         if (order.get().getOrderState().equals(OrderState.CANCELLED)) {
@@ -113,14 +103,10 @@ public class OrdersServiceImpl implements OrdersService {
     @Transactional
     public boolean approveOrder(String orderId) {
 
-        if (Objects.isNull(orderId) || orderId.isEmpty()) {
-            throw new IllegalArgumentException("Id can not be null or empty string!");
-        }
-
         Optional<Order> order = this.repo.findById(orderId);
 
         if (order.isEmpty()) {
-            throw new NotFoundException("Order not found!");
+            throw new NotFoundException(NOT_FOUND);
         }
 
         order.get().setOrderState(OrderState.CREATED);
