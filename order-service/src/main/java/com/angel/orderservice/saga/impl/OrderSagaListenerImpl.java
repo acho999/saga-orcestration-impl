@@ -13,15 +13,13 @@ import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
-import java.util.Objects;
-
+import static com.angel.models.constants.CommonConstants.COMMAND_CAN_NOT_BE_NULL;
 import static com.angel.models.constants.TopicConstants.APPROVE_ORDER_COMMAND;
 import static com.angel.models.constants.TopicConstants.GROUP_ID;
 import static com.angel.models.constants.TopicConstants.ORDER_APPROVED_EVENT;
 import static com.angel.models.constants.TopicConstants.ORDER_REJECTED_EVENT;
 import static com.angel.models.constants.TopicConstants.REJECT_ORDER_COMMAND_PAYMENT;
 import static com.angel.models.constants.TopicConstants.REJECT_ORDER_COMMAND_PRODUCT;
-import static com.angel.models.constants.CommonConstants.COMMAND_CAN_NOT_BE_NULL;
 
 @KafkaListener(topics = { APPROVE_ORDER_COMMAND, REJECT_ORDER_COMMAND_PAYMENT,
                           REJECT_ORDER_COMMAND_PRODUCT}, groupId = GROUP_ID)
